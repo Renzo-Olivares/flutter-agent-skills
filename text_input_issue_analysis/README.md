@@ -38,6 +38,7 @@ text_input_issue_analysis/
 │   ├── make_gapfill_batch.py       # Step 1d: target missing issues across batches for retry
 │   ├── verify_summaries.py         # Step 1e: confirm every batch has a complete summary file
 │   ├── build_compact.py            # Step 2a: compact the corpus for the categorization agent
+│   ├── fetch_reactions.py          # supplementary: backfill per-issue reactions onto an existing snapshot
 │   └── assemble_final.py           # Step 1f+2b: assemble the final text_input_issues.json
 └── data/
     ├── raw/                        # raw GraphQL pulls (regenerable via fetch_issues.py)
@@ -48,6 +49,7 @@ text_input_issue_analysis/
     ├── compact_issues.json         # title + truncated body + summary, input to Step 2
     ├── batch_manifest.json         # index of the summarization batches
     ├── categorization.json         # {issue_number_str: category_name} from the discovery agent
+    ├── reactions.json              # {issue_number_str: {total, by_type}} from fetch_reactions.py
     ├── batches/                    # 44 workload-balanced batches + 1 gapfill batch
     └── summaries/                  # 44 summary files + 1 gapfill; one 2–5-sentence paragraph per issue
 ```
@@ -72,6 +74,10 @@ python3 scripts/build_compact.py
 # ... dispatch categorization agent (single, Opus) with compact_issues.json as input ...
 # ...   writes data/categorization.json + text_input_taxonomy.json ...
 python3 scripts/assemble_final.py   # re-run to merge categories into text_input_issues.json
+
+# (Optional) refresh reactions for an existing snapshot without re-fetching comments
+python3 scripts/fetch_reactions.py              # resume-safe; add --refresh to re-fetch all
+python3 scripts/assemble_final.py               # merge reactions into text_input_issues.json
 ```
 
 `assemble_final.py` is idempotent — re-run it any time `data/summaries/*`,
@@ -96,6 +102,10 @@ python3 scripts/assemble_final.py   # re-run to merge categories into text_input
       "created_at": "ISO-8601 UTC",
       "updated_at": "ISO-8601 UTC",
       "body": "...",                          // full issue body
+      "reactions": {                          // per-issue reaction counts; by_type elides zero-count types
+        "total": 42,
+        "by_type": { "THUMBS_UP": 30, "HEART": 5, "ROCKET": 6, "HOORAY": 1 }
+      },
       "comment_summary": "...",               // 2–5 sentence paragraph, or null
       "category": "..."                       // one of the 31 discovered category names
     }
@@ -145,6 +155,7 @@ If `data/` bloats the repo, the regenerable pieces are:
 - `data/merged_raw.json` — re-derivable via `merge_and_own.py`
 - `data/batches/*.json` — re-derivable via `split_batches.py`
 - `data/compact_issues.json` — re-derivable via `build_compact.py`
+- `data/reactions.json` — re-fetchable in ~15s via `fetch_reactions.py`
 
 What to keep in git (expensive to regenerate or canonical):
 

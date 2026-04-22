@@ -38,6 +38,7 @@ query($q: String!, $after: String) {
         body
         labels(first: 30) { nodes { name } }
         assignees(first: 10) { nodes { login } }
+        reactionGroups { content reactors { totalCount } }
         comments(first: 100) {
           totalCount
           pageInfo { hasNextPage endCursor }
@@ -97,6 +98,18 @@ def fetch_remaining_comments(issue_number, cursor):
     return out
 
 
+def flatten_reactions(groups):
+    """Collapse reactionGroups into {total, by_type} with zero-count types elided."""
+    by_type = {}
+    total = 0
+    for g in groups or []:
+        n = g["reactors"]["totalCount"]
+        if n:
+            by_type[g["content"]] = n
+            total += n
+    return {"total": total, "by_type": by_type}
+
+
 def flatten_issue(node):
     """Transform GraphQL node to our schema (comment_summary/category/ownership filled later)."""
     labels = [l["name"] for l in node["labels"]["nodes"]]
@@ -121,6 +134,7 @@ def flatten_issue(node):
         "created_at": node["createdAt"],
         "updated_at": node["updatedAt"],
         "body": node["body"],
+        "reactions": flatten_reactions(node.get("reactionGroups")),
         "comments_raw": comment_bodies,  # kept temporarily, removed before final output
         "comment_count": node["comments"]["totalCount"],
         "comment_summary": None,

@@ -1,0 +1,5786 @@
+{
+  "fetched_at": "2026-04-22T07:04:41.604389Z",
+  "source": "text_input_issues.json",
+  "reactions": {
+    "9343": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "9383": {
+      "total": 53,
+      "by_type": {
+        "THUMBS_UP": 38,
+        "HEART": 15
+      }
+    },
+    "9688": {
+      "total": 72,
+      "by_type": {
+        "THUMBS_UP": 72
+      }
+    },
+    "10036": {
+      "total": 0,
+      "by_type": {}
+    },
+    "10372": {
+      "total": 12,
+      "by_type": {
+        "THUMBS_UP": 12
+      }
+    },
+    "10713": {
+      "total": 42,
+      "by_type": {
+        "THUMBS_UP": 42
+      }
+    },
+    "11427": {
+      "total": 5,
+      "by_type": {
+        "THUMBS_UP": 5
+      }
+    },
+    "11738": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "12920": {
+      "total": 79,
+      "by_type": {
+        "THUMBS_UP": 79
+      }
+    },
+    "13182": {
+      "total": 8,
+      "by_type": {
+        "THUMBS_UP": 8
+      }
+    },
+    "13468": {
+      "total": 0,
+      "by_type": {}
+    },
+    "14331": {
+      "total": 0,
+      "by_type": {}
+    },
+    "14543": {
+      "total": 0,
+      "by_type": {}
+    },
+    "17704": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "17809": {
+      "total": 26,
+      "by_type": {
+        "THUMBS_UP": 25,
+        "ROCKET": 1
+      }
+    },
+    "18922": {
+      "total": 6,
+      "by_type": {
+        "THUMBS_UP": 5,
+        "HEART": 1
+      }
+    },
+    "18936": {
+      "total": 0,
+      "by_type": {}
+    },
+    "19584": {
+      "total": 11,
+      "by_type": {
+        "THUMBS_UP": 11
+      }
+    },
+    "19702": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "19779": {
+      "total": 7,
+      "by_type": {
+        "THUMBS_UP": 7
+      }
+    },
+    "19978": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "20987": {
+      "total": 16,
+      "by_type": {
+        "THUMBS_UP": 14,
+        "EYES": 2
+      }
+    },
+    "21193": {
+      "total": 5,
+      "by_type": {
+        "THUMBS_UP": 5
+      }
+    },
+    "21997": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "22149": {
+      "total": 0,
+      "by_type": {}
+    },
+    "22171": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 4
+      }
+    },
+    "22619": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "23198": {
+      "total": 6,
+      "by_type": {
+        "THUMBS_UP": 6
+      }
+    },
+    "23603": {
+      "total": 127,
+      "by_type": {
+        "THUMBS_UP": 114,
+        "ROCKET": 3,
+        "EYES": 10
+      }
+    },
+    "23749": {
+      "total": 22,
+      "by_type": {
+        "THUMBS_UP": 21,
+        "EYES": 1
+      }
+    },
+    "23896": {
+      "total": 0,
+      "by_type": {}
+    },
+    "24001": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "24153": {
+      "total": 8,
+      "by_type": {
+        "THUMBS_UP": 8
+      }
+    },
+    "24406": {
+      "total": 0,
+      "by_type": {}
+    },
+    "24955": {
+      "total": 0,
+      "by_type": {}
+    },
+    "24998": {
+      "total": 0,
+      "by_type": {}
+    },
+    "25364": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "25841": {
+      "total": 182,
+      "by_type": {
+        "THUMBS_UP": 145,
+        "HEART": 16,
+        "ROCKET": 11,
+        "EYES": 10
+      }
+    },
+    "25972": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "26336": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "26448": {
+      "total": 0,
+      "by_type": {}
+    },
+    "27200": {
+      "total": 0,
+      "by_type": {}
+    },
+    "27529": {
+      "total": 0,
+      "by_type": {}
+    },
+    "27555": {
+      "total": 9,
+      "by_type": {
+        "THUMBS_UP": 9
+      }
+    },
+    "27880": {
+      "total": 0,
+      "by_type": {}
+    },
+    "27918": {
+      "total": 22,
+      "by_type": {
+        "THUMBS_UP": 22
+      }
+    },
+    "28828": {
+      "total": 0,
+      "by_type": {}
+    },
+    "28862": {
+      "total": 0,
+      "by_type": {}
+    },
+    "30331": {
+      "total": 20,
+      "by_type": {
+        "THUMBS_UP": 18,
+        "HEART": 2
+      }
+    },
+    "30725": {
+      "total": 12,
+      "by_type": {
+        "THUMBS_UP": 12
+      }
+    },
+    "31985": {
+      "total": 55,
+      "by_type": {
+        "THUMBS_UP": 55
+      }
+    },
+    "32285": {
+      "total": 9,
+      "by_type": {
+        "THUMBS_UP": 9
+      }
+    },
+    "32583": {
+      "total": 6,
+      "by_type": {
+        "THUMBS_UP": 6
+      }
+    },
+    "33858": {
+      "total": 0,
+      "by_type": {}
+    },
+    "34610": {
+      "total": 18,
+      "by_type": {
+        "THUMBS_UP": 14,
+        "ROCKET": 1,
+        "EYES": 3
+      }
+    },
+    "34897": {
+      "total": 0,
+      "by_type": {}
+    },
+    "34995": {
+      "total": 0,
+      "by_type": {}
+    },
+    "35064": {
+      "total": 6,
+      "by_type": {
+        "THUMBS_UP": 6
+      }
+    },
+    "35187": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "35347": {
+      "total": 5,
+      "by_type": {
+        "THUMBS_UP": 5
+      }
+    },
+    "35706": {
+      "total": 6,
+      "by_type": {
+        "THUMBS_UP": 6
+      }
+    },
+    "36664": {
+      "total": 0,
+      "by_type": {}
+    },
+    "36854": {
+      "total": 12,
+      "by_type": {
+        "THUMBS_UP": 12
+      }
+    },
+    "36910": {
+      "total": 0,
+      "by_type": {}
+    },
+    "37390": {
+      "total": 0,
+      "by_type": {}
+    },
+    "38503": {
+      "total": 0,
+      "by_type": {}
+    },
+    "38825": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "39466": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "39755": {
+      "total": 10,
+      "by_type": {
+        "THUMBS_UP": 9,
+        "EYES": 1
+      }
+    },
+    "39900": {
+      "total": 0,
+      "by_type": {}
+    },
+    "39949": {
+      "total": 0,
+      "by_type": {}
+    },
+    "39971": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "40464": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "40477": {
+      "total": 0,
+      "by_type": {}
+    },
+    "40494": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 4
+      }
+    },
+    "40582": {
+      "total": 11,
+      "by_type": {
+        "THUMBS_UP": 11
+      }
+    },
+    "40648": {
+      "total": 16,
+      "by_type": {
+        "THUMBS_UP": 16
+      }
+    },
+    "40669": {
+      "total": 11,
+      "by_type": {
+        "THUMBS_UP": 11
+      }
+    },
+    "40675": {
+      "total": 25,
+      "by_type": {
+        "THUMBS_UP": 21,
+        "HOORAY": 4
+      }
+    },
+    "40682": {
+      "total": 86,
+      "by_type": {
+        "THUMBS_UP": 71,
+        "ROCKET": 9,
+        "EYES": 6
+      }
+    },
+    "40833": {
+      "total": 0,
+      "by_type": {}
+    },
+    "41324": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "41630": {
+      "total": 9,
+      "by_type": {
+        "THUMBS_UP": 9
+      }
+    },
+    "41641": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "41923": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "42820": {
+      "total": 0,
+      "by_type": {}
+    },
+    "43328": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "44098": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "44172": {
+      "total": 0,
+      "by_type": {}
+    },
+    "44183": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "44491": {
+      "total": 7,
+      "by_type": {
+        "THUMBS_UP": 7
+      }
+    },
+    "44544": {
+      "total": 0,
+      "by_type": {}
+    },
+    "44681": {
+      "total": 32,
+      "by_type": {
+        "THUMBS_UP": 23,
+        "EYES": 9
+      }
+    },
+    "45110": {
+      "total": 0,
+      "by_type": {}
+    },
+    "45457": {
+      "total": 0,
+      "by_type": {}
+    },
+    "45556": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 4
+      }
+    },
+    "45804": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "45841": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 4
+      }
+    },
+    "46246": {
+      "total": 8,
+      "by_type": {
+        "THUMBS_UP": 8
+      }
+    },
+    "46728": {
+      "total": 0,
+      "by_type": {}
+    },
+    "46737": {
+      "total": 5,
+      "by_type": {
+        "THUMBS_UP": 5
+      }
+    },
+    "46882": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "47458": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "48296": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "48464": {
+      "total": 37,
+      "by_type": {
+        "THUMBS_UP": 36,
+        "EYES": 1
+      }
+    },
+    "48984": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "49047": {
+      "total": 0,
+      "by_type": {}
+    },
+    "49783": {
+      "total": 21,
+      "by_type": {
+        "THUMBS_UP": 19,
+        "EYES": 2
+      }
+    },
+    "50163": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "50329": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 4
+      }
+    },
+    "50600": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "50834": {
+      "total": 0,
+      "by_type": {}
+    },
+    "51209": {
+      "total": 1,
+      "by_type": {
+        "EYES": 1
+      }
+    },
+    "51244": {
+      "total": 7,
+      "by_type": {
+        "THUMBS_UP": 7
+      }
+    },
+    "51257": {
+      "total": 7,
+      "by_type": {
+        "THUMBS_UP": 7
+      }
+    },
+    "51258": {
+      "total": 28,
+      "by_type": {
+        "THUMBS_UP": 24,
+        "EYES": 4
+      }
+    },
+    "52049": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "52170": {
+      "total": 0,
+      "by_type": {}
+    },
+    "52526": {
+      "total": 0,
+      "by_type": {}
+    },
+    "52599": {
+      "total": 23,
+      "by_type": {
+        "THUMBS_UP": 23
+      }
+    },
+    "52746": {
+      "total": 0,
+      "by_type": {}
+    },
+    "52863": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "52955": {
+      "total": 0,
+      "by_type": {}
+    },
+    "53022": {
+      "total": 0,
+      "by_type": {}
+    },
+    "53456": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 4
+      }
+    },
+    "53797": {
+      "total": 10,
+      "by_type": {
+        "THUMBS_UP": 10
+      }
+    },
+    "54104": {
+      "total": 12,
+      "by_type": {
+        "THUMBS_UP": 9,
+        "ROCKET": 3
+      }
+    },
+    "54245": {
+      "total": 0,
+      "by_type": {}
+    },
+    "54279": {
+      "total": 0,
+      "by_type": {}
+    },
+    "54470": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "54540": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 4
+      }
+    },
+    "54998": {
+      "total": 0,
+      "by_type": {}
+    },
+    "55302": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 4
+      }
+    },
+    "55317": {
+      "total": 0,
+      "by_type": {}
+    },
+    "55343": {
+      "total": 0,
+      "by_type": {}
+    },
+    "55647": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "56159": {
+      "total": 15,
+      "by_type": {
+        "THUMBS_UP": 13,
+        "EYES": 2
+      }
+    },
+    "56176": {
+      "total": 0,
+      "by_type": {}
+    },
+    "56285": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "57591": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 1,
+        "EYES": 1
+      }
+    },
+    "57609": {
+      "total": 120,
+      "by_type": {
+        "THUMBS_UP": 92,
+        "HOORAY": 9,
+        "HEART": 7,
+        "ROCKET": 7,
+        "EYES": 5
+      }
+    },
+    "57953": {
+      "total": 7,
+      "by_type": {
+        "THUMBS_UP": 7
+      }
+    },
+    "58244": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "58498": {
+      "total": 114,
+      "by_type": {
+        "THUMBS_UP": 85,
+        "HEART": 17,
+        "EYES": 12
+      }
+    },
+    "58877": {
+      "total": 16,
+      "by_type": {
+        "THUMBS_UP": 16
+      }
+    },
+    "59439": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "59444": {
+      "total": 0,
+      "by_type": {}
+    },
+    "59519": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 4
+      }
+    },
+    "59541": {
+      "total": 15,
+      "by_type": {
+        "THUMBS_UP": 15
+      }
+    },
+    "59707": {
+      "total": 0,
+      "by_type": {}
+    },
+    "60825": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "61039": {
+      "total": 0,
+      "by_type": {}
+    },
+    "61069": {
+      "total": 65,
+      "by_type": {
+        "THUMBS_UP": 65
+      }
+    },
+    "61195": {
+      "total": 0,
+      "by_type": {}
+    },
+    "61344": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "61383": {
+      "total": 10,
+      "by_type": {
+        "THUMBS_UP": 10
+      }
+    },
+    "61803": {
+      "total": 0,
+      "by_type": {}
+    },
+    "62332": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "62397": {
+      "total": 8,
+      "by_type": {
+        "THUMBS_UP": 8
+      }
+    },
+    "62401": {
+      "total": 51,
+      "by_type": {
+        "THUMBS_UP": 49,
+        "EYES": 2
+      }
+    },
+    "63042": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "63170": {
+      "total": 0,
+      "by_type": {}
+    },
+    "63226": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "64059": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "64143": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "64272": {
+      "total": 0,
+      "by_type": {}
+    },
+    "64552": {
+      "total": 25,
+      "by_type": {
+        "THUMBS_UP": 25
+      }
+    },
+    "65170": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "65233": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "65621": {
+      "total": 0,
+      "by_type": {}
+    },
+    "66050": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "66106": {
+      "total": 0,
+      "by_type": {}
+    },
+    "66356": {
+      "total": 15,
+      "by_type": {
+        "THUMBS_UP": 14,
+        "EYES": 1
+      }
+    },
+    "66588": {
+      "total": 0,
+      "by_type": {}
+    },
+    "67023": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 4
+      }
+    },
+    "67282": {
+      "total": 15,
+      "by_type": {
+        "THUMBS_UP": 15
+      }
+    },
+    "67365": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "67409": {
+      "total": 0,
+      "by_type": {}
+    },
+    "67875": {
+      "total": 5,
+      "by_type": {
+        "THUMBS_UP": 5
+      }
+    },
+    "67915": {
+      "total": 25,
+      "by_type": {
+        "THUMBS_UP": 25
+      }
+    },
+    "67951": {
+      "total": 0,
+      "by_type": {}
+    },
+    "68014": {
+      "total": 11,
+      "by_type": {
+        "THUMBS_UP": 11
+      }
+    },
+    "68117": {
+      "total": 18,
+      "by_type": {
+        "THUMBS_UP": 18
+      }
+    },
+    "68292": {
+      "total": 6,
+      "by_type": {
+        "THUMBS_UP": 5,
+        "THUMBS_DOWN": 1
+      }
+    },
+    "68547": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "68549": {
+      "total": 0,
+      "by_type": {}
+    },
+    "68843": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "69127": {
+      "total": 0,
+      "by_type": {}
+    },
+    "69281": {
+      "total": 0,
+      "by_type": {}
+    },
+    "69460": {
+      "total": 22,
+      "by_type": {
+        "THUMBS_UP": 22
+      }
+    },
+    "70016": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "70841": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "70947": {
+      "total": 0,
+      "by_type": {}
+    },
+    "71083": {
+      "total": 5,
+      "by_type": {
+        "THUMBS_UP": 5
+      }
+    },
+    "71144": {
+      "total": 13,
+      "by_type": {
+        "THUMBS_UP": 13
+      }
+    },
+    "71318": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "71342": {
+      "total": 0,
+      "by_type": {}
+    },
+    "72023": {
+      "total": 0,
+      "by_type": {}
+    },
+    "72029": {
+      "total": 14,
+      "by_type": {
+        "THUMBS_UP": 13,
+        "EYES": 1
+      }
+    },
+    "72075": {
+      "total": 0,
+      "by_type": {}
+    },
+    "72172": {
+      "total": 0,
+      "by_type": {}
+    },
+    "72269": {
+      "total": 13,
+      "by_type": {
+        "THUMBS_UP": 12,
+        "EYES": 1
+      }
+    },
+    "72364": {
+      "total": 17,
+      "by_type": {
+        "THUMBS_UP": 14,
+        "HEART": 3
+      }
+    },
+    "72625": {
+      "total": 29,
+      "by_type": {
+        "THUMBS_UP": 26,
+        "EYES": 3
+      }
+    },
+    "72816": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "73544": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "73791": {
+      "total": 13,
+      "by_type": {
+        "THUMBS_UP": 13
+      }
+    },
+    "73930": {
+      "total": 0,
+      "by_type": {}
+    },
+    "74233": {
+      "total": 0,
+      "by_type": {}
+    },
+    "74255": {
+      "total": 54,
+      "by_type": {
+        "THUMBS_UP": 44,
+        "HOORAY": 5,
+        "ROCKET": 5
+      }
+    },
+    "74300": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "74347": {
+      "total": 0,
+      "by_type": {}
+    },
+    "74482": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "74547": {
+      "total": 30,
+      "by_type": {
+        "THUMBS_UP": 30
+      }
+    },
+    "75122": {
+      "total": 0,
+      "by_type": {}
+    },
+    "75572": {
+      "total": 0,
+      "by_type": {}
+    },
+    "75834": {
+      "total": 0,
+      "by_type": {}
+    },
+    "76349": {
+      "total": 0,
+      "by_type": {}
+    },
+    "76573": {
+      "total": 0,
+      "by_type": {}
+    },
+    "76632": {
+      "total": 0,
+      "by_type": {}
+    },
+    "76798": {
+      "total": 7,
+      "by_type": {
+        "THUMBS_UP": 7
+      }
+    },
+    "77023": {
+      "total": 21,
+      "by_type": {
+        "THUMBS_UP": 17,
+        "EYES": 4
+      }
+    },
+    "77076": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "77461": {
+      "total": 0,
+      "by_type": {}
+    },
+    "77512": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "77553": {
+      "total": 0,
+      "by_type": {}
+    },
+    "77735": {
+      "total": 0,
+      "by_type": {}
+    },
+    "77895": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "77957": {
+      "total": 0,
+      "by_type": {}
+    },
+    "78054": {
+      "total": 0,
+      "by_type": {}
+    },
+    "78181": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 4
+      }
+    },
+    "78220": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "78308": {
+      "total": 12,
+      "by_type": {
+        "THUMBS_UP": 12
+      }
+    },
+    "78421": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "78572": {
+      "total": 0,
+      "by_type": {}
+    },
+    "78660": {
+      "total": 15,
+      "by_type": {
+        "THUMBS_UP": 15
+      }
+    },
+    "78762": {
+      "total": 0,
+      "by_type": {}
+    },
+    "78864": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "79040": {
+      "total": 0,
+      "by_type": {}
+    },
+    "79158": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "79169": {
+      "total": 0,
+      "by_type": {}
+    },
+    "79305": {
+      "total": 6,
+      "by_type": {
+        "THUMBS_UP": 6
+      }
+    },
+    "79420": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "79497": {
+      "total": 0,
+      "by_type": {}
+    },
+    "79775": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "79933": {
+      "total": 6,
+      "by_type": {
+        "THUMBS_UP": 3,
+        "EYES": 3
+      }
+    },
+    "79982": {
+      "total": 9,
+      "by_type": {
+        "THUMBS_UP": 9
+      }
+    },
+    "80108": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "80109": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "80123": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 4
+      }
+    },
+    "80207": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "80423": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "80434": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 4
+      }
+    },
+    "80648": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "80667": {
+      "total": 0,
+      "by_type": {}
+    },
+    "80669": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "81172": {
+      "total": 0,
+      "by_type": {}
+    },
+    "81201": {
+      "total": 10,
+      "by_type": {
+        "THUMBS_UP": 10
+      }
+    },
+    "81314": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "81318": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "81976": {
+      "total": 0,
+      "by_type": {}
+    },
+    "82104": {
+      "total": 0,
+      "by_type": {}
+    },
+    "82124": {
+      "total": 0,
+      "by_type": {}
+    },
+    "82268": {
+      "total": 0,
+      "by_type": {}
+    },
+    "82414": {
+      "total": 0,
+      "by_type": {}
+    },
+    "82418": {
+      "total": 0,
+      "by_type": {}
+    },
+    "82708": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "82999": {
+      "total": 6,
+      "by_type": {
+        "THUMBS_UP": 1,
+        "HEART": 5
+      }
+    },
+    "83089": {
+      "total": 0,
+      "by_type": {}
+    },
+    "83611": {
+      "total": 0,
+      "by_type": {}
+    },
+    "83733": {
+      "total": 0,
+      "by_type": {}
+    },
+    "83960": {
+      "total": 2,
+      "by_type": {
+        "EYES": 2
+      }
+    },
+    "83986": {
+      "total": 0,
+      "by_type": {}
+    },
+    "84086": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "84317": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "84341": {
+      "total": 0,
+      "by_type": {}
+    },
+    "84344": {
+      "total": 0,
+      "by_type": {}
+    },
+    "84419": {
+      "total": 11,
+      "by_type": {
+        "THUMBS_UP": 8,
+        "EYES": 3
+      }
+    },
+    "84444": {
+      "total": 14,
+      "by_type": {
+        "THUMBS_UP": 14
+      }
+    },
+    "84445": {
+      "total": 7,
+      "by_type": {
+        "THUMBS_UP": 7
+      }
+    },
+    "84446": {
+      "total": 12,
+      "by_type": {
+        "THUMBS_UP": 12
+      }
+    },
+    "84452": {
+      "total": 10,
+      "by_type": {
+        "THUMBS_UP": 10
+      }
+    },
+    "85514": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "85554": {
+      "total": 0,
+      "by_type": {}
+    },
+    "85597": {
+      "total": 0,
+      "by_type": {}
+    },
+    "85879": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "86087": {
+      "total": 0,
+      "by_type": {}
+    },
+    "86089": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "86354": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "86471": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "86668": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "86682": {
+      "total": 9,
+      "by_type": {
+        "THUMBS_UP": 9
+      }
+    },
+    "87064": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "87124": {
+      "total": 0,
+      "by_type": {}
+    },
+    "87257": {
+      "total": 0,
+      "by_type": {}
+    },
+    "87536": {
+      "total": 0,
+      "by_type": {}
+    },
+    "87748": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "87782": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "87963": {
+      "total": 0,
+      "by_type": {}
+    },
+    "88135": {
+      "total": 0,
+      "by_type": {}
+    },
+    "88299": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "88354": {
+      "total": 22,
+      "by_type": {
+        "THUMBS_UP": 21,
+        "EYES": 1
+      }
+    },
+    "88542": {
+      "total": 0,
+      "by_type": {}
+    },
+    "88543": {
+      "total": 0,
+      "by_type": {}
+    },
+    "88584": {
+      "total": 0,
+      "by_type": {}
+    },
+    "88757": {
+      "total": 0,
+      "by_type": {}
+    },
+    "88910": {
+      "total": 0,
+      "by_type": {}
+    },
+    "89024": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 1,
+        "CONFUSED": 1
+      }
+    },
+    "89285": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "89394": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "89502": {
+      "total": 0,
+      "by_type": {}
+    },
+    "89780": {
+      "total": 0,
+      "by_type": {}
+    },
+    "90058": {
+      "total": 6,
+      "by_type": {
+        "THUMBS_UP": 6
+      }
+    },
+    "90063": {
+      "total": 33,
+      "by_type": {
+        "THUMBS_UP": 24,
+        "CONFUSED": 6,
+        "EYES": 3
+      }
+    },
+    "90207": {
+      "total": 9,
+      "by_type": {
+        "THUMBS_UP": 9
+      }
+    },
+    "90256": {
+      "total": 0,
+      "by_type": {}
+    },
+    "90345": {
+      "total": 0,
+      "by_type": {}
+    },
+    "90355": {
+      "total": 1,
+      "by_type": {
+        "EYES": 1
+      }
+    },
+    "90368": {
+      "total": 4,
+      "by_type": {
+        "HEART": 4
+      }
+    },
+    "90498": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "90525": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "90550": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "90710": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "90805": {
+      "total": 0,
+      "by_type": {}
+    },
+    "91010": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 3,
+        "EYES": 1
+      }
+    },
+    "91064": {
+      "total": 0,
+      "by_type": {}
+    },
+    "91174": {
+      "total": 17,
+      "by_type": {
+        "THUMBS_UP": 17
+      }
+    },
+    "91240": {
+      "total": 0,
+      "by_type": {}
+    },
+    "91345": {
+      "total": 0,
+      "by_type": {}
+    },
+    "91472": {
+      "total": 0,
+      "by_type": {}
+    },
+    "91492": {
+      "total": 0,
+      "by_type": {}
+    },
+    "91561": {
+      "total": 0,
+      "by_type": {}
+    },
+    "91586": {
+      "total": 0,
+      "by_type": {}
+    },
+    "91603": {
+      "total": 0,
+      "by_type": {}
+    },
+    "91676": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 4
+      }
+    },
+    "91731": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "91738": {
+      "total": 5,
+      "by_type": {
+        "THUMBS_UP": 4,
+        "HEART": 1
+      }
+    },
+    "91752": {
+      "total": 13,
+      "by_type": {
+        "THUMBS_UP": 13
+      }
+    },
+    "91798": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "91861": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "92050": {
+      "total": 7,
+      "by_type": {
+        "THUMBS_UP": 7
+      }
+    },
+    "92095": {
+      "total": 0,
+      "by_type": {}
+    },
+    "92349": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "92477": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "92506": {
+      "total": 20,
+      "by_type": {
+        "THUMBS_UP": 20
+      }
+    },
+    "92507": {
+      "total": 0,
+      "by_type": {}
+    },
+    "92589": {
+      "total": 5,
+      "by_type": {
+        "THUMBS_UP": 5
+      }
+    },
+    "92782": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "93288": {
+      "total": 0,
+      "by_type": {}
+    },
+    "93373": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "93450": {
+      "total": 0,
+      "by_type": {}
+    },
+    "93500": {
+      "total": 0,
+      "by_type": {}
+    },
+    "93724": {
+      "total": 0,
+      "by_type": {}
+    },
+    "93778": {
+      "total": 0,
+      "by_type": {}
+    },
+    "93873": {
+      "total": 0,
+      "by_type": {}
+    },
+    "93909": {
+      "total": 0,
+      "by_type": {}
+    },
+    "93915": {
+      "total": 10,
+      "by_type": {
+        "THUMBS_UP": 10
+      }
+    },
+    "93934": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "94249": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "94441": {
+      "total": 0,
+      "by_type": {}
+    },
+    "94502": {
+      "total": 7,
+      "by_type": {
+        "THUMBS_UP": 6,
+        "ROCKET": 1
+      }
+    },
+    "94965": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "95010": {
+      "total": 6,
+      "by_type": {
+        "THUMBS_UP": 6
+      }
+    },
+    "95194": {
+      "total": 0,
+      "by_type": {}
+    },
+    "95395": {
+      "total": 0,
+      "by_type": {}
+    },
+    "95410": {
+      "total": 0,
+      "by_type": {}
+    },
+    "95541": {
+      "total": 0,
+      "by_type": {}
+    },
+    "95553": {
+      "total": 17,
+      "by_type": {
+        "THUMBS_UP": 10,
+        "EYES": 7
+      }
+    },
+    "95556": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "95630": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "95634": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "95656": {
+      "total": 7,
+      "by_type": {
+        "THUMBS_UP": 7
+      }
+    },
+    "95920": {
+      "total": 16,
+      "by_type": {
+        "THUMBS_UP": 15,
+        "THUMBS_DOWN": 1
+      }
+    },
+    "95923": {
+      "total": 0,
+      "by_type": {}
+    },
+    "95928": {
+      "total": 0,
+      "by_type": {}
+    },
+    "95958": {
+      "total": 6,
+      "by_type": {
+        "THUMBS_UP": 6
+      }
+    },
+    "95975": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "95985": {
+      "total": 9,
+      "by_type": {
+        "THUMBS_UP": 9
+      }
+    },
+    "96021": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "96022": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "96092": {
+      "total": 0,
+      "by_type": {}
+    },
+    "96112": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 4
+      }
+    },
+    "96134": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 1,
+        "EYES": 1
+      }
+    },
+    "96147": {
+      "total": 0,
+      "by_type": {}
+    },
+    "96173": {
+      "total": 5,
+      "by_type": {
+        "THUMBS_UP": 5
+      }
+    },
+    "96199": {
+      "total": 18,
+      "by_type": {
+        "THUMBS_UP": 13,
+        "CONFUSED": 1,
+        "EYES": 4
+      }
+    },
+    "96520": {
+      "total": 6,
+      "by_type": {
+        "THUMBS_UP": 6
+      }
+    },
+    "96572": {
+      "total": 0,
+      "by_type": {}
+    },
+    "96660": {
+      "total": 8,
+      "by_type": {
+        "THUMBS_UP": 5,
+        "EYES": 3
+      }
+    },
+    "96756": {
+      "total": 12,
+      "by_type": {
+        "THUMBS_UP": 9,
+        "CONFUSED": 1,
+        "EYES": 2
+      }
+    },
+    "96920": {
+      "total": 1,
+      "by_type": {
+        "EYES": 1
+      }
+    },
+    "97253": {
+      "total": 0,
+      "by_type": {}
+    },
+    "97269": {
+      "total": 12,
+      "by_type": {
+        "THUMBS_UP": 12
+      }
+    },
+    "97433": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "97506": {
+      "total": 7,
+      "by_type": {
+        "THUMBS_UP": 7
+      }
+    },
+    "97582": {
+      "total": 0,
+      "by_type": {}
+    },
+    "97775": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "97866": {
+      "total": 5,
+      "by_type": {
+        "THUMBS_UP": 5
+      }
+    },
+    "98265": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "98280": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "98306": {
+      "total": 0,
+      "by_type": {}
+    },
+    "98308": {
+      "total": 0,
+      "by_type": {}
+    },
+    "98342": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "98352": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "98377": {
+      "total": 0,
+      "by_type": {}
+    },
+    "98533": {
+      "total": 0,
+      "by_type": {}
+    },
+    "98573": {
+      "total": 0,
+      "by_type": {}
+    },
+    "98720": {
+      "total": 30,
+      "by_type": {
+        "THUMBS_UP": 29,
+        "EYES": 1
+      }
+    },
+    "98742": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "98894": {
+      "total": 0,
+      "by_type": {}
+    },
+    "99050": {
+      "total": 37,
+      "by_type": {
+        "THUMBS_UP": 26,
+        "EYES": 11
+      }
+    },
+    "99074": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "99139": {
+      "total": 0,
+      "by_type": {}
+    },
+    "99164": {
+      "total": 7,
+      "by_type": {
+        "THUMBS_UP": 7
+      }
+    },
+    "99186": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "99198": {
+      "total": 0,
+      "by_type": {}
+    },
+    "99211": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "99255": {
+      "total": 0,
+      "by_type": {}
+    },
+    "99277": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "99330": {
+      "total": 27,
+      "by_type": {
+        "THUMBS_UP": 24,
+        "EYES": 3
+      }
+    },
+    "99386": {
+      "total": 0,
+      "by_type": {}
+    },
+    "99436": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "99511": {
+      "total": 0,
+      "by_type": {}
+    },
+    "99573": {
+      "total": 0,
+      "by_type": {}
+    },
+    "99606": {
+      "total": 134,
+      "by_type": {
+        "THUMBS_UP": 128,
+        "ROCKET": 1,
+        "EYES": 5
+      }
+    },
+    "99653": {
+      "total": 0,
+      "by_type": {}
+    },
+    "99848": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 4
+      }
+    },
+    "99918": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "100041": {
+      "total": 0,
+      "by_type": {}
+    },
+    "100042": {
+      "total": 0,
+      "by_type": {}
+    },
+    "100260": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "100319": {
+      "total": 6,
+      "by_type": {
+        "THUMBS_UP": 6
+      }
+    },
+    "100342": {
+      "total": 0,
+      "by_type": {}
+    },
+    "100416": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "100455": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "100456": {
+      "total": 9,
+      "by_type": {
+        "THUMBS_UP": 9
+      }
+    },
+    "100536": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "100590": {
+      "total": 0,
+      "by_type": {}
+    },
+    "100690": {
+      "total": 6,
+      "by_type": {
+        "THUMBS_UP": 6
+      }
+    },
+    "101067": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "101151": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "101196": {
+      "total": 0,
+      "by_type": {}
+    },
+    "101222": {
+      "total": 0,
+      "by_type": {}
+    },
+    "101275": {
+      "total": 0,
+      "by_type": {}
+    },
+    "101285": {
+      "total": 0,
+      "by_type": {}
+    },
+    "101288": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "101973": {
+      "total": 0,
+      "by_type": {}
+    },
+    "101985": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "102084": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 4
+      }
+    },
+    "102101": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 4
+      }
+    },
+    "102142": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "102239": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "102568": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "102647": {
+      "total": 0,
+      "by_type": {}
+    },
+    "102988": {
+      "total": 0,
+      "by_type": {}
+    },
+    "103086": {
+      "total": 0,
+      "by_type": {}
+    },
+    "103094": {
+      "total": 0,
+      "by_type": {}
+    },
+    "103136": {
+      "total": 0,
+      "by_type": {}
+    },
+    "103446": {
+      "total": 0,
+      "by_type": {}
+    },
+    "103464": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "103661": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "103705": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "104031": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 4
+      }
+    },
+    "104082": {
+      "total": 0,
+      "by_type": {}
+    },
+    "104315": {
+      "total": 0,
+      "by_type": {}
+    },
+    "104500": {
+      "total": 0,
+      "by_type": {}
+    },
+    "104547": {
+      "total": 25,
+      "by_type": {
+        "THUMBS_UP": 25
+      }
+    },
+    "104578": {
+      "total": 0,
+      "by_type": {}
+    },
+    "104604": {
+      "total": 20,
+      "by_type": {
+        "THUMBS_UP": 20
+      }
+    },
+    "104693": {
+      "total": 8,
+      "by_type": {
+        "THUMBS_UP": 8
+      }
+    },
+    "104872": {
+      "total": 0,
+      "by_type": {}
+    },
+    "104950": {
+      "total": 0,
+      "by_type": {}
+    },
+    "105001": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "105028": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "105184": {
+      "total": 7,
+      "by_type": {
+        "THUMBS_UP": 7
+      }
+    },
+    "105243": {
+      "total": 3,
+      "by_type": {
+        "HEART": 3
+      }
+    },
+    "105244": {
+      "total": 0,
+      "by_type": {}
+    },
+    "105514": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "105677": {
+      "total": 7,
+      "by_type": {
+        "THUMBS_UP": 4,
+        "HEART": 3
+      }
+    },
+    "105725": {
+      "total": 0,
+      "by_type": {}
+    },
+    "105756": {
+      "total": 0,
+      "by_type": {}
+    },
+    "105914": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 4
+      }
+    },
+    "106418": {
+      "total": 0,
+      "by_type": {}
+    },
+    "106454": {
+      "total": 0,
+      "by_type": {}
+    },
+    "106462": {
+      "total": 0,
+      "by_type": {}
+    },
+    "106475": {
+      "total": 12,
+      "by_type": {
+        "THUMBS_UP": 11,
+        "EYES": 1
+      }
+    },
+    "106562": {
+      "total": 0,
+      "by_type": {}
+    },
+    "106767": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "106789": {
+      "total": 12,
+      "by_type": {
+        "THUMBS_UP": 12
+      }
+    },
+    "106853": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "106923": {
+      "total": 11,
+      "by_type": {
+        "THUMBS_UP": 11
+      }
+    },
+    "107017": {
+      "total": 0,
+      "by_type": {}
+    },
+    "107055": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 3,
+        "EYES": 1
+      }
+    },
+    "107127": {
+      "total": 0,
+      "by_type": {}
+    },
+    "107130": {
+      "total": 0,
+      "by_type": {}
+    },
+    "107292": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 4
+      }
+    },
+    "107327": {
+      "total": 5,
+      "by_type": {
+        "THUMBS_UP": 5
+      }
+    },
+    "107350": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 4
+      }
+    },
+    "107432": {
+      "total": 7,
+      "by_type": {
+        "THUMBS_UP": 7
+      }
+    },
+    "107434": {
+      "total": 0,
+      "by_type": {}
+    },
+    "107462": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "107578": {
+      "total": 24,
+      "by_type": {
+        "THUMBS_UP": 24
+      }
+    },
+    "107603": {
+      "total": 5,
+      "by_type": {
+        "THUMBS_UP": 5
+      }
+    },
+    "107613": {
+      "total": 0,
+      "by_type": {}
+    },
+    "107671": {
+      "total": 0,
+      "by_type": {}
+    },
+    "107732": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "107830": {
+      "total": 0,
+      "by_type": {}
+    },
+    "107972": {
+      "total": 32,
+      "by_type": {
+        "THUMBS_UP": 32
+      }
+    },
+    "108016": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "108256": {
+      "total": 0,
+      "by_type": {}
+    },
+    "108447": {
+      "total": 0,
+      "by_type": {}
+    },
+    "108668": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "108773": {
+      "total": 0,
+      "by_type": {}
+    },
+    "108813": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "109197": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "110035": {
+      "total": 0,
+      "by_type": {}
+    },
+    "110425": {
+      "total": 23,
+      "by_type": {
+        "THUMBS_UP": 23
+      }
+    },
+    "110470": {
+      "total": 0,
+      "by_type": {}
+    },
+    "110647": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "110788": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 4
+      }
+    },
+    "111003": {
+      "total": 8,
+      "by_type": {
+        "THUMBS_UP": 8
+      }
+    },
+    "111054": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "111084": {
+      "total": 1,
+      "by_type": {
+        "EYES": 1
+      }
+    },
+    "111213": {
+      "total": 0,
+      "by_type": {}
+    },
+    "111672": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "112198": {
+      "total": 5,
+      "by_type": {
+        "THUMBS_UP": 5
+      }
+    },
+    "112354": {
+      "total": 0,
+      "by_type": {}
+    },
+    "112382": {
+      "total": 10,
+      "by_type": {
+        "THUMBS_UP": 10
+      }
+    },
+    "112762": {
+      "total": 1,
+      "by_type": {
+        "EYES": 1
+      }
+    },
+    "113005": {
+      "total": 0,
+      "by_type": {}
+    },
+    "113192": {
+      "total": 29,
+      "by_type": {
+        "THUMBS_UP": 28,
+        "ROCKET": 1
+      }
+    },
+    "113228": {
+      "total": 0,
+      "by_type": {}
+    },
+    "113253": {
+      "total": 0,
+      "by_type": {}
+    },
+    "113376": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "113572": {
+      "total": 0,
+      "by_type": {}
+    },
+    "113725": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "113944": {
+      "total": 0,
+      "by_type": {}
+    },
+    "114254": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "114435": {
+      "total": 0,
+      "by_type": {}
+    },
+    "114921": {
+      "total": 0,
+      "by_type": {}
+    },
+    "114950": {
+      "total": 0,
+      "by_type": {}
+    },
+    "114952": {
+      "total": 6,
+      "by_type": {
+        "THUMBS_UP": 6
+      }
+    },
+    "115130": {
+      "total": 0,
+      "by_type": {}
+    },
+    "115277": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "115400": {
+      "total": 0,
+      "by_type": {}
+    },
+    "115572": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "115595": {
+      "total": 0,
+      "by_type": {}
+    },
+    "115829": {
+      "total": 0,
+      "by_type": {}
+    },
+    "115903": {
+      "total": 0,
+      "by_type": {}
+    },
+    "116420": {
+      "total": 0,
+      "by_type": {}
+    },
+    "116456": {
+      "total": 0,
+      "by_type": {}
+    },
+    "116469": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "116575": {
+      "total": 0,
+      "by_type": {}
+    },
+    "116658": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "116661": {
+      "total": 0,
+      "by_type": {}
+    },
+    "116790": {
+      "total": 13,
+      "by_type": {
+        "THUMBS_UP": 13
+      }
+    },
+    "116836": {
+      "total": 8,
+      "by_type": {
+        "THUMBS_UP": 8
+      }
+    },
+    "116889": {
+      "total": 24,
+      "by_type": {
+        "THUMBS_UP": 24
+      }
+    },
+    "117139": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "117140": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "117143": {
+      "total": 0,
+      "by_type": {}
+    },
+    "117221": {
+      "total": 0,
+      "by_type": {}
+    },
+    "117324": {
+      "total": 0,
+      "by_type": {}
+    },
+    "117642": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "117771": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "117995": {
+      "total": 0,
+      "by_type": {}
+    },
+    "118267": {
+      "total": 12,
+      "by_type": {
+        "THUMBS_UP": 12
+      }
+    },
+    "118536": {
+      "total": 6,
+      "by_type": {
+        "THUMBS_UP": 6
+      }
+    },
+    "118547": {
+      "total": 5,
+      "by_type": {
+        "THUMBS_UP": 5
+      }
+    },
+    "118558": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "118606": {
+      "total": 14,
+      "by_type": {
+        "THUMBS_UP": 14
+      }
+    },
+    "118725": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "119050": {
+      "total": 5,
+      "by_type": {
+        "THUMBS_UP": 5
+      }
+    },
+    "119085": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "119088": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "119121": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "119326": {
+      "total": 5,
+      "by_type": {
+        "THUMBS_UP": 5
+      }
+    },
+    "119502": {
+      "total": 0,
+      "by_type": {}
+    },
+    "119532": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "119533": {
+      "total": 0,
+      "by_type": {}
+    },
+    "119538": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "119561": {
+      "total": 0,
+      "by_type": {}
+    },
+    "119573": {
+      "total": 0,
+      "by_type": {}
+    },
+    "119642": {
+      "total": 0,
+      "by_type": {}
+    },
+    "119684": {
+      "total": 0,
+      "by_type": {}
+    },
+    "119849": {
+      "total": 9,
+      "by_type": {
+        "THUMBS_UP": 9
+      }
+    },
+    "120049": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "120339": {
+      "total": 0,
+      "by_type": {}
+    },
+    "120351": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "120360": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "120435": {
+      "total": 0,
+      "by_type": {}
+    },
+    "120551": {
+      "total": 5,
+      "by_type": {
+        "THUMBS_UP": 5
+      }
+    },
+    "120608": {
+      "total": 0,
+      "by_type": {}
+    },
+    "120613": {
+      "total": 49,
+      "by_type": {
+        "THUMBS_UP": 37,
+        "HEART": 12
+      }
+    },
+    "120633": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "120680": {
+      "total": 0,
+      "by_type": {}
+    },
+    "120724": {
+      "total": 0,
+      "by_type": {}
+    },
+    "120759": {
+      "total": 0,
+      "by_type": {}
+    },
+    "120763": {
+      "total": 0,
+      "by_type": {}
+    },
+    "120779": {
+      "total": 0,
+      "by_type": {}
+    },
+    "120836": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "120852": {
+      "total": 0,
+      "by_type": {}
+    },
+    "120873": {
+      "total": 1,
+      "by_type": {
+        "EYES": 1
+      }
+    },
+    "120894": {
+      "total": 0,
+      "by_type": {}
+    },
+    "121376": {
+      "total": 6,
+      "by_type": {
+        "THUMBS_UP": 6
+      }
+    },
+    "121446": {
+      "total": 8,
+      "by_type": {
+        "THUMBS_UP": 8
+      }
+    },
+    "121486": {
+      "total": 0,
+      "by_type": {}
+    },
+    "121868": {
+      "total": 0,
+      "by_type": {}
+    },
+    "122009": {
+      "total": 0,
+      "by_type": {}
+    },
+    "122092": {
+      "total": 0,
+      "by_type": {}
+    },
+    "122300": {
+      "total": 0,
+      "by_type": {}
+    },
+    "122322": {
+      "total": 7,
+      "by_type": {
+        "THUMBS_UP": 7
+      }
+    },
+    "122433": {
+      "total": 7,
+      "by_type": {
+        "THUMBS_UP": 7
+      }
+    },
+    "122443": {
+      "total": 0,
+      "by_type": {}
+    },
+    "122457": {
+      "total": 0,
+      "by_type": {}
+    },
+    "122490": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "122501": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 2,
+        "EYES": 1
+      }
+    },
+    "122571": {
+      "total": 0,
+      "by_type": {}
+    },
+    "122647": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "122673": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "122721": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "122994": {
+      "total": 10,
+      "by_type": {
+        "THUMBS_UP": 9,
+        "EYES": 1
+      }
+    },
+    "123065": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "123101": {
+      "total": 0,
+      "by_type": {}
+    },
+    "123338": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "123415": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "123565": {
+      "total": 0,
+      "by_type": {}
+    },
+    "123658": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "124142": {
+      "total": 0,
+      "by_type": {}
+    },
+    "124384": {
+      "total": 0,
+      "by_type": {}
+    },
+    "124458": {
+      "total": 0,
+      "by_type": {}
+    },
+    "124483": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "124493": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 4
+      }
+    },
+    "124784": {
+      "total": 8,
+      "by_type": {
+        "THUMBS_UP": 8
+      }
+    },
+    "124789": {
+      "total": 2,
+      "by_type": {
+        "EYES": 2
+      }
+    },
+    "124966": {
+      "total": 0,
+      "by_type": {}
+    },
+    "125125": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "125424": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "125427": {
+      "total": 0,
+      "by_type": {}
+    },
+    "125476": {
+      "total": 0,
+      "by_type": {}
+    },
+    "125765": {
+      "total": 0,
+      "by_type": {}
+    },
+    "125766": {
+      "total": 5,
+      "by_type": {
+        "THUMBS_UP": 4,
+        "HEART": 1
+      }
+    },
+    "126066": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 1,
+        "EYES": 1
+      }
+    },
+    "126263": {
+      "total": 0,
+      "by_type": {}
+    },
+    "126329": {
+      "total": 0,
+      "by_type": {}
+    },
+    "126497": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "126853": {
+      "total": 0,
+      "by_type": {}
+    },
+    "126900": {
+      "total": 1,
+      "by_type": {
+        "ROCKET": 1
+      }
+    },
+    "126962": {
+      "total": 7,
+      "by_type": {
+        "THUMBS_UP": 7
+      }
+    },
+    "127054": {
+      "total": 0,
+      "by_type": {}
+    },
+    "127181": {
+      "total": 0,
+      "by_type": {}
+    },
+    "127657": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "127694": {
+      "total": 14,
+      "by_type": {
+        "THUMBS_UP": 14
+      }
+    },
+    "127803": {
+      "total": 1,
+      "by_type": {
+        "EYES": 1
+      }
+    },
+    "127831": {
+      "total": 0,
+      "by_type": {}
+    },
+    "127947": {
+      "total": 0,
+      "by_type": {}
+    },
+    "128209": {
+      "total": 0,
+      "by_type": {}
+    },
+    "128315": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "128323": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "128388": {
+      "total": 10,
+      "by_type": {
+        "THUMBS_UP": 5,
+        "CONFUSED": 2,
+        "HEART": 1,
+        "ROCKET": 2
+      }
+    },
+    "128565": {
+      "total": 0,
+      "by_type": {}
+    },
+    "128575": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 4
+      }
+    },
+    "128689": {
+      "total": 0,
+      "by_type": {}
+    },
+    "128708": {
+      "total": 1,
+      "by_type": {
+        "HEART": 1
+      }
+    },
+    "129137": {
+      "total": 0,
+      "by_type": {}
+    },
+    "129174": {
+      "total": 0,
+      "by_type": {}
+    },
+    "129233": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "129324": {
+      "total": 15,
+      "by_type": {
+        "THUMBS_UP": 15
+      }
+    },
+    "129583": {
+      "total": 0,
+      "by_type": {}
+    },
+    "129655": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "129664": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "129875": {
+      "total": 0,
+      "by_type": {}
+    },
+    "130011": {
+      "total": 0,
+      "by_type": {}
+    },
+    "130030": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "130259": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "130559": {
+      "total": 5,
+      "by_type": {
+        "THUMBS_UP": 5
+      }
+    },
+    "130652": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "130654": {
+      "total": 0,
+      "by_type": {}
+    },
+    "130676": {
+      "total": 0,
+      "by_type": {}
+    },
+    "131053": {
+      "total": 0,
+      "by_type": {}
+    },
+    "131130": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "131176": {
+      "total": 0,
+      "by_type": {}
+    },
+    "131510": {
+      "total": 35,
+      "by_type": {
+        "THUMBS_UP": 35
+      }
+    },
+    "131547": {
+      "total": 0,
+      "by_type": {}
+    },
+    "131666": {
+      "total": 10,
+      "by_type": {
+        "THUMBS_UP": 10
+      }
+    },
+    "132042": {
+      "total": 0,
+      "by_type": {}
+    },
+    "132270": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "132272": {
+      "total": 0,
+      "by_type": {}
+    },
+    "132372": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "132373": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "132551": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "132577": {
+      "total": 15,
+      "by_type": {
+        "THUMBS_UP": 12,
+        "HEART": 3
+      }
+    },
+    "132638": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "132825": {
+      "total": 0,
+      "by_type": {}
+    },
+    "132879": {
+      "total": 0,
+      "by_type": {}
+    },
+    "132887": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "133011": {
+      "total": 0,
+      "by_type": {}
+    },
+    "133034": {
+      "total": 0,
+      "by_type": {}
+    },
+    "133433": {
+      "total": 9,
+      "by_type": {
+        "THUMBS_UP": 8,
+        "CONFUSED": 1
+      }
+    },
+    "133537": {
+      "total": 7,
+      "by_type": {
+        "THUMBS_UP": 7
+      }
+    },
+    "133576": {
+      "total": 0,
+      "by_type": {}
+    },
+    "133614": {
+      "total": 0,
+      "by_type": {}
+    },
+    "133662": {
+      "total": 0,
+      "by_type": {}
+    },
+    "133718": {
+      "total": 0,
+      "by_type": {}
+    },
+    "133743": {
+      "total": 0,
+      "by_type": {}
+    },
+    "133763": {
+      "total": 0,
+      "by_type": {}
+    },
+    "133930": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "133954": {
+      "total": 0,
+      "by_type": {}
+    },
+    "134024": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 1,
+        "EYES": 2
+      }
+    },
+    "134092": {
+      "total": 0,
+      "by_type": {}
+    },
+    "134159": {
+      "total": 0,
+      "by_type": {}
+    },
+    "134170": {
+      "total": 6,
+      "by_type": {
+        "THUMBS_UP": 6
+      }
+    },
+    "134174": {
+      "total": 0,
+      "by_type": {}
+    },
+    "134265": {
+      "total": 0,
+      "by_type": {}
+    },
+    "134268": {
+      "total": 0,
+      "by_type": {}
+    },
+    "134271": {
+      "total": 0,
+      "by_type": {}
+    },
+    "134283": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "134330": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "134358": {
+      "total": 0,
+      "by_type": {}
+    },
+    "134398": {
+      "total": 0,
+      "by_type": {}
+    },
+    "134717": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 3,
+        "EYES": 1
+      }
+    },
+    "134902": {
+      "total": 0,
+      "by_type": {}
+    },
+    "134926": {
+      "total": 0,
+      "by_type": {}
+    },
+    "135159": {
+      "total": 0,
+      "by_type": {}
+    },
+    "135338": {
+      "total": 0,
+      "by_type": {}
+    },
+    "135354": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 3,
+        "HEART": 1
+      }
+    },
+    "135406": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "135450": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "135704": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 4
+      }
+    },
+    "135800": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 4
+      }
+    },
+    "135812": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "135821": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "135952": {
+      "total": 0,
+      "by_type": {}
+    },
+    "136014": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "136212": {
+      "total": 0,
+      "by_type": {}
+    },
+    "136419": {
+      "total": 7,
+      "by_type": {
+        "THUMBS_UP": 7
+      }
+    },
+    "136745": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "137030": {
+      "total": 0,
+      "by_type": {}
+    },
+    "137255": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "137619": {
+      "total": 0,
+      "by_type": {}
+    },
+    "137659": {
+      "total": 6,
+      "by_type": {
+        "THUMBS_UP": 4,
+        "HEART": 1,
+        "EYES": 1
+      }
+    },
+    "137666": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "137667": {
+      "total": 0,
+      "by_type": {}
+    },
+    "137677": {
+      "total": 0,
+      "by_type": {}
+    },
+    "137760": {
+      "total": 24,
+      "by_type": {
+        "THUMBS_UP": 24
+      }
+    },
+    "137771": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "137781": {
+      "total": 0,
+      "by_type": {}
+    },
+    "137833": {
+      "total": 0,
+      "by_type": {}
+    },
+    "137976": {
+      "total": 0,
+      "by_type": {}
+    },
+    "137991": {
+      "total": 0,
+      "by_type": {}
+    },
+    "138136": {
+      "total": 0,
+      "by_type": {}
+    },
+    "138139": {
+      "total": 0,
+      "by_type": {}
+    },
+    "138190": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "138207": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 1,
+        "EYES": 1
+      }
+    },
+    "138346": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 4
+      }
+    },
+    "138464": {
+      "total": 8,
+      "by_type": {
+        "THUMBS_UP": 8
+      }
+    },
+    "138978": {
+      "total": 0,
+      "by_type": {}
+    },
+    "138980": {
+      "total": 0,
+      "by_type": {}
+    },
+    "139054": {
+      "total": 0,
+      "by_type": {}
+    },
+    "139127": {
+      "total": 0,
+      "by_type": {}
+    },
+    "139143": {
+      "total": 0,
+      "by_type": {}
+    },
+    "139201": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "139230": {
+      "total": 1,
+      "by_type": {
+        "EYES": 1
+      }
+    },
+    "139301": {
+      "total": 0,
+      "by_type": {}
+    },
+    "139352": {
+      "total": 0,
+      "by_type": {}
+    },
+    "139379": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "139443": {
+      "total": 0,
+      "by_type": {}
+    },
+    "139603": {
+      "total": 0,
+      "by_type": {}
+    },
+    "140044": {
+      "total": 0,
+      "by_type": {}
+    },
+    "140369": {
+      "total": 0,
+      "by_type": {}
+    },
+    "140508": {
+      "total": 0,
+      "by_type": {}
+    },
+    "140537": {
+      "total": 0,
+      "by_type": {}
+    },
+    "140543": {
+      "total": 0,
+      "by_type": {}
+    },
+    "140662": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "140739": {
+      "total": 10,
+      "by_type": {
+        "THUMBS_UP": 10
+      }
+    },
+    "140751": {
+      "total": 0,
+      "by_type": {}
+    },
+    "140764": {
+      "total": 0,
+      "by_type": {}
+    },
+    "140790": {
+      "total": 0,
+      "by_type": {}
+    },
+    "140953": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "141100": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 4
+      }
+    },
+    "141369": {
+      "total": 0,
+      "by_type": {}
+    },
+    "141557": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 4
+      }
+    },
+    "141560": {
+      "total": 0,
+      "by_type": {}
+    },
+    "141775": {
+      "total": 0,
+      "by_type": {}
+    },
+    "141955": {
+      "total": 0,
+      "by_type": {}
+    },
+    "142040": {
+      "total": 5,
+      "by_type": {
+        "THUMBS_UP": 5
+      }
+    },
+    "142138": {
+      "total": 0,
+      "by_type": {}
+    },
+    "142294": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 2,
+        "EYES": 1
+      }
+    },
+    "142493": {
+      "total": 0,
+      "by_type": {}
+    },
+    "142588": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "142763": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "142820": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "142882": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "142894": {
+      "total": 7,
+      "by_type": {
+        "THUMBS_UP": 7
+      }
+    },
+    "142897": {
+      "total": 0,
+      "by_type": {}
+    },
+    "142941": {
+      "total": 0,
+      "by_type": {}
+    },
+    "143047": {
+      "total": 0,
+      "by_type": {}
+    },
+    "143155": {
+      "total": 0,
+      "by_type": {}
+    },
+    "143434": {
+      "total": 0,
+      "by_type": {}
+    },
+    "143479": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "143729": {
+      "total": 0,
+      "by_type": {}
+    },
+    "143773": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "143903": {
+      "total": 0,
+      "by_type": {}
+    },
+    "143997": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "143999": {
+      "total": 0,
+      "by_type": {}
+    },
+    "144162": {
+      "total": 0,
+      "by_type": {}
+    },
+    "144165": {
+      "total": 0,
+      "by_type": {}
+    },
+    "144224": {
+      "total": 10,
+      "by_type": {
+        "THUMBS_UP": 8,
+        "EYES": 2
+      }
+    },
+    "144350": {
+      "total": 0,
+      "by_type": {}
+    },
+    "144463": {
+      "total": 5,
+      "by_type": {
+        "THUMBS_UP": 5
+      }
+    },
+    "144759": {
+      "total": 0,
+      "by_type": {}
+    },
+    "144936": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "145101": {
+      "total": 0,
+      "by_type": {}
+    },
+    "145122": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "145324": {
+      "total": 0,
+      "by_type": {}
+    },
+    "145524": {
+      "total": 0,
+      "by_type": {}
+    },
+    "145743": {
+      "total": 0,
+      "by_type": {}
+    },
+    "145751": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "145758": {
+      "total": 0,
+      "by_type": {}
+    },
+    "145839": {
+      "total": 0,
+      "by_type": {}
+    },
+    "145887": {
+      "total": 0,
+      "by_type": {}
+    },
+    "146057": {
+      "total": 0,
+      "by_type": {}
+    },
+    "146123": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "146486": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "146540": {
+      "total": 0,
+      "by_type": {}
+    },
+    "146973": {
+      "total": 0,
+      "by_type": {}
+    },
+    "146994": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "147020": {
+      "total": 0,
+      "by_type": {}
+    },
+    "147138": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "147162": {
+      "total": 0,
+      "by_type": {}
+    },
+    "147377": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "147538": {
+      "total": 1,
+      "by_type": {
+        "EYES": 1
+      }
+    },
+    "147558": {
+      "total": 1,
+      "by_type": {
+        "EYES": 1
+      }
+    },
+    "147722": {
+      "total": 0,
+      "by_type": {}
+    },
+    "147772": {
+      "total": 7,
+      "by_type": {
+        "THUMBS_UP": 4,
+        "CONFUSED": 1,
+        "EYES": 2
+      }
+    },
+    "148117": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "148151": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "148375": {
+      "total": 0,
+      "by_type": {}
+    },
+    "148527": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "148604": {
+      "total": 0,
+      "by_type": {}
+    },
+    "148936": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "148997": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "149067": {
+      "total": 0,
+      "by_type": {}
+    },
+    "149160": {
+      "total": 0,
+      "by_type": {}
+    },
+    "149164": {
+      "total": 0,
+      "by_type": {}
+    },
+    "149379": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "149480": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "149557": {
+      "total": 0,
+      "by_type": {}
+    },
+    "149748": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "149979": {
+      "total": 5,
+      "by_type": {
+        "THUMBS_UP": 5
+      }
+    },
+    "150048": {
+      "total": 0,
+      "by_type": {}
+    },
+    "150068": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 4
+      }
+    },
+    "150192": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "150260": {
+      "total": 0,
+      "by_type": {}
+    },
+    "150326": {
+      "total": 1,
+      "by_type": {
+        "EYES": 1
+      }
+    },
+    "150338": {
+      "total": 0,
+      "by_type": {}
+    },
+    "150392": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "150452": {
+      "total": 10,
+      "by_type": {
+        "THUMBS_UP": 10
+      }
+    },
+    "150453": {
+      "total": 5,
+      "by_type": {
+        "HEART": 5
+      }
+    },
+    "150460": {
+      "total": 31,
+      "by_type": {
+        "THUMBS_UP": 25,
+        "HEART": 4,
+        "EYES": 2
+      }
+    },
+    "150522": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 4
+      }
+    },
+    "150551": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "150634": {
+      "total": 0,
+      "by_type": {}
+    },
+    "150813": {
+      "total": 0,
+      "by_type": {}
+    },
+    "150815": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "150909": {
+      "total": 0,
+      "by_type": {}
+    },
+    "151097": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "151103": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "151292": {
+      "total": 0,
+      "by_type": {}
+    },
+    "151312": {
+      "total": 0,
+      "by_type": {}
+    },
+    "151457": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "151479": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "151533": {
+      "total": 0,
+      "by_type": {}
+    },
+    "151713": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "151876": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "151980": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "152040": {
+      "total": 0,
+      "by_type": {}
+    },
+    "152391": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 1,
+        "EYES": 2
+      }
+    },
+    "152547": {
+      "total": 0,
+      "by_type": {}
+    },
+    "152618": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "152729": {
+      "total": 0,
+      "by_type": {}
+    },
+    "152879": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "153065": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "153079": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "153219": {
+      "total": 0,
+      "by_type": {}
+    },
+    "153240": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "153387": {
+      "total": 0,
+      "by_type": {}
+    },
+    "153416": {
+      "total": 0,
+      "by_type": {}
+    },
+    "153560": {
+      "total": 9,
+      "by_type": {
+        "THUMBS_UP": 9
+      }
+    },
+    "153811": {
+      "total": 0,
+      "by_type": {}
+    },
+    "153876": {
+      "total": 0,
+      "by_type": {}
+    },
+    "153895": {
+      "total": 0,
+      "by_type": {}
+    },
+    "154055": {
+      "total": 0,
+      "by_type": {}
+    },
+    "154069": {
+      "total": 0,
+      "by_type": {}
+    },
+    "154072": {
+      "total": 0,
+      "by_type": {}
+    },
+    "154160": {
+      "total": 0,
+      "by_type": {}
+    },
+    "154515": {
+      "total": 0,
+      "by_type": {}
+    },
+    "154563": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "154565": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "154692": {
+      "total": 0,
+      "by_type": {}
+    },
+    "154816": {
+      "total": 0,
+      "by_type": {}
+    },
+    "155061": {
+      "total": 0,
+      "by_type": {}
+    },
+    "155073": {
+      "total": 0,
+      "by_type": {}
+    },
+    "155081": {
+      "total": 0,
+      "by_type": {}
+    },
+    "155089": {
+      "total": 0,
+      "by_type": {}
+    },
+    "155305": {
+      "total": 0,
+      "by_type": {}
+    },
+    "155330": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "155336": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 1,
+        "EYES": 2
+      }
+    },
+    "155514": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "155741": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "155919": {
+      "total": 0,
+      "by_type": {}
+    },
+    "155948": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "156018": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "156183": {
+      "total": 0,
+      "by_type": {}
+    },
+    "156184": {
+      "total": 0,
+      "by_type": {}
+    },
+    "156272": {
+      "total": 0,
+      "by_type": {}
+    },
+    "156380": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "156659": {
+      "total": 0,
+      "by_type": {}
+    },
+    "156801": {
+      "total": 0,
+      "by_type": {}
+    },
+    "156950": {
+      "total": 0,
+      "by_type": {}
+    },
+    "157279": {
+      "total": 0,
+      "by_type": {}
+    },
+    "157495": {
+      "total": 10,
+      "by_type": {
+        "THUMBS_UP": 9,
+        "EYES": 1
+      }
+    },
+    "157771": {
+      "total": 0,
+      "by_type": {}
+    },
+    "157859": {
+      "total": 0,
+      "by_type": {}
+    },
+    "158095": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 4
+      }
+    },
+    "158180": {
+      "total": 0,
+      "by_type": {}
+    },
+    "158263": {
+      "total": 0,
+      "by_type": {}
+    },
+    "158353": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "158584": {
+      "total": 0,
+      "by_type": {}
+    },
+    "159076": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "159101": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "159171": {
+      "total": 0,
+      "by_type": {}
+    },
+    "159230": {
+      "total": 0,
+      "by_type": {}
+    },
+    "159246": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 1,
+        "CONFUSED": 1
+      }
+    },
+    "159384": {
+      "total": 0,
+      "by_type": {}
+    },
+    "159443": {
+      "total": 8,
+      "by_type": {
+        "THUMBS_UP": 8
+      }
+    },
+    "159467": {
+      "total": 0,
+      "by_type": {}
+    },
+    "159567": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "159576": {
+      "total": 0,
+      "by_type": {}
+    },
+    "159580": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "159629": {
+      "total": 0,
+      "by_type": {}
+    },
+    "159634": {
+      "total": 0,
+      "by_type": {}
+    },
+    "159670": {
+      "total": 0,
+      "by_type": {}
+    },
+    "159674": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "159977": {
+      "total": 0,
+      "by_type": {}
+    },
+    "160009": {
+      "total": 0,
+      "by_type": {}
+    },
+    "160100": {
+      "total": 2,
+      "by_type": {
+        "HEART": 2
+      }
+    },
+    "160418": {
+      "total": 0,
+      "by_type": {}
+    },
+    "160505": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "160510": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "160606": {
+      "total": 0,
+      "by_type": {}
+    },
+    "160662": {
+      "total": 1,
+      "by_type": {
+        "CONFUSED": 1
+      }
+    },
+    "160725": {
+      "total": 21,
+      "by_type": {
+        "THUMBS_UP": 21
+      }
+    },
+    "161076": {
+      "total": 0,
+      "by_type": {}
+    },
+    "161123": {
+      "total": 0,
+      "by_type": {}
+    },
+    "161213": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 2,
+        "EYES": 1
+      }
+    },
+    "161217": {
+      "total": 0,
+      "by_type": {}
+    },
+    "161576": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "162066": {
+      "total": 9,
+      "by_type": {
+        "THUMBS_UP": 4,
+        "THUMBS_DOWN": 1,
+        "LAUGH": 1,
+        "HOORAY": 1,
+        "ROCKET": 1,
+        "EYES": 1
+      }
+    },
+    "162145": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "162231": {
+      "total": 5,
+      "by_type": {
+        "THUMBS_UP": 5
+      }
+    },
+    "162298": {
+      "total": 0,
+      "by_type": {}
+    },
+    "162311": {
+      "total": 0,
+      "by_type": {}
+    },
+    "162435": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "162582": {
+      "total": 0,
+      "by_type": {}
+    },
+    "162732": {
+      "total": 0,
+      "by_type": {}
+    },
+    "162898": {
+      "total": 0,
+      "by_type": {}
+    },
+    "162977": {
+      "total": 0,
+      "by_type": {}
+    },
+    "163244": {
+      "total": 7,
+      "by_type": {
+        "THUMBS_UP": 7
+      }
+    },
+    "163475": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 4
+      }
+    },
+    "163534": {
+      "total": 0,
+      "by_type": {}
+    },
+    "163606": {
+      "total": 0,
+      "by_type": {}
+    },
+    "163607": {
+      "total": 0,
+      "by_type": {}
+    },
+    "163946": {
+      "total": 0,
+      "by_type": {}
+    },
+    "164076": {
+      "total": 0,
+      "by_type": {}
+    },
+    "164282": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "164472": {
+      "total": 0,
+      "by_type": {}
+    },
+    "164539": {
+      "total": 0,
+      "by_type": {}
+    },
+    "164544": {
+      "total": 0,
+      "by_type": {}
+    },
+    "164609": {
+      "total": 0,
+      "by_type": {}
+    },
+    "165204": {
+      "total": 0,
+      "by_type": {}
+    },
+    "165389": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "165672": {
+      "total": 0,
+      "by_type": {}
+    },
+    "165734": {
+      "total": 0,
+      "by_type": {}
+    },
+    "165951": {
+      "total": 0,
+      "by_type": {}
+    },
+    "166311": {
+      "total": 0,
+      "by_type": {}
+    },
+    "166386": {
+      "total": 0,
+      "by_type": {}
+    },
+    "166400": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "166462": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "166683": {
+      "total": 9,
+      "by_type": {
+        "THUMBS_UP": 9
+      }
+    },
+    "167125": {
+      "total": 0,
+      "by_type": {}
+    },
+    "167374": {
+      "total": 0,
+      "by_type": {}
+    },
+    "167411": {
+      "total": 0,
+      "by_type": {}
+    },
+    "167466": {
+      "total": 0,
+      "by_type": {}
+    },
+    "167512": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "167798": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "167904": {
+      "total": 0,
+      "by_type": {}
+    },
+    "167983": {
+      "total": 9,
+      "by_type": {
+        "THUMBS_UP": 6,
+        "THUMBS_DOWN": 1,
+        "ROCKET": 2
+      }
+    },
+    "168251": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "168322": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "168451": {
+      "total": 0,
+      "by_type": {}
+    },
+    "168588": {
+      "total": 0,
+      "by_type": {}
+    },
+    "168625": {
+      "total": 0,
+      "by_type": {}
+    },
+    "168693": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "168731": {
+      "total": 0,
+      "by_type": {}
+    },
+    "168743": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "168765": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "168781": {
+      "total": 0,
+      "by_type": {}
+    },
+    "168857": {
+      "total": 0,
+      "by_type": {}
+    },
+    "168886": {
+      "total": 0,
+      "by_type": {}
+    },
+    "169104": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 4
+      }
+    },
+    "169264": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "169269": {
+      "total": 0,
+      "by_type": {}
+    },
+    "169447": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "169830": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 4
+      }
+    },
+    "170215": {
+      "total": 0,
+      "by_type": {}
+    },
+    "170512": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "170721": {
+      "total": 0,
+      "by_type": {}
+    },
+    "171068": {
+      "total": 0,
+      "by_type": {}
+    },
+    "171319": {
+      "total": 0,
+      "by_type": {}
+    },
+    "171369": {
+      "total": 0,
+      "by_type": {}
+    },
+    "171373": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "171695": {
+      "total": 0,
+      "by_type": {}
+    },
+    "171732": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "171955": {
+      "total": 0,
+      "by_type": {}
+    },
+    "172206": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "172437": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "172526": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "172635": {
+      "total": 0,
+      "by_type": {}
+    },
+    "172689": {
+      "total": 0,
+      "by_type": {}
+    },
+    "172741": {
+      "total": 0,
+      "by_type": {}
+    },
+    "173049": {
+      "total": 0,
+      "by_type": {}
+    },
+    "173062": {
+      "total": 0,
+      "by_type": {}
+    },
+    "173488": {
+      "total": 0,
+      "by_type": {}
+    },
+    "173489": {
+      "total": 0,
+      "by_type": {}
+    },
+    "173492": {
+      "total": 0,
+      "by_type": {}
+    },
+    "174159": {
+      "total": 0,
+      "by_type": {}
+    },
+    "174689": {
+      "total": 1,
+      "by_type": {
+        "EYES": 1
+      }
+    },
+    "174773": {
+      "total": 10,
+      "by_type": {
+        "THUMBS_UP": 10
+      }
+    },
+    "174930": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "175834": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "175886": {
+      "total": 0,
+      "by_type": {}
+    },
+    "175983": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "176055": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "176062": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "176283": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "176753": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "176872": {
+      "total": 0,
+      "by_type": {}
+    },
+    "176913": {
+      "total": 0,
+      "by_type": {}
+    },
+    "177123": {
+      "total": 0,
+      "by_type": {}
+    },
+    "177164": {
+      "total": 0,
+      "by_type": {}
+    },
+    "177360": {
+      "total": 0,
+      "by_type": {}
+    },
+    "177408": {
+      "total": 0,
+      "by_type": {}
+    },
+    "177453": {
+      "total": 0,
+      "by_type": {}
+    },
+    "177779": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "177801": {
+      "total": 0,
+      "by_type": {}
+    },
+    "177952": {
+      "total": 0,
+      "by_type": {}
+    },
+    "177953": {
+      "total": 0,
+      "by_type": {}
+    },
+    "178061": {
+      "total": 0,
+      "by_type": {}
+    },
+    "178096": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "178108": {
+      "total": 0,
+      "by_type": {}
+    },
+    "178109": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "178110": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "178609": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "178945": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "179077": {
+      "total": 0,
+      "by_type": {}
+    },
+    "179142": {
+      "total": 0,
+      "by_type": {}
+    },
+    "179263": {
+      "total": 0,
+      "by_type": {}
+    },
+    "179482": {
+      "total": 15,
+      "by_type": {
+        "THUMBS_UP": 13,
+        "EYES": 2
+      }
+    },
+    "179526": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "179527": {
+      "total": 0,
+      "by_type": {}
+    },
+    "179591": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 1,
+        "HEART": 1,
+        "ROCKET": 1
+      }
+    },
+    "179597": {
+      "total": 0,
+      "by_type": {}
+    },
+    "179727": {
+      "total": 0,
+      "by_type": {}
+    },
+    "180059": {
+      "total": 0,
+      "by_type": {}
+    },
+    "180144": {
+      "total": 0,
+      "by_type": {}
+    },
+    "180311": {
+      "total": 0,
+      "by_type": {}
+    },
+    "180435": {
+      "total": 0,
+      "by_type": {}
+    },
+    "180652": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "180865": {
+      "total": 0,
+      "by_type": {}
+    },
+    "180871": {
+      "total": 0,
+      "by_type": {}
+    },
+    "181080": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "181169": {
+      "total": 0,
+      "by_type": {}
+    },
+    "181231": {
+      "total": 0,
+      "by_type": {}
+    },
+    "181236": {
+      "total": 0,
+      "by_type": {}
+    },
+    "181474": {
+      "total": 3,
+      "by_type": {
+        "EYES": 3
+      }
+    },
+    "181487": {
+      "total": 0,
+      "by_type": {}
+    },
+    "181532": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "181682": {
+      "total": 0,
+      "by_type": {}
+    },
+    "181759": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "181833": {
+      "total": 0,
+      "by_type": {}
+    },
+    "181873": {
+      "total": 0,
+      "by_type": {}
+    },
+    "181907": {
+      "total": 1,
+      "by_type": {
+        "EYES": 1
+      }
+    },
+    "182059": {
+      "total": 0,
+      "by_type": {}
+    },
+    "182628": {
+      "total": 0,
+      "by_type": {}
+    },
+    "182756": {
+      "total": 1,
+      "by_type": {
+        "EYES": 1
+      }
+    },
+    "182775": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "182776": {
+      "total": 0,
+      "by_type": {}
+    },
+    "182803": {
+      "total": 0,
+      "by_type": {}
+    },
+    "182819": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "182876": {
+      "total": 0,
+      "by_type": {}
+    },
+    "182909": {
+      "total": 0,
+      "by_type": {}
+    },
+    "182941": {
+      "total": 0,
+      "by_type": {}
+    },
+    "183078": {
+      "total": 0,
+      "by_type": {}
+    },
+    "183227": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "183392": {
+      "total": 0,
+      "by_type": {}
+    },
+    "183456": {
+      "total": 0,
+      "by_type": {}
+    },
+    "183501": {
+      "total": 0,
+      "by_type": {}
+    },
+    "183571": {
+      "total": 0,
+      "by_type": {}
+    },
+    "183808": {
+      "total": 0,
+      "by_type": {}
+    },
+    "184012": {
+      "total": 0,
+      "by_type": {}
+    },
+    "184240": {
+      "total": 1,
+      "by_type": {
+        "HEART": 1
+      }
+    },
+    "184557": {
+      "total": 1,
+      "by_type": {
+        "EYES": 1
+      }
+    },
+    "184571": {
+      "total": 0,
+      "by_type": {}
+    },
+    "184597": {
+      "total": 0,
+      "by_type": {}
+    },
+    "184607": {
+      "total": 0,
+      "by_type": {}
+    },
+    "184616": {
+      "total": 0,
+      "by_type": {}
+    },
+    "184723": {
+      "total": 0,
+      "by_type": {}
+    },
+    "184744": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "184862": {
+      "total": 0,
+      "by_type": {}
+    },
+    "184902": {
+      "total": 0,
+      "by_type": {}
+    },
+    "185052": {
+      "total": 0,
+      "by_type": {}
+    }
+  }
+}

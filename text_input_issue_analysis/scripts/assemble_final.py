@@ -7,9 +7,12 @@ Steps:
 2. Load every summaries/summary_*.json (including the gapfill) and build a single
    lookup number -> summary.
 3. Load categorization.json (if present) and apply the discovered category per issue.
-4. Populate comment_summary and category on each issue. Strip comments_raw /
-   comment_count fields from the final output.
-5. Write the final snapshot with the plan's wrapper schema.
+4. Load data/reactions.json (if present) and attach per-issue reaction totals.
+   Issues whose reactions came in from the main fetch already have them on
+   merged_raw; reactions.json overrides (it's the more recent snapshot).
+5. Populate comment_summary, category, and reactions on each issue. Strip
+   comments_raw / comment_count fields from the final output.
+6. Write the final snapshot with the plan's wrapper schema.
 """
 import datetime
 import json
@@ -20,6 +23,7 @@ DATA = ROOT / "data"
 MERGED = DATA / "merged_raw.json"
 SUMMARY_DIR = DATA / "summaries"
 CATEGORIZATION = DATA / "categorization.json"
+REACTIONS = DATA / "reactions.json"
 OUT = ROOT / "text_input_issues.json"
 
 QUERY = 'repo:flutter/flutter is:issue is:open (label:team-text-input OR label:"a: text input")'
@@ -35,9 +39,12 @@ FIELDS = [
     "created_at",
     "updated_at",
     "body",
+    "reactions",
     "comment_summary",
     "category",
 ]
+
+EMPTY_REACTIONS = {"total": 0, "by_type": {}}
 
 
 def main():
@@ -89,6 +96,30 @@ def main():
         if iss["category"] is None:
             uncategorized += 1
 
+    # Apply reactions. reactions.json (if present) is the most recent snapshot
+    # and takes precedence over whatever was on merged_raw. Issues with no entry
+    # get an empty reactions object so the schema is uniform.
+    reactions_lookup = {}
+    reactions_fetched_at = None
+    if REACTIONS.exists():
+        rpayload = json.loads(REACTIONS.read_text())
+        reactions_lookup = rpayload.get("reactions", {})
+        reactions_fetched_at = rpayload.get("fetched_at")
+    missing_reactions = 0
+    with_reactions = 0
+    for iss in issues:
+        n = str(iss["number"])
+        r = reactions_lookup.get(n) or iss.get("reactions")
+        if r is None:
+            r = dict(EMPTY_REACTIONS)
+            missing_reactions += 1
+        else:
+            # Drop resume-only "missing" marker before publishing.
+            r = {k: v for k, v in r.items() if k != "missing"}
+            if r.get("total", 0) > 0:
+                with_reactions += 1
+        iss["reactions"] = r
+
     # Strip internal fields, keep only schema fields.
     final_issues = []
     for iss in issues:
@@ -110,6 +141,11 @@ def main():
     print(f"  summary=null (noise): {null_summary}")
     print(f"  no comments: {no_comments}")
     print(f"  uncategorized: {uncategorized}")
+    print(f"  with >=1 reaction: {with_reactions}")
+    if reactions_fetched_at:
+        print(f"  reactions fetched_at: {reactions_fetched_at}")
+    if missing_reactions:
+        print(f"  missing reactions (no entry): {missing_reactions}")
     if unexpected_missing:
         print(f"  unexpected missing summaries: {len(unexpected_missing)}")
 

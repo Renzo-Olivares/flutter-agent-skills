@@ -120,6 +120,24 @@ deliverables go here (top level for canonical outputs, `data/` for
 intermediates). The user commits selected files to git manually; see the
 README for the canonical keep/ignore guidance.
 
+### 2026-04-22 — Reactions captured per issue
+
+Added per-issue reaction counts to the snapshot. `fetch_issues.py` now
+requests `reactionGroups`, and `scripts/fetch_reactions.py` backfills an
+existing snapshot in ~15s (aliased GraphQL, batch=50, cost=1/batch). Each
+issue in `text_input_issues.json` now carries `reactions: {total, by_type}`
+with zero-count types elided.
+
+**Why:** Reactions (especially `THUMBS_UP`) are a proxy for user-facing impact
+that comment volume alone doesn't capture, and is useful as a prioritization
+signal in Step 3 (taxonomy iteration) and beyond.
+
+**How to apply:** When comparing categories, report reaction totals and
+per-issue averages alongside counts. High-average categories (e.g.
+Input types ~10.6, Form validation ~9.7) cluster user frustration on fewer
+issues; high-total-but-low-average categories (e.g. IME/CJK) have a long
+tail without concentrated votes.
+
 ---
 
 ## Snapshot-freshness policy
