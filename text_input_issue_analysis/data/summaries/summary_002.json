@@ -1,0 +1,6 @@
+{
+  "batch_id": 2,
+  "summaries": {
+    "101285": "The reporter confirmed that touching the trackpad means any trackpad movement (pan), not just a click, and the issue persists on stable 2.10.4. The Flutter team triage member could not reproduce it on a non-Surface Windows machine and linked it as similar to #99653. The app retains keyboard focus during the bug, ruling out focus loss as the cause. The reporter flagged it as a showstopper and requested testing on actual Surface Laptop hardware. The issue remains unresolved with no fix or PR, and is labeled for Windows team investigation."
+  }
+}

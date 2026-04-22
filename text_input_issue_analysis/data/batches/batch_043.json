@@ -1,0 +1,571 @@
+{
+  "batch_id": 43,
+  "est_tokens": 4913,
+  "issues": [
+    {
+      "number": 51209,
+      "title": "AnimatedIcon more_vert to arrow_back",
+      "body": "The text selection overflow menu in native Android animates the icon transition between the 3 dot more_vert icon and arrow_back, so Flutter should do this too!  However, it seems that [AnimatedIcons](https://master-api.flutter.dev/flutter/material/AnimatedIcons-class.html) doesn't support this transition.  We should add it.\r\n\r\nThis is what native Android looks like:\r\n\r\n<img width=\"250\" src=\"https://user-images.githubusercontent.com/389558/62390332-dccf6c80-b516-11e9-80cb-22bb924ab070.gif\" />\r\n\r\nI noticed this when implementing the overflow menu in https://github.com/flutter/flutter/pull/49391.",
+      "labels": [
+        "c: new feature",
+        "framework",
+        "f: material design",
+        "a: fidelity",
+        "P3",
+        "team-text-input",
+        "triaged-text-input"
+      ],
+      "comments": [
+        "Some discussion about how to handle the full animationin https://github.com/flutter/flutter/pull/49391#issuecomment-592688837.",
+        "Ik"
+      ]
+    },
+    {
+      "number": 80434,
+      "title": "\u2602\ufe0f  TextOverflow in TextStyle does not work for SelectableText (basically all editable text widgets)",
+      "body": "In https://github.com/flutter/flutter/pull/78927 I introduced `TextOverflow` in the `TextStyle` class but when applied in a `SelectableText` (or any editable text field) widget it does not work.\r\n\r\nFrom my research I found out that all kind of overflow does not work for Editable widgets so maybe this can be worked in batches.\r\n\r\n- [ ] Make `TextOverflow.fade` work for editable widgets. \r\n- [ ] Make `TextOverflow.ellipsis` work for editable widgets. https://github.com/flutter/flutter/issues/80435 \r\n\r\nFrom my tests all other overflows seems to work as expected (please do your tests and share feedback).",
+      "labels": [
+        "a: text input",
+        "framework",
+        "a: typography",
+        "c: rendering",
+        "P2",
+        "team-framework",
+        "triaged-framework"
+      ],
+      "comments": [
+        "Hi @pedromassango \r\nHow did you solve this issue?\r\n"
+      ]
+    },
+    {
+      "number": 144350,
+      "title": "api.text_magnifier.text_magnifier.0_test golden image is flaky",
+      "body": "See image history here: https://flutter-gold.skia.org/search?corpus=flutter&include_ignored=false&left_filter=name%3Dapi.text_magnifier.text_magnifier.0_test&max_rgba=0&min_rgba=0&negative=true&not_at_head=false&positive=true&reference_image_required=false&right_filter=&sort=descending&untriaged=true\r\n\r\nEach differently colored dot is a unique image result.\r\nWe are skipping this test for now as it is keeping the tree red generating unique images as commits are landing.",
+      "labels": [
+        "a: tests",
+        "a: text input",
+        "framework",
+        "d: api docs",
+        "P2",
+        "c: flake",
+        "team-text-input",
+        "triaged-text-input"
+      ],
+      "comments": [
+        "PR to disable: https://github.com/flutter/flutter/pull/144351\r\n",
+        "Strange, it looks like the problem is with the text itself and not the magnifier.",
+        "The `fyi-text-input` label is redundant with the `team-text-input` label."
+      ]
+    },
+    {
+      "number": 136212,
+      "title": "[ios][engine]remove iOS 17 checks used for cherry-pick purpose in text input plugin",
+      "body": "### Is there an existing issue for this?\n\n- [X] I have searched the [existing issues](https://github.com/flutter/flutter/issues)\n- [X] I have read the [guide to filing a bug](https://flutter.dev/docs/resources/bug-reports)\n\n### Use case\n\nSome of the checks are only there so that cherry-pick is safer, but the logic should apply to older version as well. \r\n\r\nContext: https://github.com/flutter/engine/pull/46591/files#r1349180495\r\n\r\n\n\n### Proposal\n\nWe want to remove that check in main branch",
+      "labels": [
+        "a: text input",
+        "platform-ios",
+        "engine",
+        "P3",
+        "team-ios",
+        "triaged-ios"
+      ],
+      "comments": [
+        "Referencing https://github.com/flutter/engine/blob/f1db33f480702b8eab078b5a428fcec69d1110da/shell/platform/darwin/ios/framework/Source/FlutterTextInputPlugin.mm#L623-L624"
+      ]
+    },
+    {
+      "number": 82268,
+      "title": "Hide keyboard from system in input and editabletext",
+      "body": "When using any type of input, from a TexField to an EditableText, you cannot choose that the system keyboard does not appear, whether you focus on the input or select the text. I am trying to make a calculator and I cannot make my text editable because I cannot hide the system keyboard.\r\n\r\nI propose to add the option to choose if you want the system keyboard to come out or not in order to make your own personalized keyboard, such as a calculator in my case.",
+      "labels": [
+        "a: text input",
+        "c: new feature",
+        "framework",
+        "a: typography",
+        "c: proposal",
+        "P3",
+        "team-framework",
+        "triaged-framework"
+      ],
+      "comments": [
+        "Removing the engine tag as controlling the keyboard popping up is controlled by the widget layer making the platform channels call. An API affordance could be added at that layer to achieve the desired behavior. cc @goderbauer "
+      ]
+    },
+    {
+      "number": 85554,
+      "title": "Let Autofill be Opt-out",
+      "body": "As per the request of the AwG team, we'd like to make autofill on Android to be opt-out to maintain parity with the existing Android Platform. In the long term, we might want to send all the information in the widget hierarchy to the autofill service. For now the following info of a text field should be sent to get a reasonable detection accuracy:\r\n\r\n- [x] placeholder text (https://github.com/flutter/flutter/pull/86312)\r\n- [x] text\r\n- [x] size & coordinates (should be implemented already)\r\n- [ ] developer identifier (not sure how)\r\n- [ ] input type (already available on android & iOS, should be trivial to add)\r\n- [x] autofill type (current autofill is for text only)",
+      "labels": [
+        "a: text input",
+        "platform-android",
+        "framework",
+        "P3",
+        "team-design",
+        "triaged-design"
+      ],
+      "comments": [
+        "keep the issue open for adding input type."
+      ]
+    },
+    {
+      "number": 104872,
+      "title": "Clipboard dartdoc should have some hints on how to support it in tests",
+      "body": "Using the Clipboard APIs directly in widget tests can result in confusion since the platform channel calls are just dropped on the floor. The dartdoc https://api.flutter.dev/flutter/services/Clipboard-class.html could leave more breadcrumbs on what to do there. \r\n\r\nSuch as a hint to consider using MockClipboard from https://github.com/flutter/flutter/blob/master/packages/flutter/test/widgets/clipboard_utils.dart and testing it like https://github.com/flutter/flutter/blob/master/packages/flutter/test/material/text_form_field_test.dart#L19. ",
+      "labels": [
+        "a: tests",
+        "a: text input",
+        "framework",
+        "d: api docs",
+        "customer: google",
+        "P2",
+        "team-framework",
+        "triaged-framework"
+      ],
+      "comments": [
+        "`MockClipboard` is not public API. Offering some kind of test affordance for it could be useful though!\r\n\r\n/cc @justinmc "
+      ]
+    },
+    {
+      "number": 91010,
+      "title": "`dart:ui.LineMetrics` should include the line boundaries ",
+      "body": "The information is currently manually stripped when constructing a `LineMetrics`:\r\nhttps://github.com/google/skia/blob/a92b268f7d78e0069b2a61b22cb7ce615d12a60e/modules/skparagraph/include/Metrics.h#L39-L93\r\n\r\nIt will be much easier to implement vertical caret movements for up/down arrow keys with the line boundary information included. This corresponds to a todo item in https://github.com/flutter/flutter/pull/90684 .\r\n",
+      "labels": [
+        "a: text input",
+        "engine",
+        "a: typography",
+        "c: proposal",
+        "P3",
+        "team-engine",
+        "triaged-engine"
+      ],
+      "comments": [
+        "Up vote for this issue. It would be very convenient if the `LineMetrics` includes `TextRange` for the current line. \r\nRight now, our approach of getting the text range is by calling the `getPositionForOffset` method that `Paragraph` provides. "
+      ]
+    },
+    {
+      "number": 74547,
+      "title": "Support IME reconversion on Windows",
+      "body": "In https://github.com/flutter/engine/pull/23853 we added support for IME-based input in the Win32 embedder. That patch did not include support for handling `WM_IME_REQUEST` events. In particular we should support:\r\n\r\n* IMR_RECONVERTSTRING\r\n* IMR_DOCUMENTFEED\r\n* IMR_QUERYCHARPOSITION\r\n\r\nSee the documentation for the [WM_IME_REQUEST](https://docs.microsoft.com/en-us/windows/win32/intl/wm-ime-request) event, which links to information on the above three message types, for more details.",
+      "labels": [
+        "a: text input",
+        "a: internationalization",
+        "platform-windows",
+        "a: desktop",
+        "P2",
+        "team-windows",
+        "triaged-windows"
+      ],
+      "comments": [
+        "The `triaged-desktop` label is irrelevant if there is no `team-desktop` label or `fyi-desktop` label.",
+        "Try this package for managing IME in windows app\r\n\r\nhttps://pub.dev/packages/windows_ime_manager"
+      ]
+    },
+    {
+      "number": 137991,
+      "title": "Add dictation status detection for iOS",
+      "body": "### Is there an existing issue for this?\r\n\r\n- [X] I have searched the [existing issues](https://github.com/flutter/flutter/issues)\r\n- [X] I have read the [guide to filing a bug](https://flutter.dev/docs/resources/bug-reports)\r\n\r\n### Use case\r\n\r\nI use dictation status to custom TextField's style\r\n\r\n### Proposal\r\n\r\nProvide functions equivalent to `insertDictationResultPlaceholder `/`removeDictationResultPlaceholder ` in Flutter.\r\n\r\n[https://developer.apple.com/documentation/uikit/uitextinput/1614466-insertdictationresultplaceholder](https://developer.apple.com/documentation/uikit/uitextinput/1614466-insertdictationresultplaceholder)",
+      "labels": [
+        "a: text input",
+        "c: new feature",
+        "platform-ios",
+        "framework",
+        "P3",
+        "team-text-input",
+        "triaged-text-input"
+      ],
+      "comments": [
+        "cc @LongCatIsLooong from triage"
+      ]
+    },
+    {
+      "number": 119533,
+      "title": "[Android] Add spell check devicelab test with custom IME",
+      "body": "The Android spell check devicelab test is currently [flaky](https://github.com/flutter/flutter/issues/113710) because Gboard learns the misspelled words used in the test due to the [federated learning](https://support.google.com/assistant/answer/11140942#federated_learning&zippy=%2Cfederated-learning) technique it uses. In order to fix the flakiness, a custom IME should be created and used in the test with the `adb shell ime` command to select it.",
+      "labels": [
+        "a: text input",
+        "platform-android",
+        "framework",
+        "P3",
+        "team-android",
+        "triaged-android"
+      ],
+      "comments": [
+        "As of https://github.com/flutter/flutter/pull/120144, the integration test this issue will de-flake will have been removed.\r\n\r\nTo implement this workaround, that change will need to be reverted."
+      ]
+    },
+    {
+      "number": 61383,
+      "title": "Autofill a page without interacting with its text fields",
+      "body": "Some (web) autofill services let the user autofill the current page in the extension's dropdown menu, so those extensions need to know the text fields ahead of time, even before any of the text fields gets the focus.\r\n\r\nExtracted from https://github.com/flutter/flutter/issues/61301\r\n",
+      "labels": [
+        "a: text input",
+        "c: new feature",
+        "framework",
+        "P3",
+        "team-text-input",
+        "triaged-text-input"
+      ],
+      "comments": [
+        "Possibly related: Sometimes focus is taken from the field during the process of autofill, such as to enter a system password. This seems to break Flutter's autofill since it can't autofill an unfocused field.\n\nhttps://github.com/flutter/flutter/issues/162066\nhttps://github.com/flutter/flutter/issues/137760\nhttps://github.com/flutter/flutter/issues/152618"
+      ]
+    },
+    {
+      "number": 36854,
+      "title": "Feature request: Setting paragraph distance in Text and TextField",
+      "body": "Currently, we have no control over paragraph spacing in both Text and TextField. This feature is important in text stying. ",
+      "labels": [
+        "a: text input",
+        "c: new feature",
+        "framework",
+        "f: material design",
+        "a: typography",
+        "P3",
+        "team-framework",
+        "triaged-framework"
+      ],
+      "comments": [
+        "any news update?",
+        "I would like to add information to this: Flutter currently has letterSpacing and even wordSpacing, I don't think paragraphSpacing would be hard. Instead of applying horizontal space to each \" \", it would apply vertical space to each \"\\n\".",
+        "Also spacing control for `u2029` and `u2028` will be great.",
+        "Any updates ? \ud83d\ude42 we should be able to define this on a TextStyle like in Figma",
+        "This issue is missing a priority label. Please set a priority label when adding the `triaged-framework` label."
+      ]
+    },
+    {
+      "number": 68843,
+      "title": "Flutter Linux Desktop Japanese input switch",
+      "body": "Flutter channel: master\r\n\r\nOS: Fedora 33 running on wayland\r\n\r\nInput method: ibus-kkc\r\n\r\nOn default Flutter application input switching doesn't work imminently - starts working when I increase counter and then switch input method.\r\n\r\nIt works on this sample app:\r\nhttps://github.com/cbracken/jp_flutter\r\n\r\nbut when removing `gdk_set_allowed_backends(\"x11\");` from `main.cc` (this line is not being created by default flutter script atm) bug occurs.\r\n\r\ncc: @cbracken ",
+      "labels": [
+        "a: text input",
+        "platform-linux",
+        "a: desktop",
+        "P2",
+        "team-linux",
+        "triaged-linux"
+      ],
+      "comments": [
+        "Thanks for filing! Will probably be next week before I get time to try to repro.",
+        "The `triaged-desktop` label is irrelevant if there is no `team-desktop` label or `fyi-desktop` label."
+      ]
+    },
+    {
+      "number": 93450,
+      "title": "Device specific keyboard events on fuchsia",
+      "body": "Related: https://github.com/flutter/flutter/issues/44918\r\n\r\nCurrently it seems on fuchsia some keys are not properly \"normalized\", for instance the backspace key is recognized by the framework as `LogicalKeyboardKey(42 | LogicalKeyboardKey.fuchsiaPlane)`, instead of `LogicalKeyboardKey.backspace`. \r\nAdding this issue as a TODO in https://github.com/flutter/flutter/pull/93437.",
+      "labels": [
+        "a: text input",
+        "framework",
+        "engine",
+        "platform-fuchsia",
+        "a: desktop",
+        "P2",
+        "team-text-input",
+        "triaged-text-input"
+      ],
+      "comments": [
+        "In the meantime I'll leave some of the old text editing `Intent`s in the framework. They should be removed as soon as they're removed from fuchsia's codebase.",
+        "The `triaged-desktop` label is irrelevant if there is no `team-desktop` label or `fyi-desktop` label."
+      ]
+    },
+    {
+      "number": 26448,
+      "title": "Cursor scroll in text fields too insensitive in Flutter",
+      "body": "On Android and on iOS, in both collapsed and expanded selection modes, the single line horizontal scroll is more 'pre-emptive' than our current implementation.\r\n\r\nWhereas we try to select the text position based on the drag gesture and bring it into view if it were not, the native texts start scrolling before the drag position is outside the text field. \r\n\r\nThis is more aggressive on iOS.",
+      "labels": [
+        "a: text input",
+        "c: new feature",
+        "platform-android",
+        "platform-ios",
+        "framework",
+        "f: material design",
+        "f: cupertino",
+        "a: quality",
+        "f: gestures",
+        "c: proposal",
+        "P3",
+        "team-design",
+        "triaged-design"
+      ],
+      "comments": [
+        "This issue is missing a priority label. Please set a priority label when adding the `triaged-design` label.",
+        "This seems to still be a problem from my memory. It would be nice to fix it.\r\n\r\nCC @Renzo-Olivares from triage."
+      ]
+    },
+    {
+      "number": 36664,
+      "title": "Text Editor like in web platform",
+      "body": "\r\n\r\n<img width=\"941\" alt=\"Screen Shot 2019-07-30 at 4 55 43 PM\" src=\"https://user-images.githubusercontent.com/11361035/62124808-e8d6e680-b2ea-11e9-9bb1-e6478a51d184.png\">\r\n",
+      "labels": [
+        "a: text input",
+        "c: new feature",
+        "framework",
+        "P3",
+        "team-framework",
+        "triaged-framework"
+      ],
+      "comments": [
+        "@jazzbpn Sorry, but can you describe in details, what's wrong and how it should be?",
+        "I want the FormField which includes the options like **Bold**, **Italic**, **Dot-listing**, **Numeric-listing**, **Link** to the text inside the FormField. \r\n\r\nImage Demo like in GITHUB Text-Editor:\r\n<img width=\"716\" alt=\"Screen Shot 2019-09-24 at 8 56 17 AM\" src=\"https://user-images.githubusercontent.com/11361035/65478370-3ade5780-dea9-11e9-85c0-7dbaa63e8a89.png\">\r\n\r\n"
+      ]
+    },
+    {
+      "number": 87782,
+      "title": "Why is FormFieldValidator's value nullable?",
+      "body": "https://github.com/flutter/flutter/blob/40e8620a27f1a608d4df232936a168f134d64d7c/packages/flutter/lib/src/widgets/form.dart#L279-L285\r\n\r\nI find it less convenient to use `!` operator as I don't see a case when the `value` would be null for a field.\r\n\r\nI'd be grateful for an explanation :)",
+      "labels": [
+        "a: text input",
+        "framework",
+        "d: api docs",
+        "a: null-safety",
+        "P2",
+        "team-framework",
+        "triaged-framework"
+      ],
+      "comments": [
+        "Another question: Why doesn't `FormFieldState` override `didUpdateWidget` ? Is it an oversight?",
+        "Hello Albert, the value could be null for a tristate checkbox (true, false, null) or for a Dropdown for example .",
+        "But generic can take a type like `String?`. The developer could then explicitly specify that the type is nullable."
+      ]
+    },
+    {
+      "number": 75572,
+      "title": "Let RenderEditable use LineMetrics instead of assuming every line has the same height",
+      "body": "https://github.com/flutter/flutter/blob/02d441ea55b328133c266991f43b0a1148edb63f/packages/flutter/lib/src/rendering/editable.dart#L864-L873\r\n\r\nVertical key movements may skip a line if that line is way shorter than its adjacent lines.",
+      "labels": [
+        "a: text input",
+        "framework",
+        "f: material design",
+        "P2",
+        "c: tech-debt",
+        "team-design",
+        "triaged-design"
+      ],
+      "comments": [
+        "Additionally in a left-aligned text field:\r\n```\r\naaaaaaa|\r\naaa\r\naaaaaaaaaa\r\n```\r\npressing <kbd>\u2193</kbd> once should move the caret to the end of the second line:\r\n```\r\naaaaaaa\r\naaa|\r\naaaaaaaaaa\r\n```\r\npress <kbd>\u2193</kbd> again should move the caret to the 3rd line, but further to the right:\r\n```\r\naaaaaaa\r\naaa\r\naaaaaaa|aaa\r\n```"
+      ]
+    },
+    {
+      "number": 25364,
+      "title": "Programmatically show keyboard when scanner is connected",
+      "body": "Hi.\r\nI want to use a bluetooth barcode scanner to automatically fill the fields in my flutter app. The problem is that it prevents a system keyboard from appearing when scanner is paired with a device. I have two fields: one to scan barcode and second to input some text, and I can not type anything in the second field because keyboard isn't showing. Is there a way to force system keyboard to appear even with hid device connected?",
+      "labels": [
+        "a: text input",
+        "c: new feature",
+        "framework",
+        "engine",
+        "P2",
+        "team-engine",
+        "triaged-engine"
+      ],
+      "comments": [
+        "@dankop123 if you found any solution about this please update here. I have same issue.\r\n@darshankawar please update here if you have something on it.\r\n"
+      ]
+    },
+    {
+      "number": 35187,
+      "title": "`TextField` should receive the callbacks from `TextSelectionGestureDetector`",
+      "body": "Currently, the `TextField` only receives the callback `onTap`, which is called after the `_TextFieldState` handles `onSingleTapUp` from its `TextSelectionGestureDetector`. The lack of other callbacks bothers, though.\r\n\r\nBesides supporting all the callbacks from `TextSelectionGestureDetector`, the details (e.g. `TapDownDetails`) should also be forwarded, which is not the case with the currently implemented `onTap` callback.",
+      "labels": [
+        "a: text input",
+        "c: new feature",
+        "framework",
+        "f: material design",
+        "P3",
+        "team-design",
+        "triaged-design"
+      ],
+      "comments": [
+        "This issue is missing a priority label. Please set a priority label when adding the `triaged-design` label.",
+        "CC @Renzo-Olivares from triage."
+      ]
+    },
+    {
+      "number": 33858,
+      "title": "Unicode input should be indicated.",
+      "body": "Ctrl+Shift+U (on certain operating systems) normally would bring up an underlined \"u\" in a text field to indicate it's awaiting a Unicode entry. This is not indicated on Flutter, despite it taking the input.\r\n\r\n![Flutter](https://i.imgur.com/5LGa38g.png)\r\n![Play Store, expected behavior.](https://i.imgur.com/JDQ2sZt.png)",
+      "labels": [
+        "a: text input",
+        "c: new feature",
+        "framework",
+        "f: material design",
+        "platform-windows",
+        "platform-linux",
+        "a: desktop",
+        "P3",
+        "team-text-input",
+        "triaged-text-input"
+      ],
+      "comments": [
+        "Is this something that I should be able to do on a Mac? I don't get anything like that with ctrl- or cmd- shift-u. I will try this on Linux in a bit.",
+        "I do see this happen on Linux. Not sure about Windows but I'll assume it does and add the label."
+      ]
+    },
+    {
+      "number": 114435,
+      "title": "Text cursors should deterministically show in goldens tests",
+      "body": "Every few months a change to text editing will cause the text cursor animation to shift. This requires goldens to be updated to trivially either show or hide the cursor.\r\n\r\nFor larger customers, this can be a pain as it can impact several thousand goldens.\r\n\r\nBy default, text cursors should always show in goldens.\r\n\r\n\\cc @justinmc @Piinks ",
+      "labels": [
+        "a: tests",
+        "a: text input",
+        "c: contributor-productivity",
+        "framework",
+        "P2",
+        "team-framework",
+        "triaged-framework"
+      ],
+      "comments": [
+        "From Discord, @LongCatIsLooong pointed out https://master-api.flutter.dev/flutter/widgets/EditableText/debugDeterministicCursor.html exists. It would be good if this was made a default."
+      ]
+    },
+    {
+      "number": 34995,
+      "title": "Separate callbacks for TextEditingController's text and selection",
+      "body": "## Use case\r\n\r\nI need to re-populate a list with results of search based on user typing\r\nWhen the edit gets (de-)focused the TextEditingController's event is triggered as if the actual content changed.\r\n\r\n## Proposal\r\n\r\nChange TextEditingController so that it has two callbacks instead of one.\r\nAssume it should also fix https://github.com/flutter/flutter/issues/34847\r\n",
+      "labels": [
+        "a: text input",
+        "c: new feature",
+        "framework",
+        "P3",
+        "team-framework",
+        "triaged-framework"
+      ],
+      "comments": [
+        "Also, I don't see why selection is reset when controller.text is assigned the same value. It should really early out in that case."
+      ]
+    },
+    {
+      "number": 113572,
+      "title": "Create fuzzing tests for text input",
+      "body": "Similar to https://github.com/flutter/flutter/issues/113571\r\n\r\nWe've definitely had issues in the past around invalid/unexpected values supplied in text input bridge. We should add fuzzing tests.",
+      "labels": [
+        "a: tests",
+        "a: text input",
+        "engine",
+        "P2",
+        "team-engine",
+        "triaged-engine"
+      ],
+      "comments": [
+        "Sounds useful, that would be text that's inserted via the engine?",
+        "My thought here was to have tests that just send arbitrary random data to the channel from the \"Framework\" side of things - ranging from invalid json to unexpected values/missing values in the JSON - to make sure that it doesn't crash or misbehave."
+      ]
+    },
+    {
+      "number": 98308,
+      "title": "Redispatched messages should follow the order of first arrival",
+      "body": "Message redispatching is a mechanism used in add-to-app scenarios that allows messages not handled by Flutter to be handled by outer native applications. This is meant to make the Flutter app feel \"transparent\", but the current mechanism does not keep the order of arrival. Some tests are marked with a TODO with this issue.\r\n\r\n",
+      "labels": [
+        "a: text input",
+        "platform-windows",
+        "a: desktop",
+        "P3",
+        "team-windows",
+        "triaged-windows"
+      ],
+      "comments": [
+        "The `triaged-desktop` label is irrelevant if there is no `team-desktop` label or `fyi-desktop` label."
+      ]
+    },
+    {
+      "number": 98533,
+      "title": "[Win32, Keyboard] Fix synthesization of toggle keys from phase 0 to 3",
+      "body": "The synthesization algorithm on Win32 is broken if it was last observed at phase 0 (pressed 0 toggled 0) and currently phase 3 (pressed 1 toggled 0). \r\n\r\nExpected: 3 events are synthesized (down, up, down)\r\n\r\nActual: 1 event is synthesized (down)\r\n\r\nThis has been noted as a TODO for a unit test, `SynthesizeModifiers`.",
+      "labels": [
+        "a: text input",
+        "platform-windows",
+        "a: desktop",
+        "P2",
+        "team-windows",
+        "triaged-windows"
+      ],
+      "comments": [
+        "The `triaged-desktop` label is irrelevant if there is no `team-desktop` label or `fyi-desktop` label."
+      ]
+    },
+    {
+      "number": 30331,
+      "title": "Add ability for text field TextInputAction to be dynamic",
+      "body": "The textInputAction for a text field is hardcoded at creation of the field. I would like the ability for the text input action to change dynamically based on the content of the field. E.g. if the text field  has valid text in it, make the action show send, but if the field is blank, switch to done.",
+      "labels": [
+        "a: text input",
+        "c: new feature",
+        "framework",
+        "f: material design",
+        "P2",
+        "team-framework",
+        "triaged-framework"
+      ],
+      "comments": [
+        "This issue is missing a priority label. Please set a priority label when adding the `triaged-framework` label."
+      ]
+    },
+    {
+      "number": 135704,
+      "title": "Framework->Embedder syncing of scrollable widgets to allow smooth IME animation",
+      "body": "https://github.com/flutter/flutter/issues/62876 tracked the embedder->framework syncing to allow the insets to dynamically change with the keyboard mid-animation when the keyboard is shown/hidden.\r\n\r\nFramework->syncing would allow keyboard to smoothly animate away as the widget is scrolled.",
+      "labels": [
+        "a: text input",
+        "framework",
+        "engine",
+        "a: animation",
+        "c: proposal",
+        "P2",
+        "team-android",
+        "triaged-android"
+      ],
+      "comments": [
+        "Following this issue"
+      ]
+    },
+    {
+      "number": 55647,
+      "title": "TextField could use a parameter to define its width via ems",
+      "body": "Would it be possible to provide a means to set the width of a TextField to a certain amount of \"ems\" for the font/fontsize used in that TextField, like you can do for an [EditText in android](https://developer.android.com/reference/android/R.styleable#TextView_ems)?",
+      "labels": [
+        "a: text input",
+        "c: new feature",
+        "framework",
+        "f: material design",
+        "P3",
+        "team-text-input",
+        "triaged-text-input"
+      ],
+      "comments": [
+        "Any Update or solution\uff1f"
+      ]
+    },
+    {
+      "number": 105914,
+      "title": "Support gamepad on Web",
+      "body": "Gamepad on Web uses the special [gamepad API](https://developer.mozilla.org/en-US/docs/Web/API/Gamepad_API/Using_the_Gamepad_API). We should support it. \n\nAlso, Web supports multiple gamepads. Is keyboard the best way to support them?",
+      "labels": [
+        "a: text input",
+        "platform-web",
+        "P2",
+        "team-web",
+        "triaged-web"
+      ],
+      "comments": [
+        "cc @gspencergoog ",
+        "Would love to see further progress on this feature."
+      ]
+    },
+    {
+      "number": 24406,
+      "title": "Second slow tap on the same spot brings up selection controls",
+      "body": "As described in the title. Right now the controls only appear on long press.",
+      "labels": [
+        "a: text input",
+        "c: new feature",
+        "platform-ios",
+        "framework",
+        "P2",
+        "team-ios",
+        "triaged-ios"
+      ],
+      "comments": [
+        "Looks related to #9288"
+      ]
+    }
+  ]
+}

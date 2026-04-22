@@ -1,0 +1,6 @@
+{
+  "batch_id": 1,
+  "summaries": {
+    "65621": "Comments confirm the bug is specific to UniqueKey — using any other key type does not reproduce the focus-loss behavior, narrowing the root cause to UniqueKey's identity semantics forcing a full widget rebuild. Reproduced on stable (3.3.5) and master (3.5.0-pre) across Android and iOS physical devices. No fix, workaround, or linked PR was proposed; issue is stalled with no active investigation noted."
+  }
+}

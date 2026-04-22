@@ -1,0 +1,6 @@
+{
+  "batch_id": 4,
+  "summaries": {
+    "107972": "The root cause is that on Windows, holding a modifier key (Ctrl, Shift, Alt, Caps Lock) causes the engine to send a synthesized KeyUpEvent followed by a KeyRepeatEvent, but the framework's `_pressedKeys` map no longer contains the key, triggering the `_assertEventIsRegular` assertion in `hardware_keyboard.dart` line 535. Confirmed affected on Windows 10 and 11 (debug mode only; release builds are unaffected per comment #27); one commenter also reported it on Android 7.1.1 (comment #53) and another on Windows with third-party software injecting Ctrl+C events (comment #56). The issue was introduced after Flutter 3.0.5/3.0.0 and was fixed in the engine via PR #36129 (landed in Flutter 3.4.0-34.1.pre / 3.5.0 master), but comments in 3.7.0 and 3.19.5/3.19.6 indicate regressions. A community workaround is to comment out the `_assertEventIsRegular` call in `hardware_keyboard.dart`; no official fix was cherry-picked to the 3.3.x stable branch."
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "batch_id": 3,
+  "summaries": {
+    "49783": "The root cause identified in comments is that on Android TV (and Google TV), the system keyboard appears as a popup overlay without changing the app's viewInsets.bottom, making it impossible to programmatically detect keyboard show/hide events to restore focus — a flutter-level limitation on that platform. The issue is confirmed on Android TV and Android emulator; multiple users reported it persisting through Flutter 3.7.6 with no official fix. Community workarounds shared include: wrapping TextField in a Focus widget with canRequestFocus: false and a manual onKey handler to redirect D-pad navigation (#39), building a fully custom on-screen keyboard with TextField set to readOnly: true and enabled: false (#32, #34, #35), and creating a stateful widget that swaps a button for a TextField on select (#38). Downgrading to Flutter stable 1.20.2 was confirmed to resolve the issue for some users, with Flutter beta 1.25.0-8.3.pre also cited as working (#22). The issue is stalled with no linked PR and no official fix as of the last comments."
+  }
+}

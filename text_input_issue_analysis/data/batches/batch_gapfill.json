@@ -1,0 +1,277 @@
+{
+  "batch_id": "gapfill",
+  "issues": [
+    {
+      "number": 21997,
+      "title": "Text selection vertical extent should be defined per line (not per glyph)",
+      "body": "As [reported by @_mono on Twitter]( https://twitter.com/_mono/status/1023733699614060545), the Flutter text selection highlight rect should be computed at the line level as opposed to per glyph. To see this effect, paste the sequence `(\u3000\u00b4\uff65\u203f\uff65\uff40)` into a Flutter text field and select it.\r\n\r\nExample images below:\r\n\r\nFlutter selection:\r\n![flutter](https://user-images.githubusercontent.com/351029/45705368-424c8180-bb2e-11e8-9502-3fa404afc066.png)\r\n\r\niOS OEM selection:\r\n![ios](https://user-images.githubusercontent.com/351029/45705373-45e00880-bb2e-11e8-930a-156f02e88a15.png)\r\n\r\nAndroid OEM selection:\r\n![android](https://user-images.githubusercontent.com/351029/45706301-bdaf3280-bb30-11e8-9ee6-07384c82395c.png)\r\n",
+      "labels": [
+        "a: text input",
+        "framework",
+        "engine",
+        "a: fidelity",
+        "a: quality",
+        "has reproducible steps",
+        "P2",
+        "found in release: 3.3",
+        "found in release: 3.6",
+        "team-engine",
+        "triaged-engine"
+      ],
+      "comments": [
+        "/cc @jason-simmons @garymm @xster ",
+        "The engine does this intentionally (see https://github.com/flutter/engine/commit/9f8cf7eb9797ba9174e3097aee4706c3efb02e9f)\r\n\r\nIs this a bug or a feature?\r\n\r\n@Hixie \r\n",
+        "Based on the platform-specific behaviour, it looks like a bug to me. Both Android and iOS appear to use the line height. \r\n\r\nIt seems potentially useful to expose the glyph-specific metrics (e.g. if you were interested in computing text metrics of a glyph independent from its context) but in terms of selection, I'd assume we should be using line-height.",
+        "Looks like the linked commit(s) were intended to support text _spans_ being treated as a single block for Rich text, but is now treating each glyph as a separate block.",
+        "Did you mean to CC someone else? I have no particular expertise or interest in this bug.",
+        "Should've been @GaryQian ",
+        "I think I originally implemented it so that the height is the max of each line to match native/blink behavior. I believe this is mainly so that multi-line highlights do not leave awkward gaps between lines due to differing heights (as seen below).\r\n\r\n![image](https://user-images.githubusercontent.com/1887398/45896986-b08d8000-bd8a-11e8-9d90-6f63afaa8994.png)\r\n\r\nWhen spans of differing heights are stacked on top of each other, they always advance enough in the y direction to accommodate the tallest span",
+        "Also, @dnfield it seems that the (\u3000\u00b4\uff65\u203f\uff65\uff40) text uses characters from different sets, so they are automatically broken into different spans. it just happens that they are alternating, making it look particularly strange.",
+        "So it sounds like we're treating it as different spans because of different sets.\r\n\r\nI think what a user would expect (and what Android/iOS do here), is that the text runs are _styled_ the same, so they should be treated as the same height.  In other words, this text run was built from a single `ParagraphBuilder.addText` with no intervening `pushStyle` or `pop` - or, could be generated using a single `TextSpan` class.",
+        "That makes sense to me, but to match native behavior (and therefore expected), I think we still should take the max of the line heights. We could also provide the glyph/span specific heights as a separate API, but not sure if that would be particularly useful.\r\n\r\nOn native text, even if you have a font size 10 on the same line as a font size 150, the bounding boxes for that line are 150 high.",
+        "https://github.com/flutter/engine/pull/6335 begins to implement a new API for more advanced GetRectsForRange, which provides the boxes for text selection.",
+        "https://github.com/flutter/engine/commit/3a9c22afde676bee3c455749101757c1814153fd has landed, but still needs to be enabled on the framework side.",
+        "https://github.com/flutter/engine/pull/6644 adds API for various types of enclosing boxes. `Paragraph.getBoxesForRange(...)` takes a BoxHeightStyle and a BoxWidthStyle which define how the boxes are calculated.\r\n\r\nThe default has been left as `tight` so the current behavior will continue, but for apps that desire other behavior, custom styles can be presented to the `getBoxesForRange` method.\r\n\r\nThis also allows emulating different text selection behaviors present on mac, windows, ios, android, and so on.",
+        "@cbracken \r\n\r\nAs commented at https://github.com/flutter/flutter/issues/23433#issuecomment-616003053, this isn\u2019t fixed yet.\r\nI can\u2019t figure out why this was closed.\r\nCould you re-open this to track the issue appropriately?",
+        "This thread has been automatically locked since there has not been any recent activity after it was closed. If you are still experiencing a similar issue, please open a new bug, including the output of `flutter doctor -v` and a minimal reproduction of the issue.",
+        "This doesn't appear to be fixed. /cc @GaryQian I'm guessing that we're mixing a framework PR to take advantage of the new API that was added in #6644. ",
+        "Issue replicable on latest stable (1.20.2)\r\n\r\n![21997](https://user-images.githubusercontent.com/67046386/91826041-b2d90400-ec5a-11ea-82b4-b1688fe3606a.png)\r\n\r\n<details>\r\n<summary>flutter doctor -v</summary>\r\n\r\n```\r\n[\u2713] Flutter (Channel stable, 1.20.2, on Mac OS X 10.15.2 19C57, locale en-US)\r\n    \u2022 Flutter version 1.20.2 at\r\n      /Users/deeptibelsare/Documents/Fluttersdk/flutter\r\n    \u2022 Framework revision bbfbf1770c (3 weeks ago), 2020-08-13 08:33:09 -0700\r\n    \u2022 Engine revision 9d5b21729f\r\n    \u2022 Dart version 2.9.1\r\n\r\n[!] Android toolchain - develop for Android devices (Android SDK version 29.0.3)\r\n    \u2022 Android SDK at /Users/deeptibelsare/Library/Android/sdk\r\n    \u2022 Platform android-30, build-tools 29.0.3\r\n    \u2022 ANDROID_HOME = /Users/deeptibelsare/Library/Android/sdk\r\n    \u2022 ANDROID_SDK_ROOT = /Users/deeptibelsare/Library/Android/sdk\r\n    \u2022 Java binary at: /Applications/Android\r\n      Studio.app/Contents/jre/jdk/Contents/Home/bin/java\r\n    \u2022 Java version OpenJDK Runtime Environment (build\r\n      1.8.0_212-release-1586-b4-5784211)\r\n    \u2717 Android license status unknown.\r\n      Try re-installing or updating your Android SDK Manager.\r\n      See https://developer.android.com/studio/#downloads or visit\r\n      https://flutter.dev/docs/get-started/install/macos#android-setup for\r\n      detailed instructions.\r\n\r\n[\u2713] Xcode - develop for iOS and macOS (Xcode 11.6)\r\n    \u2022 Xcode at /Applications/Xcode.app/Contents/Developer\r\n    \u2022 Xcode 11.6, Build version 11E708\r\n    \u2022 CocoaPods version 1.9.3\r\n\r\n[\u2713] Android Studio (version 3.6)\r\n    \u2022 Android Studio at /Applications/Android Studio.app/Contents\r\n    \u2022 Flutter plugin version 45.1.1\r\n    \u2022 Dart plugin version 192.7761\r\n    \u2022 Java version OpenJDK Runtime Environment (build\r\n      1.8.0_212-release-1586-b4-5784211)\r\n\r\n[\u2713] Connected device (1 available)\r\n    \u2022 SM A260G (mobile) \u2022 5200763ebcfa861f \u2022 android-arm \u2022 Android 8.1.0 (API\r\n      27)\r\n\r\n! Doctor found issues in 1 category.\r\n```\r\n\r\n</details>\r\n\r\n\r\n<details>\r\n<summary>code sample</summary>\r\n\r\n```\r\nreturn MaterialApp(\r\n      home: Scaffold(\r\n        body: Center(\r\n          child: TextField(\r\n            decoration: InputDecoration(\r\n              hintText: 'Enter text'\r\n            ),\r\n          )\r\n        )\r\n      )\r\n    );\r\n```\r\n\r\n</details>",
+        "This issue is mostly fixed. I cannot reproduce it with Android, MacOS or iOS. But when running on Linux, there is a slight vertical offset on one of the glyphs. Updating labels to reflect the same\r\n\r\n#### Linux\r\n\r\n![image](https://user-images.githubusercontent.com/50555895/205297374-0fd95831-c19f-45e7-808c-a9db58d33ff6.png)\r\n\r\n#### Android\r\n\r\n![image](https://user-images.githubusercontent.com/50555895/205297507-4bc83eb1-4ada-4252-a025-9abb5974614b.png)\r\n\r\n<details>\r\n<summary>Code Sample</summary>\r\n\r\n```dart\r\nimport 'package:flutter/material.dart';\r\n\r\nvoid main() {\r\n  runApp(const MyApp());\r\n}\r\n\r\nclass MyApp extends StatelessWidget {\r\n  const MyApp({super.key});\r\n\r\n  @override\r\n  Widget build(BuildContext context) {\r\n    return MaterialApp(\r\n      title: 'Flutter Demo',\r\n      theme: ThemeData(\r\n        primarySwatch: Colors.blue,\r\n      ),\r\n      home: const MyHomePage(),\r\n    );\r\n  }\r\n}\r\n\r\nclass MyHomePage extends StatefulWidget {\r\n  const MyHomePage({super.key});\r\n\r\n  @override\r\n  State<MyHomePage> createState() => _MyHomePageState();\r\n}\r\n\r\nclass _MyHomePageState extends State<MyHomePage> {\r\n  final _controller = TextEditingController()..text = '(\u3000\u00b4\uff65\u203f\uff65\uff40)';\r\n\r\n  @override\r\n  void dispose() {\r\n    _controller.dispose();\r\n    super.dispose();\r\n  }\r\n\r\n  @override\r\n  Widget build(BuildContext context) {\r\n    return Scaffold(\r\n      body: Center(\r\n        child: SizedBox(\r\n          width: 300,\r\n          child: TextField(\r\n            controller: _controller,\r\n            style: Theme.of(context).textTheme.headlineMedium,\r\n          ),\r\n        ),\r\n      ),\r\n    );\r\n  }\r\n}\r\n```\r\n\r\n</details>\r\n",
+        "Gary is no longer working on flutter issues. Removing him to correctly reflect bug status."
+      ]
+    },
+    {
+      "number": 181487,
+      "title": "[Windows] TextField Cannot Completely Disable System IME",
+      "body": "### Use case\n\nFlutter's TextField widget lacks proper control over system Input Method Editors (IME). While developers can configure keyboard layouts and input formatting, there's no reliable way to prevent IME activation - especially problematic for CJK languages where IMEs automatically engage.\n\n\n\n### Proposal\n\nCurrent properties like keyboardType, textInputAction, and inputFormatters only control keyboard appearance and text filtering, but cannot prevent IME composition states. This breaks applications requiring direct keyboard input only (OTP/PIN entry, terminals, command interfaces).\n\nNumeric-only fields still trigger IME composition\nReal-time validation disrupted by IME intermediate states\nInconsistent behavior across platforms\nNo workaround for CJK language environments",
+      "labels": [
+        "a: text input",
+        "c: new feature",
+        "framework",
+        "engine",
+        "a: internationalization",
+        "platform-windows",
+        "c: proposal",
+        "P2",
+        "team-text-input",
+        "triaged-text-input"
+      ],
+      "comments": [
+        "I have created a plugin called \"force_english_ime\": ^0.0.3. You can give it a try. Hope this helps you.",
+        "@li986726488-dotcom would you be able to post a minimal repro of a numeric field triggering IME composition, and specify the platform(s) that you see it on? If that's different than native then that's a bug and not just a proposal.\n\nI wonder how this is handled on native. I'm not sure how to prevent the IME from handling composition.",
+        "The `triaged-framework` label is irrelevant if there is no `team-framework` label or `fyi-framework` label.",
+        "> I have created a plugin called \"force_english_ime\": ^0.0.3. You can give it a try. Hope this helps you.\n\n@W2XiaoYu Thank you for your help. I have used a similar approach to disable IME using the system API.\n\n",
+        "<img width=\"1721\" height=\"748\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/b00c855c-cd3c-4c60-953f-b0bc06efa46c\" />\n\nflutter doctor   \nDoctor summary (to see all details, run flutter doctor -v):\n[\u221a] Flutter (Channel stable, 3.35.6, on Microsoft Windows [\u7248\u672c 10.0.26100.7840], locale zh-CN)\n[\u221a] Windows Version (Windows 11 or higher, 24H2, 2009)\n[X] Android toolchain - develop for Android devices\n    X Unable to locate Android SDK.\n      Install Android Studio from: https://developer.android.com/studio/index.html\n      On first launch it will assist you in installing the Android SDK components.\n      (or visit https://flutter.dev/to/windows-android-setup for detailed instructions).\n      If the Android SDK has been installed to a custom location, please use\n      `flutter config --android-sdk` to update to that location.\n\n[\u221a] Chrome - develop for the web\n[\u221a] Visual Studio - develop Windows apps (Visual Studio Community 2022 17.14.13 (August 2025))\n[!] Android Studio (not installed)\n[\u221a] Connected device (3 available)\n[\u221a] Network resources\n\n@justinmc In my use case, I only need to input English letters and numbers. However, users can switch to Chinese or other language input methods, which pops up an unwanted IME candidate window. This doesn't meet my expectations. It would be great if there was a property to directly disable IME. Many apps in the market typically don't allow switching to other input methods when entering passwords.\n",
+        "Same issue here."
+      ]
+    },
+    {
+      "number": 151103,
+      "title": "[flutter web] When converting characters from hiragana to kanji, the display is distorted at TextFiled by using Japanese Keyboard ATOK",
+      "body": "### Steps to reproduce\n\nCreate a simple app with TextField(maxLines:null) and deploy it on a web host.\r\nOpen it from Chrome on Android.\r\nType some Japanese text using ATOK. ATOK is popular paid IME in Japan.\r\nWhen converting characters from hiragana to kanji, the display is distorted. \r\n\r\nYou can see that the last character \u4e9c is doubled in the screenshot .\r\nThis damages the user experience.\r\n<img src=\"https://github.com/flutter/flutter/assets/135512697/1ddc32ab-c86c-411a-9458-c74523404d68\" width=\"300px\">\r\n\r\n@huycozy\r\nI encountered this issue with ATOK, but it was fine with G board.\r\n\n\n### Expected results\n\nThe characters are displayed correctly.\r\n\n\n### Actual results\n\nSome characters are overlapping.\n\n### Code sample\n\n<details open><summary>Code sample</summary>\r\n\r\n```dart\r\nimport 'package:flutter/material.dart';\r\n\r\nvoid main() {\r\n  runApp(MaterialApp(\r\n    builder: (context, child) => const MyApp(),\r\n  ));\r\n}\r\n\r\nclass MyApp extends StatefulWidget {\r\n  const MyApp({super.key});\r\n\r\n  @override\r\n  State<StatefulWidget> createState() {\r\n    return _MyAppState();\r\n  }\r\n}\r\n\r\nclass _MyAppState extends State<MyApp> {\r\n  @override\r\n  Widget build(BuildContext context) {\r\n    return MaterialApp(\r\n      home: Scaffold(\r\n        body: TextField(\r\n          maxLines: null,\r\n          keyboardType: TextInputType.multiline,\r\n          controller: TextEditingController(),\r\n          cursorColor: Colors.black,\r\n        ),\r\n      ),\r\n    );\r\n  }\r\n}\r\n\r\n```\r\n\r\n</details>\r\n\n\n### Screenshots or Video\n\n<details open>\r\n<summary>Screenshots / Video demonstration</summary>\r\n\r\n[Upload media here]\r\n\r\n</details>\r\n\n\n### Logs\n\n<details open><summary>Logs</summary>\r\n\r\n```console\r\n[Paste your logs here]\r\n```\r\n\r\n</details>\r\n\n\n### Flutter Doctor output\n\n<details open><summary>Doctor output</summary>\r\n\r\nI encountered this issue on the master channel.\r\nPlease refer to https://github.com/flutter/flutter/issues/150851#issuecomment-2196852328 to save the my time.\r\n(it takes time to switch channels to master -> upgrade -> build -> web deploy -> comfirm behavior -> flutter doctor -> and then switch back to stable...)\r\n\r\n```console\r\n[Paste your output here]\r\n```\r\n\r\n</details>\r\n",
+      "labels": [
+        "a: text input",
+        "a: internationalization",
+        "a: fidelity",
+        "platform-web",
+        "P2",
+        "team-web",
+        "triaged-web"
+      ],
+      "comments": [
+        "Thanks for filing a separate issue. Unfortunately, ATOK keyboard app is not available on my end. Could you check if this issue occurs on Android/iOS Flutter (non-web) app?",
+        "@huycozy, I checked it on Android App but not reproduced. I haven't been able to test the combination of iOS App with ATOK because I don't have the environment to do so.\r\n\r\nI have the impression that I often encounter problems with textfield input on Flutter WEB, so I'm guessing this problem is specific to Web...",
+        "Thank you for checking it. Marking this issue for Web platform to investigate further. ",
+        "> You can see that the last character \u4e9c is doubled in the screenshot .\r\n\r\nIt even looks like a different font, so we might be able to reproduce in a different way. Not sure we have access to ATOK."
+      ]
+    },
+    {
+      "number": 90498,
+      "title": "Supporting platform accessibility actions for custom keyboards",
+      "body": "## Use case\r\nI'm trying to implement a custom keyboard and want to match accessibility actions of framework keyboards of Android/iOS but am unable to do so.\r\n\r\nI'm using following `Semantics` for keys of custom keyboard.\r\n```dart\r\nSemantics.fromProperties(\r\n  properties: SemanticsProperties(\r\n    label: \"some-semantics-label\",\r\n    keyboardKey: true,\r\n)\r\n```\r\n\r\n### Expected Behaviour\r\n\r\n**Android**\r\nWhen Talkback is on, Android system keyboard doesn't use double tap to input the key instead when you tap on the key, its semantic label is pronounced by Talkback and the key is entered into the input field. On Flutter using `keyboardKey: true` on our custom widget does not reproduce similar behaviour and I'm unable to find a way to remove double tap behaviour on Android. \r\n\r\nHere's a video which demonstrates android's system keyboard accessbiility: https://www.youtube.com/watch?v=y2tT4jDRfWs\r\n\r\nOn Native Android, we achieve this using following piece of code\r\n```kotlin\r\nViewCompat.setAccessibilityDelegate(view, object : AccessibilityDelegateCompat() {\r\n    override fun onInitializeAccessibilityNodeInfo(host: View, info: AccessibilityNodeInfoCompat) {\r\n        super.onInitializeAccessibilityNodeInfo(host, info)\r\n        info.removeAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_CLICK)\r\n        info.isClickable = false\r\n    }\r\n})\r\n```\r\n\r\n**iOS**\r\nOn iOS, the default behaviour of system keyboard, when voice over is on, is to pronounce the key semantic label but activate it only on double tap. However this behaviour can be overriden in voice over settings by turning on a setting called `touch typing`, after which the key can be input using a single tap. Again using `keyboardKey: true` on our custom widget does not reproduce similar behaviour instead it always requires double tap to input key irrespective of voice over touch typing setting.\r\n\r\nHere's a video which demonstrates various modes of iOS's system keyboard with accessibility: https://www.youtube.com/watch?v=1O2hwY-mGyQ\r\n\r\nOn Native iOS, we achieve this by using `keyboardKey` accessibility trait\r\nhttps://developer.apple.com/documentation/uikit/uiaccessibility/uiaccessibilitytraits/1620182-keyboardkey\r\n\r\n**Note**\r\nFull sample code: https://github.com/jitinsharma/flutter_custom_keyboard/blob/master/lib/main.dart#L115\r\n\r\n## Proposal\r\nThe expectation is `keyboardKey: true` should follow accessibility actions of framework keyboards on each Platform, which would help in replicating these actions on any flutter widget.\r\n",
+      "labels": [
+        "a: text input",
+        "c: new feature",
+        "platform-android",
+        "platform-ios",
+        "engine",
+        "a: accessibility",
+        "c: proposal",
+        "P2",
+        "team-engine",
+        "triaged-engine"
+      ],
+      "comments": [
+        "@chunhtai FYI This might just be a matter of plumbing the trait up to the framework.",
+        "This trait was originally added for fuchsia use case and are not used by any other platform\r\nIt looks like in iOS we should set the accessibilityTrait to https://developer.apple.com/documentation/uikit/uiaccessibilitytraitkeyboardkey?language=objc\r\n\r\nin Android\r\nwe need to set\r\nhttps://developer.android.com/reference/android/view/accessibility/AccessibilityNodeInfo#setTextEntryKey(boolean)\r\n"
+      ]
+    },
+    {
+      "number": 132577,
+      "title": "Image Keyboard for other platforms",
+      "body": "### Is there an existing issue for this?\r\n\r\n- [X] I have searched the [existing issues](https://github.com/flutter/flutter/issues)\r\n- [X] I have read the [guide to filing a bug](https://flutter.dev/docs/resources/bug-reports)\r\n\r\n### Use case\r\n\r\nhttps://github.com/flutter/flutter/issues/20796 has been marked as fixed by https://github.com/flutter/flutter/pull/110052 and is closed & locked now, but https://github.com/flutter/flutter/pull/110052 implemented it only for Android; on iOS, Web, and other platforms, `contentInsertionConfiguration` hasn't been implemented, and I think this should be tracked somewhere.\r\n- Web: [The demo on the api reference page](https://api.flutter.dev/flutter/widgets/EditableText/contentInsertionConfiguration.html) doesn't work, and the page doesn't mention the fact that it's implemented only for Android yet\r\n<img width=\"922\" alt=\"Screenshot 2023-08-15 at 11 48 14 AM\" src=\"https://github.com/flutter/flutter/assets/60294318/81e81e69-caac-419f-9bf9-b9fa98149f18\">\r\n\r\n- iOS: I tried copy&pasting an image into a textfield with `contentInsertionConfiguration` configured, but it just shows the raw data without invoking `onContentInserted`\r\n   - <img width=\"500\" alt=\"Simulator Screenshot - iPhone 14 Pro - 2023-08-15 at 11 52 12\" src=\"https://github.com/flutter/flutter/assets/60294318/e7585f7b-7c14-47e7-88f1-f2398b945b71\" >\r\n\r\n\r\n### Proposal\r\n\r\n- Update the api reference page to indicate that `contentInsertionConfiguration` is only implemented for Android yet\r\n- Track the implementation of image keyboard feature for iOS and other platforms\r\n   - Related: https://stackoverflow.com/questions/56615542/how-to-allow-and-get-memoji-stickers-in-a-text-field\r\n      - It talks about handling Memoji sticker (= png image) input on iOS\r\n\r\n### Related issues\r\n- https://github.com/flutter/flutter/issues/23603\r\n- https://github.com/flutter/flutter/issues/32045",
+      "labels": [
+        "a: text input",
+        "c: new feature",
+        "platform-ios",
+        "framework",
+        "engine",
+        "platform-web",
+        "c: proposal",
+        "P2",
+        "team-engine",
+        "triaged-engine"
+      ],
+      "comments": [
+        "> * Web: [The demo on the api reference page](https://api.flutter.dev/flutter/widgets/EditableText/contentInsertionConfiguration.html) doesn't work, and the page doesn't mention the fact that it's implemented only for Android yet\r\n\r\n\r\n\r\n> * Update the api reference page to indicate that `contentInsertionConfiguration` is only implemented for Android yet\r\n\r\n@Shawn-sudo \r\n\r\nPer `ContentInsertionConfiguration` class [documentation](https://api.flutter.dev/flutter/widgets/ContentInsertionConfiguration-class.html), it does mention that following properties are used for Android only:\r\n\r\n`onContentInserted` : https://api.flutter.dev/flutter/widgets/ContentInsertionConfiguration/onContentInserted.html\r\n`allowedMimeTypes`: https://api.flutter.dev/flutter/widgets/ContentInsertionConfiguration/allowedMimeTypes.html\r\n\r\nAs for support for other platforms (web, ios), treating this as a proposal as applicable.\r\n\r\n ",
+        "Thanks for opening this!  You're right that we don't seem to have anywhere that we were tracking image keyboard support for other platforms, good catch.  It is something we want to support.",
+        "Any News regarding this issue? "
+      ]
+    },
+    {
+      "number": 57953,
+      "title": "Why is DropdownButtonFormField's onChanged required?",
+      "body": "<!-- Thank you for using Flutter!\r\n\r\n     If you are looking for support, please check out our documentation\r\n     or consider asking a question on Stack Overflow:\r\n      * https://flutter.dev/\r\n      * https://api.flutter.dev/\r\n      * https://stackoverflow.com/questions/tagged/flutter?sort=frequent\r\n\r\n     If you have found a bug or if our documentation doesn't have an answer\r\n     to what you're looking for, then fill our the template below. Please read\r\n     our guide to filing a bug first: https://flutter.dev/docs/resources/bug-reports\r\n-->\r\n\r\n## Steps to Reproduce\r\n\r\nTry to initialize a `DropdownButtonFormField` without specifying the `onChanged` parameter.\r\n\r\n**Expected results:** <!-- what did you want to see? -->\r\n\r\nFor `onChanged` to not be required and the widget to still work, which is consistent with other FormField widgets, such as `TextFormField`.\r\n\r\n**Actual results:** <!-- what did you see? -->\r\n\r\nCurrently the `onChanged` parameter is required and is seemingly used as a way to disable the widget if you set it to null. If you don't care about the onChanged event and just want to use the DropdownButtonFormField in a normal basic form, you still have to set onChanged to an empty function (e.g. `onChanged: (value) {}`) otherwise it won't update the FormState/stay enabled. This feels unintuitive to me since e.g. the `TextFormField` widget does not require you to specify `onChanged` unless you're interested in that event.\r\n\r\nWhile I'm not that experienced with Flutter, it seems like it would make more sense to not use `onChanged` as a way of disabling a `DropdownButtonFormField` and instead let it purely be a way of letting the user do something when the field changes. I don't know if there are issues with that or if this odd current behavior is just a leftover from old logic? Seems easy enough to change it up (I could attempt to submit a PR for it).\r\n\r\n**Proposed Changes:**\r\nAdd a `bool enabled` parameter to `DropdownButtonFormField` (consistent with TextFormField) and use that to decide whether to set the underlying `DropdownButton.onChanged` to control its enabled'ness.\r\n\r\nIn the future, it might make sense to add an `enabled` parameter to `DropdownButton` as well, as an explicit way of controlling whether it should be enabled or not.",
+      "labels": [
+        "a: text input",
+        "framework",
+        "f: material design",
+        "c: proposal",
+        "P3",
+        "team-design",
+        "triaged-design"
+      ],
+      "comments": [
+        "This issue is missing a priority label. Please set a priority label when adding the `triaged-design` label.",
+        "@justinmc I\u2019m looking into this proposal, and technically it\u2019s straightforward. The main challenge would be refactoring some tests, which in this case means adding the `enabled` parameter in a few places and deciding whether it should be `true` or `false`.\nIf that\u2019s not an issue, I can start working on it.\n",
+        "@justinmc @Piinks I\u2019ve prepared an implementation and submitted it as a draft. However, I\u2019m unsure whether the impact justifies the change.\n\nPatterns such as `onChanged: condition ? (value) { ... } : null` would be affected, resulting in a small breaking change. What would be the best way to proceed?"
+      ]
+    },
+    {
+      "number": 151876,
+      "title": "Easier use of in-app keyboards with TextInputControl",
+      "body": "### Use case\n\nMany modern applications aim to provide a unique user experience by customizing the keyboard interface. This customization can improve user interaction and offer specialized input methods tailored to the application\u2019s needs. \r\n\r\nCurrently, implementing a custom in-app keyboard in Flutter is cumbersome and unreliable. Existing approaches, such as creating a widget for the custom keyboard and displaying it in a `Column` where first child is our form screen, and the second is keyboard , result in a glitchy and error-prone experience, especially when switching between fields with the custom keyboard and the native keyboard. This approach also doesn't work nicely with [cupertino_interactive_keyboard](https://pub.dev/packages/cupertino_interactive_keyboard).\r\n\r\nA more seamless and integrated solution is needed to enhance the stability and usability of custom keyboards within Flutter applications.\n\n### Proposal\n\n```\r\nTextField(\r\n  keyboardType: TextInputType.custom(\r\n    builder: (TextEditingController controller, BuildContext context) {\r\n      return MyKeyboardWidget(\r\n        textEditingController: controller\r\n      );\r\n    },\r\n  )\r\n)\r\n```\r\n\r\nIn this case `MyKeyboardWidget` would be assigned to iOS [UITextField](https://developer.apple.com/documentation/uikit/uitextfield)'s [inputView](https://developer.apple.com/documentation/uikit/uiinputviewcontroller/1618192-inputview) property. On Android it would be facaded via `InputMethodService`.\r\n\r\nThe custom keyboard via exposed `TextEditingController` would be able to do anything with the textfield, like replace text, get/change cursor position - that functionality already exists.",
+      "labels": [
+        "a: text input",
+        "c: new feature",
+        "framework",
+        "c: proposal",
+        "P2",
+        "team-text-input",
+        "triaged-text-input"
+      ],
+      "comments": [
+        "Is this a duplicate of https://github.com/flutter/flutter/issues/29823?",
+        "Tell me if this is right: You'd like to build something that looks like a system keyboard using Flutter, use it in your Flutter app only, and have it easily plug into TextField et. al.\r\n\r\nHave you seen TextInputControl, introduced in https://github.com/flutter/flutter/pull/76072? Not sure how much of this issue is covered by that but I want to narrow down this request in relation to https://github.com/flutter/flutter/issues/29823 and existing work.",
+        "Hey @justinmc .\r\n\r\n> You'd like to build something that looks like a system keyboard\r\n\r\nAnything, can be similar, can be completely custom made.\r\n\r\n> use it in your Flutter app only\r\n\r\nyes\r\n\r\n> and have it easily plug into TextField\r\n\r\nyes, **easily**\r\n\r\nI have looked at TextInputControl and [this demo](https://api.flutter.dev/flutter/services/TextInputControl-mixin.html). \r\n\r\nIn this particular example it looks about right, but imagine you have two text fields - one needs a regular QWERTY keyboard, the other the custom keyboard, switching between two as user interacts with the form - requires tedious code and difficult to achieve smooth screen resizing.",
+        "Got it, so let's keep this issue open as it relates to a better experience using an in-app keyboard with multiple fields. I've updated the title to match."
+      ]
+    },
+    {
+      "number": 71083,
+      "title": "TextFormField (and TextField) widgets do not wrap text correctly",
+      "body": "Similar to the issues reported in #18761, the input fields in Flutter suffer from the same disfunction.\r\n\r\nCurrently, the text input fields in Flutter do not wrap their input correctly. Instead of breaking a word in the middle and wrapping the remainder to the next line, Flutter is breaking the string at the word boundary closest to the end of the line, which is non buono.\r\n\r\n#### Flutter\r\n<img width=\"240\" alt=\"Screen Shot 2020-11-23 at 16 37 05\" src=\"https://user-images.githubusercontent.com/921173/99974945-44fc2e80-2daa-11eb-9599-691eed55a0c6.png\">\r\n\r\n#### Chrome\r\nWeb browsers correctly split the string at the character that would otherwise overflow.\r\n<img width=\"343\" alt=\"Screen Shot 2020-11-23 at 16 44 58\" src=\"https://user-images.githubusercontent.com/921173/99975781-5265e880-2dab-11eb-9d40-81ee07b07921.png\">\r\n\r\n\r\n#### Code snippet\r\n```dart\r\nTextFormField(\r\n  decoration: InputDecoration(border: OutlineInputBorder()),\r\n  minLines: null,\r\n  maxLines: null,\r\n  initialValue: 'https://www.example.com/some/thingweirdisgoingon.here',\r\n)\r\n```\r\n",
+      "labels": [
+        "a: text input",
+        "framework",
+        "f: material design",
+        "dependency: skia",
+        "a: typography",
+        "P2",
+        "team-design",
+        "triaged-design"
+      ],
+      "comments": [
+        "@benPesso \r\nhow does this issue differ from the one you [referenced](https://github.com/flutter/flutter/issues/18761)?\r\nisn't it a duplicate",
+        "@iapicca That one is for Text (read-only) widgets, whereas this one is for input widgets. It's about the **wrapping** of text. Not clipping. With input fields, you don't want to clip the text, but to wrap it, so it's 100% visible.\r\n\r\nHere's another wacky example:\r\n<img width=\"217\" alt=\"Screen Shot 2020-11-23 at 17 40 30\" src=\"https://user-images.githubusercontent.com/921173/99982398-2c444680-2db3-11eb-97e5-7378a623d40a.png\">\r\n",
+        "Have you ever found a solution to this problem @benPesso?\r\n",
+        "@Sembauke Not really, no. I haven't tested it in a while (after #18761 was resolved). If you're experiencing this, I guess that fix did not resolve this issue. ",
+        "@benPesso This seems like it it fixed in the newest version of Flutter. But please confirm yourself.",
+        "@Sembauke  Still not really working as expected.\r\nhttps://github.com/flutter/flutter/assets/921173/07a721d1-319c-4ec9-8aaa-39aef3ec6b8c\r\n\r\n",
+        "are you sure you are on 3.10?",
+        "[\u2713] Flutter (Channel stable, 3.10.3, on macOS 13.0 22A380 darwin-x64, locale en-US)",
+        "> [\u2713] Flutter (Channel stable, 3.10.3, on macOS 13.0 22A380 darwin-x64, locale en-US)\r\n\r\nHave you set the Dart SDK to 3.0 in your pubspec.yaml?",
+        "Yes, I created a brand new project for it.\r\n>  sdk: '>=3.0.3 <4.0.0'\r\n\r\nThe input field was set in a `FractionallySizedBox`:\r\n```\r\nFractionallySizedBox(\r\n  widthFactor: .8,\r\n  child: TextFormField(\r\n    decoration: const InputDecoration(border: OutlineInputBorder()),\r\n    minLines: null,\r\n    maxLines: null,\r\n    initialValue: 'https://www.example.com/some/thingweirdisgoingon.here',\r\n  ),\r\n),\r\n```",
+        "Same here, flutter: 3.10.6 dart: 3.0+\r\n![image](https://github.com/flutter/flutter/assets/13160176/cd262fc9-04f9-4295-b282-ed9474f17f24)\r\n",
+        "This issue is missing a priority label. Please set a priority label when adding the `triaged-design` label."
+      ]
+    },
+    {
+      "number": 99848,
+      "title": "[Desktop] Multimedia key events not reported to HardwareKeyboard",
+      "body": "\r\n## Steps to Reproduce\r\n\r\n1. Add the following to a root level StatelessWidget:\r\n\r\n```dart\r\n@override\r\nvoid initState() {\r\n  super.initState();\r\n  HardwareKeyboard.instance.addHandler(\r\n    (e) {\r\n      print(e);\r\n      return false;\r\n    },\r\n  );\r\n}\r\n```\r\n\r\n2. Build to a desktop target (I tested versus macOS).\r\n3. Press most keys, see print statements.\r\n4. Press F-keys, see print statements.\r\n5. Press Multimedia keys (On macOS, same physical keys as F-keys, but with FN-toggle), see nothing printed.\r\n\r\nAs these are system events, it makes sense that most would not be sent to the app (screen brightness, volume, etc). But it's common for media player apps to require access to Play/Pause, Forward, and Backward keypresses.\r\n\r\n\r\n**Expected results:** <!-- what did you want to see? -->\r\n\r\nI expected to be able to receive keyboard events for media playback keypresses. These must be registered with each OS - e.g., currently on my machine, Spotify is receiving those events and toggling playback regardless of what window has focus. Flutter should be able to similarly register for these privileged events.\r\n\r\n\r\n<!-- Finally, paste the output of running `flutter doctor -v` here. -->\r\n\r\n```\r\nDoctor summary (to see all details, run flutter doctor -v):\r\n[\u2713] Flutter (Channel master, 2.11.0-0.0.pre.802, on macOS 12.2.1 21D62 darwin-x64, locale en-US)\r\n[!] Android toolchain - develop for Android devices (Android SDK version 30.0.2)\r\n    \u2717 cmdline-tools component is missing\r\n      Run `path/to/sdkmanager --install \"cmdline-tools;latest\"`\r\n      See https://developer.android.com/studio/command-line for more details.\r\n    \u2717 Android license status unknown.\r\n      Run `flutter doctor --android-licenses` to accept the SDK licenses.\r\n      See https://flutter.dev/docs/get-started/install/macos#android-setup for more details.\r\n[!] Xcode - develop for iOS and macOS (Xcode 13.1)\r\n    ! CocoaPods 1.10.0.rc.1 out of date (1.11.0 is recommended).\r\n        CocoaPods is used to retrieve the iOS and macOS platform side's plugin code that responds to your plugin usage on the Dart side.\r\n        Without CocoaPods, plugins will not work on iOS or macOS.\r\n        For more info, see https://flutter.dev/platform-plugins\r\n      To upgrade see https://guides.cocoapods.org/using/getting-started.html#installation for instructions.\r\n[\u2713] Chrome - develop for the web\r\n[\u2713] Android Studio (version 4.0)\r\n[\u2713] VS Code (version 1.65.0)\r\n[\u2713] Connected device (2 available)\r\n[\u2713] HTTP Host Availability\r\n\r\n! Doctor found issues in 2 categories.\r\n```\r\n\r\n",
+      "labels": [
+        "a: text input",
+        "platform-macos",
+        "a: desktop",
+        "P2",
+        "team-text-input",
+        "triaged-text-input"
+      ],
+      "comments": [
+        "/cc @dkwingsmt ",
+        "The `triaged-desktop` label is irrelevant if there is no `team-desktop` label or `fyi-desktop` label.",
+        "Same issue on Flutter 3.22.3 Web, I tried to detect play pause buttons for playing / pauses purposes for audio files. Those buttons are not detected by HardwareKeyboard unfortunately.\r\n\r\nSame issue can be reproduced on https://api.flutter.dev/flutter/services/PhysicalKeyboardKey-class.html"
+      ]
+    },
+    {
+      "number": 182776,
+      "title": "SelectionArea shows unexpected black line under overflowed text when focused",
+      "body": "### Steps to reproduce\n\nUse the mouse to click on the text or start a selection that includes the text widget, the black will appear.\n\n### Expected results\n\nNo black line should appear under the text widget when focused.\n\n### Actual results\n\nA black line is rendered below the text widget\n\n### Code sample\n\n<details open><summary>Code sample</summary>\n\n```dart\nimport 'package:flutter/material.dart';\n\nvoid main() => runApp(const MyApp());\n\nclass MyApp extends StatelessWidget {\n  const MyApp({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return MaterialApp(\n      title: 'Flutter Demo',\n      debugShowCheckedModeBanner: false,\n      theme: ThemeData(colorSchemeSeed: Colors.blue),\n      home: const MyHomePage(title: 'Flutter Demo Home Page'),\n    );\n  }\n}\n\nclass MyHomePage extends StatefulWidget {\n  final String title;\n\n  const MyHomePage({super.key, required this.title});\n\n  @override\n  State<MyHomePage> createState() => _MyHomePageState();\n}\n\nclass _MyHomePageState extends State<MyHomePage> {\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: Text(widget.title)),\n      body: SelectionArea(\n        child: ListView.builder(\n          itemCount: 5,\n          itemBuilder: (context, index) {\n            return Text(\n                  '''\n                                                                  a\n                                                                  b\n                                                                  c\n                                                                  d\n                                                                  ''',\n                  maxLines: 3,\n                  overflow: TextOverflow.fade,\n                );\n          },\n        ),\n      ),\n    );\n  }\n}\n\n```\n\n</details>\n\n\n### Screenshots or Video\n\n![Image](https://github.com/user-attachments/assets/b1313931-fa90-4b83-9818-646bceee9be7)\n\n<details open>\n<summary>Screenshots / Video demonstration</summary>\n\n[Upload media here]\n\n</details>\n\n\n### Logs\n\n<details open><summary>Logs</summary>\n\n```console\n[Paste your logs here]\n```\n\n</details>\n\n\n### Flutter Doctor output\n\n<details open><summary>Doctor output</summary>\n\n```console\nDoctor summary (to see all details, run flutter doctor -v):\n[\u221a] Flutter (Channel stable, 3.38.7, on Microsoft Windows [Version 10.0.26200.7840], locale en-US)\n[\u221a] Windows Version (11 Pro 64-bit, 25H2, 2009)\n[!] Android toolchain - develop for Android devices (Android SDK version 35.0.0)\n    ! Some Android licenses not accepted. To resolve this, run: flutter doctor --android-licenses\n[\u221a] Chrome - develop for the web\n[\u221a] Visual Studio - develop Windows apps (Visual Studio Community 2022 17.7.1)\n[\u221a] Connected device (3 available)\n[\u221a] Network resources\n\n```\n\n</details>\n",
+      "labels": [
+        "has reproducible steps",
+        "P2",
+        "f: selection",
+        "team-text-input",
+        "triaged-text-input"
+      ],
+      "comments": [
+        "Hi @nhh1500,\nI can confirm this behavior, labeling team-framewor for further investigation into the text selection layout logic."
+      ]
+    },
+    {
+      "number": 56285,
+      "title": "Material Component widget request: multi-select search field with auto-suggestion",
+      "body": "## Use case\r\n[RecipeRadar](https://www.reciperadar.com/) currently provides the user with the ability to enter multiple ingredients and/or kitchen equipment items that they would like to include or exclude when searching for recipes.\r\n\r\nThis functionality is built using a server-side auto-suggestion API that responds to the user's query text with suggested valid ingredient and equipment identifiers (and their corresponding human-readable names).\r\n\r\nWhile the user-facing application does not use `flutter`, we are evaluating it as a possible next-generation application framework, particularly as [support for Progressive Web Apps](https://flutter.dev/web) as a target platform continues to develop.\r\n\r\nOne detractor that we have encountered is that `flutter` does not yet support a multi-selection auto-suggest search input.\r\n\r\nWe are currently using [select2's multi-select functionality](https://select2.org/getting-started/basic-usage#multi-select-boxes-pillbox) and have discovered existing native client-side functionality in [Android's MultiAutoCompleteTextView](https://developer.android.com/reference/android/widget/MultiAutoCompleteTextView).\r\n\r\n## Proposal\r\nA [Material Component widget](https://flutter.dev/docs/development/ui/widgets/material) that [implements](https://github.com/flutter/flutter/tree/0549ab239009e6f76f95881364e935cd345a4da7/packages/flutter/test/material) support for multi-valued text input, with support for auto-suggestion.\r\n\r\n- [Android's MultiAutoCompleteTextView](https://developer.android.com/reference/android/widget/MultiAutoCompleteTextView) may provide a useful reference for design, accessibility and implementation concerns\r\n- Support for population of values from a server-side API endpoint is required; we and likely other customers would be greatly aided during system migration if the component would support client-side transformation of the data returned by the endpoint\r\n- User-selectde items will require both a user-accessible text description, and also a service-defined ID value (similar to the distinction between an HTML [option](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/option) field's innerHTML and its `value` attribute)\r\n- Support for purely client-side autosuggestion and tokenization may be valuable for other customers (although it is not currently a requirement that we have)\r\n\r\n## Relates to\r\n- https://github.com/flutter/flutter/issues/17119\r\n- https://github.com/flutter/flutter/issues/23827",
+      "labels": [
+        "c: new feature",
+        "framework",
+        "f: material design",
+        "c: proposal",
+        "P3",
+        "team-text-input",
+        "triaged-text-input"
+      ],
+      "comments": [
+        "It would be useful if this worked with chips copying the functionality of the gmail To/BCC/CC fields as you type with a separator character or a selection that goes and puts in the separator. All of the pub.dev packages that implement something like this are of very low quality.",
+        "This issue is missing a priority label. Please set a priority label when adding the `triaged-design` label."
+      ]
+    },
+    {
+      "number": 84086,
+      "title": "Please design as public interface/Mixing instead of passing RenderEditable everywhere",
+      "body": "Thanks for flutter, we can define any extended packages base on flutter.\r\n\r\nI'm the author of following packages: \r\n\r\nhttps://pub.dev/packages/extended_text\r\n\r\nhttps://pub.dev/packages/extended_text_field\r\n\r\nI have recode something refer to RenderEditable to support WidgetSpan can be selected. \r\n\r\nBut i found it's more and more difficult to merge official code from flutter SDK. \r\n\r\nRenderEditable is passed everywhere.\r\n\r\nhttps://github.com/flutter/flutter/blob/c9d5485361ddfe5d3d04b73149537dff5b74d51f/packages/flutter/lib/src/widgets/text_editing_action.dart#L27\r\n\r\n``` dart\r\nabstract class TextEditingActionTarget {\r\n  /// The renderer that handles [TextEditingAction]s.\r\n  ///\r\n  /// See also:\r\n  ///\r\n  /// * [EditableTextState.renderEditable], which overrides this.\r\n  RenderEditable get renderEditable;\r\n}\r\n```\r\n\r\nhttps://github.com/flutter/flutter/blob/c9d5485361ddfe5d3d04b73149537dff5b74d51f/packages/flutter/lib/src/widgets/text_selection.dart#L376\r\n``` dart\r\n/// An object that manages a pair of text selection handles.\r\n///\r\n/// The selection handles are displayed in the [Overlay] that most closely\r\n/// encloses the given [BuildContext].\r\nclass TextSelectionOverlay {\r\n  /// Creates an object that manages overlay entries for selection handles.\r\n  ///\r\n  /// The [context] must not be null and must have an [Overlay] as an ancestor.\r\n  TextSelectionOverlay({\r\n    required this.renderObject,\r\n  }) : \r\n  // TODO(mpcomplete): what if the renderObject is removed or replaced, or\r\n  // moves? Not sure what cases I need to handle, or how to handle them.\r\n  /// The editable line in which the selected text is being displayed.\r\n  final RenderEditable renderObject;\r\n``` \r\nit' nice to public RenderEditable as interface which method or property are used in other classes, thanks.\r\n\r\n",
+      "labels": [
+        "a: text input",
+        "c: new feature",
+        "framework",
+        "c: proposal",
+        "P2",
+        "team-framework",
+        "triaged-framework"
+      ],
+      "comments": [
+        "@LongCatIsLooong  @justinmc @YeungKC",
+        "@zmtzawqlp \r\nPlease check [this](https://github.com/flutter/flutter/issues/80226#issuecomment-818292098) comment for your reference and see if it resonates with your request.\r\n\r\nAlso, from that comment:\r\n\r\n`I'm considering exposing a widget that has a TextSpan builder (like what we have in TextEditingController) and an onChanged field (somewhat similar to _Editable but I think it would be nice to make it a public class), to avoid direct communication between the controller and RenderEditable, and also fill the missing link of TextSpan <=> TextEditingValue conversion.`",
+        "@darshankawar  It's not the same request. just want to pass public interface/Mixin instead of pass  RenderEditable directly",
+        "Thanks for clarifying.\r\n",
+        "cc @GaryQian Maybe this can be gathered with #84317 ?",
+        "Thanks for the issue @zmtzawqlp, I've been thinking the same thing.  I think we have a lot of momentum to refactor some of these classes.  I'll keep this issue in mind as we try to move in that direction."
+      ]
+    }
+  ],
+  "source_batches": [
+    38,
+    42
+  ]
+}

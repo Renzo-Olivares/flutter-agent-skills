@@ -1,0 +1,6 @@
+{
+  "batch_id": 0,
+  "summaries": {
+    "83960": "The root cause is that `showSoftInput()` is called on every keystroke in Flutter 2.2+ (confirmed via logs), whereas in Flutter 2.0.6 it was called only once on keyboard appearance — this triggers `onWindowShown` repeatedly in the IME. The issue is Android-only and is IME-dependent: it does not reproduce with standard English keyboards on API 28/30 emulators, but does reproduce with the Japanese flick-input IME ('flick' app). A triage comment closed the issue for lack of reproducibility, but was reopened after the reporter provided a Japanese IME repro; the issue was confirmed on both stable 2.2.3 and master. A commenter linked a potentially related issue #80218 and tagged @blasten; no fix or PR has been proposed, and the issue is stalled awaiting engine-side investigation."
+  }
+}

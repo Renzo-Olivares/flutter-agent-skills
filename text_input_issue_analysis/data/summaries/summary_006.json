@@ -1,0 +1,9 @@
+{
+  "batch_id": 6,
+  "summaries": {
+    "106454": "Comments confirm reproduction on stable and master channels, with Chrome and Edge affected but not Windows native or Firefox. The issue is that TextField's onChange event triggered by Japanese IME input is incorrectly received by the wrong FocusNode after a programmatic focus shift. No fix or PR has been proposed; status is open and triaged.",
+    "59439": "Root cause is a race condition on Android where `InputMethodManager.isActive(view)` returns false when `showTextInput` is called slightly too early in profile/release mode; a workaround using `view.post(Runnable)` was proposed in comment #4. The issue also reproduces on web (Chrome and Edge in release mode) with random occurrence; a workaround of delaying focus request by ~150ms via a Timer also works. The race condition is expected to resolve if the platform thread is merged with the UI thread. Status is open with no merged fix.",
+    "78220": "Comments add no new diagnostic information — a triager noted they lack the device to investigate, one commenter linked a related issue #78221, and another asked for updates. Status is stalled with no root cause, fix, or PR.",
+    "104578": "Root cause identified in comments: super_editor's `currentTextEditingValue` sets an invalid `TextEditingValue` with a composing range outside the text bounds, which the engine does not handle gracefully and instead crashes. PR #104711 was created to wrap method call handlers to surface such errors. The framework fix was landed to prevent invalid data from reaching the embedding, and the remaining work is adding bounds-checking in the macOS embedding to prevent crashes from malformed values, tracked as a lower-priority follow-up. Status: framework fix landed, macOS embedding fix still pending."
+  }
+}

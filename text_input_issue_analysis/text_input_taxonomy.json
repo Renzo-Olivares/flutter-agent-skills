@@ -1,0 +1,377 @@
+{
+  "discovered_at": "2026-04-17T04:49:34.049769+00:00",
+  "summary": "The 1,122 issues cluster around three dominant surfaces: (1) how Flutter talks to the platform-supplied text stack \u2014 IME composition, dead keys/accents, dictation, spell check, autocorrect, autofill, the soft keyboard, and stylus/handwriting \u2014 which together account for roughly a quarter of the corpus and is where platform-fidelity pain is concentrated; (2) what the user sees and touches on screen \u2014 keyboard visibility and insets, focus, selection toolbars/handles/magnifier, the cursor/caret, and InputDecoration styling \u2014 which together are the largest share and where most bug reports with reproducible steps live; and (3) the widget/library shape developers work against \u2014 TextField/TextFormField feature requests, Form/FormField validation, Autocomplete, SelectableText/SelectionArea, TextEditingController and deltas, and framework refactors. Hardware keyboard handling (key events, shortcuts, layouts, modifiers) is unexpectedly large (~90 issues) and spans every platform, hinting at fragility in the unified RawKeyboard \u2192 HardwareKeyboard migration. IME/CJK/dead-key issues are the single biggest cluster (~100), with a long tail of language-specific bugs, cementing internationalized text entry as the most under-served area. Web- and embedding-specific breakage (iframe, WebView, PlatformView, add-to-app) is persistent but small, because those issues are scattered across other subject buckets.",
+  "categories": [
+    {
+      "name": "IME, CJK composing, and dead keys/accents",
+      "description": "Bugs where the OS/IME layer interacts poorly with Flutter's text input: composing regions, marked text, candidate windows, Japanese/Chinese/Korean/CJK input, Pinyin, Hangul, Hiragana, Kanji, dead keys, compound characters, IMEs like fcitx, iBus, Sogou, ATOK, SwiftKey, Microsoft IME, Telex, and macOS accent panels. Excludes pure layout/RTL rendering (see Internationalization, BiDi) and excludes spell check/autocorrect even when they show up for non-English text.",
+      "count": 104,
+      "examples": [
+        9343,
+        19584,
+        24955,
+        55343,
+        59541
+      ]
+    },
+    {
+      "name": "Hardware keyboard, key events, and shortcuts",
+      "description": "Physical keyboard handling: HardwareKeyboard/RawKeyboard, PhysicalKeyboardKey / LogicalKeyboardKey, key events (down/up/repeat), modifiers (Ctrl/Cmd/Alt/Shift/Meta/CapsLock/AltGr), Shortcuts/SingleActivator/CharacterActivator, Actions/Intent, keyboard layouts (Dvorak, ISO 102/105, Neo2), numpad/arrow keys/Tab key routing to text fields, barcode scanners, TV remotes, gamepads, and the RawKeyEvent \u2192 KeyEvent migration. Does not include IME composition (see IME bucket) or soft-keyboard presentation (see Keyboard visibility).",
+      "count": 99,
+      "examples": [
+        9383,
+        27880,
+        30725,
+        35347,
+        48296
+      ]
+    },
+    {
+      "name": "Keyboard visibility, insets, dismissal, and animation",
+      "description": "How the on-screen keyboard opens/closes/animates and how Flutter surfaces its height: viewInsets, resizeToAvoidBottomInset, Scaffold resizing, layout jumping on first open, jank during open/close animations, unexpected keyboard pops after navigation/backgrounding, keyboard hiding when it shouldn't, stage manager insets, and iOS/Android sync problems. Excludes programmatic show/hide API surface requests (see Soft keyboard control).",
+      "count": 91,
+      "examples": [
+        18936,
+        23896,
+        34897,
+        38825,
+        39900
+      ]
+    },
+    {
+      "name": "Selection toolbar, context menu, handles, and magnifier",
+      "description": "Everything that overlays or decorates a selection: the text-selection toolbar/edit menu/context menu (including system context menus, writing tools, iOS 18 formatting menu), selection handles (positioning, occlusion, rotation), magnifier behavior, and customization APIs (contextMenuBuilder, AdaptiveTextSelectionToolbar). Distinct from the SelectableText/SelectionArea/SelectableRegion widgets themselves and from gesture-driven selection behavior.",
+      "count": 66,
+      "examples": [
+        11427,
+        13182,
+        24406,
+        52526,
+        54470
+      ]
+    },
+    {
+      "name": "Focus management and traversal",
+      "description": "FocusNode, Focus widget, autofocus, focus traversal (Tab key, FocusTraversalPolicy), focus loss on route pop or scroll, FocusableActionDetector, and text fields losing/keeping focus in routes, sheets, popovers, and dialogs. Excludes raw key events (Hardware keyboard), accessibility focus ring (Accessibility), and focus changes that are really about keyboard show/hide (Keyboard visibility).",
+      "count": 57,
+      "examples": [
+        20987,
+        21193,
+        27200,
+        45110,
+        46737
+      ]
+    },
+    {
+      "name": "InputDecoration styling (labels, borders, prefix/suffix, error)",
+      "description": "Visual configuration of the decoration chrome around a TextField: labelText/hintText layout and animation, prefix/suffix icons and text, helperText/errorText/counter, OutlineInputBorder/UnderlineInputBorder, content padding, filled/hoverColor, floating label alignment, and InputDecorationTheme interplay. Does not include bugs where text content itself is broken (see TextField rendering) or feature requests to change TextField's own API (see TextField API).",
+      "count": 53,
+      "examples": [
+        24998,
+        27555,
+        28862,
+        40464,
+        40477
+      ]
+    },
+    {
+      "name": "Autofill and password managers",
+      "description": "iOS/Android/browser autofill: AutofillHints, AutofillGroup, password save/restore, TouchID/Windows Hello integration, verification code autofill, 'Hide my email', LastPass/1Password/Samsung Pass/Netwrix/browser password managers, and autofill overlays covering fields or dispatching wrong events.",
+      "count": 49,
+      "examples": [
+        27918,
+        32285,
+        61383,
+        63170,
+        66356
+      ]
+    },
+    {
+      "name": "Cursor and caret positioning and rendering",
+      "description": "Where the caret appears and how it's drawn: caret position after IME/arrow keys, caret width/thickness/flicker, floating cursor on iOS, caret jumping to wrong offset, LTR/RTL boundary caret, caret placed inside a glyph, getOffsetForCaret correctness, and custom caret rendering.",
+      "count": 47,
+      "examples": [
+        11738,
+        26448,
+        27529,
+        39466,
+        45457
+      ]
+    },
+    {
+      "name": "Internationalization, BiDi, and text layout",
+      "description": "Text rendering fundamentals that affect editable/selectable widgets: RTL/LTR direction mixing, BiDi painting, line breaking (especially CJK and non-Latin), line height and line metrics, paragraph spacing, letter/word spacing, trailing whitespace behavior, text overflow/ellipsis, and baseline alignment. Distinct from IME composing which is about text entry state.",
+      "count": 44,
+      "examples": [
+        13468,
+        33858,
+        34610,
+        36854,
+        38503
+      ]
+    },
+    {
+      "name": "Performance, hangs, crashes, and exceptions",
+      "description": "Assertion failures, LateInitializationError, null-check crashes, IndexOutOfBoundsException, NSJSONSerialization/NSInternalInconsistencyException, ANRs, freezes when pasting large text, memory blowups, app hangs, laggy first keyboard open, and production crashes in text/IME/selection code paths.",
+      "count": 40,
+      "examples": [
+        64272,
+        74347,
+        76349,
+        78762,
+        88299
+      ]
+    },
+    {
+      "name": "Input types, keyboard types, and input configuration",
+      "description": "TextInputType/keyboardType selection (email, number, phone, visiblePassword, none, emailAddress, etc.), TextCapitalization, TextInputAction (done, next, newline, send), enableSuggestions, emoji/numeric/hex keyboards, obscureText/password fields, and programmatic keyboard language selection. Focuses on what keyboard the system shows and how Flutter configures it.",
+      "count": 39,
+      "examples": [
+        24153,
+        25841,
+        30331,
+        54540,
+        67282
+      ]
+    },
+    {
+      "name": "Architecture, refactors, and code quality",
+      "description": "Internal refactors, API reshaping, public/private boundary changes, code divergence (Material vs Cupertino, iOS vs macOS plugins), framework \u2194 embedder sync design, deprecation (RawKeyEvent, Actions.find return types), documentation assertions, and the 'decoupling design from text' design doc.",
+      "count": 36,
+      "examples": [
+        10713,
+        31985,
+        42820,
+        51209,
+        76573
+      ]
+    },
+    {
+      "name": "Accessibility, semantics, and screen readers",
+      "description": "TalkBack/VoiceOver reading TextField contents, labels, errors, selection; aria-label on web <input>; semantic nodes for validator text and suffix icons; ensureSemantics; rotor actions; bold-text preferences; accessibility focus returning to the right place after keyboard dismissal; password state announcements.",
+      "count": 36,
+      "examples": [
+        14543,
+        26336,
+        36910,
+        39949,
+        52863
+      ]
+    },
+    {
+      "name": "SelectableText, SelectionArea, SelectableRegion",
+      "description": "Behavior, API gaps, and bugs specific to the non-editable selection widgets: SelectableText, SelectableText.rich, SelectionArea, SelectableRegion, RichText with SelectionContainer. Covers keyboard shortcut parity, feature parity with TextField selection, image/WidgetSpan selection, and nested SelectionArea behavior.",
+      "count": 32,
+      "examples": [
+        53797,
+        69460,
+        71342,
+        79169,
+        80434
+      ]
+    },
+    {
+      "name": "Soft keyboard control and custom input controls",
+      "description": "API surface for controlling the on-screen keyboard: programmatically show/hide, detect keyboard language, custom in-app keyboards via TextInputControl, iOS inputAccessoryView, iOS Keyboard Layout Guide, image keyboards, virtual keyboard on unusual form factors (Raspberry Pi, Samsung watch, Chromecast), and proposals to extend soft-keyboard integration (up/down/done bars, collapse-button detection).",
+      "count": 31,
+      "examples": [
+        10372,
+        19702,
+        22149,
+        23749,
+        24001
+      ]
+    },
+    {
+      "name": "TextField API, features, and configuration requests",
+      "description": "Proposals and requests to change the TextField/TextFormField widget API itself: maxLines as double, ems-based width, TextArea widget, Gmail-style chip input, selectAllOnFocus, shadow/gradient on text, custom caret, line painter, tooltip on overflow, named constructors for input types, themeable font/style. Excludes requests for decoration styling (see InputDecoration).",
+      "count": 29,
+      "examples": [
+        19978,
+        35064,
+        35187,
+        35706,
+        36664
+      ]
+    },
+    {
+      "name": "Text selection behavior and gestures",
+      "description": "How selection responds to taps, drags, double/triple-taps, keyboard selection extension, and pointer gestures: selection lost on button tap, selection range endpoints, TextAffinity handling, drag-n-drop, selection highlight appearance, backwards-from-WidgetSpan selection, selection via mouse wheel, and the auto-select-on-type bug. Does not include toolbar/menu/handle/magnifier (see that bucket).",
+      "count": 28,
+      "examples": [
+        21997,
+        22619,
+        44544,
+        50834,
+        77957
+      ]
+    },
+    {
+      "name": "Clipboard, copy/paste, and undo/redo",
+      "description": "Clipboard API, copy/paste/cut actions from keyboard shortcuts or the selection toolbar, rich content on clipboard, Windows clipboard history, pasting CRLF, secure paste on iPad (CMD+V), undo/redo history and coalescing, UndoHistoryController, Android implicit URI grants for clipboard, and clipboard callbacks.",
+      "count": 26,
+      "examples": [
+        14331,
+        23603,
+        52955,
+        68014,
+        92506
+      ]
+    },
+    {
+      "name": "TextEditingController, values, and deltas",
+      "description": "The editing-state object and its synchronization: TextEditingController listeners and selection tracking, TextEditingValue composing state, TextEditingDelta types, TextInputClient/DeltaTextInputClient, onChanged firing multiple times, and converging framework/platform edit state under race conditions.",
+      "count": 25,
+      "examples": [
+        22171,
+        34995,
+        40833,
+        45804,
+        46728
+      ]
+    },
+    {
+      "name": "Scrolling containers and ensureVisible with text fields",
+      "description": "Text fields living inside ListView, ScrollView, SingleChildScrollView, PageView, NestedScrollView, reversed lists, slivers, InteractiveViewer, TabBarView, and drawers: bringing the caret into view, keyboardDismissBehavior, scroll position interactions, TextField not gaining focus after scroll, scrollPadding, and scrollbar placement.",
+      "count": 24,
+      "examples": [
+        23198,
+        25972,
+        41630,
+        50329,
+        56159
+      ]
+    },
+    {
+      "name": "Stylus and handwriting input (Scribble, Scribe, S-Pen, Apple Pencil)",
+      "description": "iOS Scribble with Apple Pencil, Android Scribe, Samsung S-Pen handwriting, Lenovo pen buttons, stylus gestures, hover icons for stylus, and text fields accepting stylus ink input, including interactions with TextInputType.none and readOnly.",
+      "count": 22,
+      "examples": [
+        32583,
+        51244,
+        104315,
+        110035,
+        111003
+      ]
+    },
+    {
+      "name": "WebView, PlatformView, and iframe embedding",
+      "description": "Text input when Flutter is embedded in or embeds other rendering surfaces: webview_flutter, HtmlElementView, PlatformView, iframes in/around Flutter web, add-to-app Android fragments, and keyboard/focus stealing between the native view hierarchy and Flutter's text input.",
+      "count": 22,
+      "examples": [
+        80123,
+        100690,
+        107292,
+        119085,
+        122009
+      ]
+    },
+    {
+      "name": "Form, FormField, and validation",
+      "description": "Form widget and FormField validator semantics: validator return types, AutovalidateMode (onUserInteraction, disabled, delayed), FormState.save/validate, cross-field validation, async validators, nested FormFields, and proposals to reshape the form validation API.",
+      "count": 20,
+      "examples": [
+        9688,
+        10036,
+        17704,
+        18922,
+        40494
+      ]
+    },
+    {
+      "name": "Spell check",
+      "description": "Flutter's SpellCheckConfiguration, Android SpellCheckerSubtype, spell-check red underlines, spell-check suggestions in toolbar/keyboard, Samsung spell checker, Desktop spell check support, and SpellCheckService bugs. Distinct from OS-level autocorrect highlights.",
+      "count": 19,
+      "examples": [
+        40682,
+        117221,
+        119533,
+        119538,
+        120608
+      ]
+    },
+    {
+      "name": "TextField rendering, layout, and visual bugs",
+      "description": "Visual and layout bugs that aren't styling choices: text content disappearing, misplaced text inside the field, shifting when font size changes, TextField not appearing within Wrap/Stack, flicker on hover on web, EditableText clipBehaviour, and TextField resizing after window resize. Distinct from InputDecoration (chrome) and typography (layout primitives).",
+      "count": 18,
+      "examples": [
+        51257,
+        69281,
+        70016,
+        84344,
+        90256
+      ]
+    },
+    {
+      "name": "Autocomplete widget",
+      "description": "Autocomplete, RawAutocomplete, and adjacent widgets (DropdownMenu, SearchAnchor): options view positioning and visibility, T? initialValue, options not hiding on keyboard-dismiss, keyboard navigation through options, Tab key behavior in Autocomplete, and pass-through of focusNode/controller.",
+      "count": 17,
+      "examples": [
+        78181,
+        96920,
+        99164,
+        122300,
+        140662
+      ]
+    },
+    {
+      "name": "Testing, tooling, and test infrastructure",
+      "description": "WidgetTester enterText, key simulators, golden tests for text, fuzzing, benchmarks for text scrolling, Flutter Driver + keyboard, integration testing IME/marked text on Safari, flaky magnifier golden, and devicelab spell-check tests.",
+      "count": 14,
+      "examples": [
+        50600,
+        52049,
+        90345,
+        91345,
+        98742
+      ]
+    },
+    {
+      "name": "TextSpan, WidgetSpan, and rich text in editable/selectable widgets",
+      "description": "WidgetSpan/TextSpan behavior inside TextField, SelectableText, Text.rich, and RichText: caret positioning around spans, selection across spans, copying WidgetSpan content, span-aware semantics (MultiTapGestureRecognizer), InlineSpan style overrides, and LinkedText.",
+      "count": 12,
+      "examples": [
+        17809,
+        41923,
+        90355,
+        96147,
+        111084
+      ]
+    },
+    {
+      "name": "Autocorrect highlighting and behavior",
+      "description": "The platform autocorrect indicator that underlines or highlights text as typed: iOS autocorrect highlight persisting after lock/scroll/hot-restart, autocorrect tooltip positioning on iOS, autocorrect interplay with password/obscureText, and vertically misaligned highlights on Cupertino. Distinct from Flutter's own spell check.",
+      "count": 10,
+      "examples": [
+        12920,
+        19779,
+        137666,
+        140044,
+        150813
+      ]
+    },
+    {
+      "name": "Dictation and voice input",
+      "description": "iOS dictation deltas, Android voice typing, macOS voice control / MacWhisper, dictation adding leading spaces, dictation status detection, dictation interacting with TextInputFormatter, and Windows Voice Typing failing to detect Flutter TextFields.",
+      "count": 8,
+      "examples": [
+        84419,
+        120724,
+        120873,
+        133034,
+        137991
+      ]
+    },
+    {
+      "name": "TextInputFormatter and input masks",
+      "description": "TextInputFormatter behavior (formatEditUpdate, slow formatters dropping keypresses, interaction with Samsung autocorrect races) and first-party proposals for input masks (e.g., '00-00' phone formatting).",
+      "count": 4,
+      "examples": [
+        37390,
+        86354,
+        91731,
+        129875
+      ]
+    }
+  ]
+}
