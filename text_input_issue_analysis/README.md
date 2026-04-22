@@ -31,6 +31,8 @@ text_input_issue_analysis/
 ├── STATUS.md                       # where we are, what's next, process decisions
 ├── text_input_issues.json          # THE dataset: 1,122 issues with summaries + categories
 ├── text_input_taxonomy.json        # 31-category taxonomy with descriptions and examples
+├── category_profiles.md            # per-category profiles: ownership, reactions, priority, platform, tilt, age, recency, repro, top issues
+├── CATEGORY_PROFILE_FORMAT.md      # portable spec for the category_profiles.md format
 ├── scripts/                        # pipeline steps (Python 3, stdlib-only)
 │   ├── fetch_issues.py             # Step 1a: GraphQL fetch with cursor pagination + checkpointing
 │   ├── merge_and_own.py            # Step 1b: dedupe by issue number, derive ownership
@@ -39,6 +41,7 @@ text_input_issue_analysis/
 │   ├── verify_summaries.py         # Step 1e: confirm every batch has a complete summary file
 │   ├── build_compact.py            # Step 2a: compact the corpus for the categorization agent
 │   ├── fetch_reactions.py          # supplementary: backfill per-issue reactions onto an existing snapshot
+│   ├── build_category_profiles.py  # generate category_profiles.md from the snapshot + taxonomy
 │   └── assemble_final.py           # Step 1f+2b: assemble the final text_input_issues.json
 └── data/
     ├── raw/                        # raw GraphQL pulls (regenerable via fetch_issues.py)
@@ -78,6 +81,9 @@ python3 scripts/assemble_final.py   # re-run to merge categories into text_input
 # (Optional) refresh reactions for an existing snapshot without re-fetching comments
 python3 scripts/fetch_reactions.py              # resume-safe; add --refresh to re-fetch all
 python3 scripts/assemble_final.py               # merge reactions into text_input_issues.json
+
+# (Optional) regenerate per-category profile report
+python3 scripts/build_category_profiles.py     # writes category_profiles.md
 ```
 
 `assemble_final.py` is idempotent — re-run it any time `data/summaries/*`,
@@ -161,6 +167,9 @@ What to keep in git (expensive to regenerate or canonical):
 
 - `text_input_issues.json` and `text_input_taxonomy.json` — the canonical
   outputs.
+- `category_profiles.md` — human-readable per-category report built from the
+  two above. Cheap to regenerate (`scripts/build_category_profiles.py`), but
+  worth committing so that strategy discussions can reference a stable view.
 - `data/summaries/*.json` — the LLM comment summaries (~3 hours of agent
   work). Technically redundant with `text_input_issues.json`, but the
   per-batch structure is useful for auditing and partial re-runs.
