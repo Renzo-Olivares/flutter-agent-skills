@@ -83,6 +83,140 @@ against.
 
 ---
 
+## Cleanup workstream — in progress
+
+A parallel track to Step 3 (taxonomy iteration). Audits each of the 31
+discovered categories one issue at a time, producing per-category
+recommendations: dedup-and-merge, close-as-stale, or write a framework-
+level regression test. Output per category is a single markdown file in
+`cleanup_reports/` plus any authored tests in `regression_tests/`.
+
+### Spec
+- **Format and workflow:** [`CLEANUP_REPORT_FORMAT.md`](CLEANUP_REPORT_FORMAT.md).
+  Locks the decision-type palette (write-test, skip-engine,
+  skip-proposal, skip-needs-native-verification, likely-stale,
+  likely-duplicate), the per-issue entry schema, and accumulated
+  conventions (C1 layer-check raw comments before classifying;
+  C2 per-category dedup scope).
+
+### Outputs
+- `cleanup_reports/<category_slug>.md` — one per audited category
+  (snake-case-of-taxonomy-name; e.g. `ime_cjk.md`, `scrolling_containers.md`).
+- `regression_tests/<category_slug>/issue_<number>_<slug>_test.dart` —
+  framework-level regression tests authored during cleanup.
+
+### Status as of 2026-04-26
+
+| # | Category | Issues | Tests | Skip-engine % | Notes |
+|---|---|---|---|---|---|
+| ✅ | IME, CJK composing, and dead keys/accents | 104 | 3 | 73% | 10 clusters, 13 likely-duplicate merges identified |
+| ✅ | Hardware keyboard, key events, and shortcuts | 99 | 2 | 70% | 3 clusters (PKC-1, NKI-1, WKR-1) |
+| ✅ | Text selection behavior and gestures | 28 | 0 | 71% | Hypothesis miss — see report's retrospective section |
+| ✅ | Scrolling containers and ensureVisible with text fields | 24 | 2 | 71% | Best write-test rate so far (8.3%) |
+| ⏳ | (27 remaining categories) | 839 | — | — | See `category_profiles.md` |
+
+**Totals so far:** 4 / 31 categories complete, 255 / 1,122 issues processed
+(23%), 7 regression tests authored (5 fail-as-expected confirming real
+bugs, 1 pass-green-exercises-bug-path likely-stale, 1 test-error harness
+gap).
+
+### How to resume
+1. Read [`CLEANUP_REPORT_FORMAT.md`](CLEANUP_REPORT_FORMAT.md) to refresh
+   on the workflow and decision palette.
+2. Pick the next category (see "Pending decision" below).
+3. Initialize `cleanup_reports/<slug>.md` from the spec template.
+4. Process issues in batches of up to 10, reactions-descending order.
+5. For each issue: fetch from `text_input_issues.json` (and raw comments
+   from `data/merged_raw.json` when C1 layer-check fires) → classify →
+   dedup-scan within category → optionally author + run a regression
+   test → append entry → update running summary counters.
+
+### Pending decision (paused on)
+Which category next. Recommendations from the last session, ordered by
+predicted framework-testability after recalibrating on Scrolling
+containers' 8.3% rate:
+
+| Candidate | Issues | Why |
+|---|---|---|
+| TextEditingController, values, and deltas | 25 | Pure framework code, framework-heavy ownership |
+| TextSpan, WidgetSpan, and rich text in editable/selectable widgets | 12 | Small, observable widget/render state |
+| Form, FormField, and validation | 20 | Pure framework but proposal-heavy |
+| Autocomplete widget | 17 | Pure framework widget |
+| TextInputFormatter and input masks | 4 | Tiny, pure framework code |
+
+User may pivot to a different criterion (biggest remaining = Keyboard
+visibility 91 issues / 579 reactions; highest reaction concentration =
+Input types 10.6 avg; etc.).
+
+### Cross-category process learnings
+- **Skip-engine rate is consistently ~70-73%** across the four categories
+  audited so far. The text-input domain is dominated by embedder/engine
+  bugs; framework-only fixes are the minority.
+- **Write-test rate varies sharply** (0% – 8.3%) depending on whether the
+  category's bugs surface through observable framework state (good:
+  `ScrollController.offset`, `controller.selection`, `FocusNode.hasFocus`)
+  vs. require simulating triggers `testWidgets` doesn't have primitives
+  for (bad: selection-handle drag, embedder-side key-event synthesis,
+  IME composition state).
+- **Cluster patterns can span categories.** First example: #98720
+  (IME/CJK) ↔ #184744 (Hardware keyboard) — same `KeyEmbedderResponder.java`
+  fix target. Per-category dedup misses these; recorded under "Cross-
+  category sibling/split-issue links" in each report.
+- **Per-batch velocity is the right shape.** Batches of 10, processed
+  in one conversation turn each, with cluster bookkeeping between
+  batches. Smaller batches risk losing context; bigger batches
+  saturate the conversation context window.
+
+### Test-harness primitive gaps that block more write-tests
+Captured here for a possible future investment in `flutter_test`:
+
+1. **Selection-overlay handle drag.** ~4 deferred candidates across
+   Selection gestures and Scrolling containers (#89024, #100319,
+   #143479, #132042). A `tester.dragSelectionHandle(handleType, offset)`
+   primitive would unlock these.
+2. **viewInsets / keyboard-animation simulation.** Several Scrolling
+   containers issues (#50329 ensureVisible, #130259
+   SliverPersistentHeader, #172437 Drawer scrollPadding) are testable
+   in principle but not without simulating a keyboard show/hide
+   animation. Currently blocked by `MediaQuery.viewInsets` being
+   read-only at the test-harness level.
+3. **`KeyEventSimulator` completeness gaps.** Tracked in-tree as
+   #96021 (uppercase), #96022 (macOS shifted-keys map), #133954
+   (Windows numpadEnter). Each unlocks a slice of Hardware keyboard
+   tests.
+4. **Mocked-channel `TextInput.setComposingRect` round-trip.** Blocked
+   #92050 (DSK-IME-1 cluster canonical) in IME/CJK. The platform-
+   channel mock suppresses the exact connection state that triggers
+   the periodic post-frame callback under test.
+
+### Cluster watchlist (across done categories)
+Tentative clusters that may grow as remaining categories are audited:
+
+- **PKC-1** Pressed-keys state corruption from engine-side sequencing
+  (Hardware keyboard, 9 members + watch for more)
+- **NKI-1** Non-keyboard input device mis-mapping (Hardware keyboard,
+  5 members + watch)
+- **DK-1** Dead-key composition on mobile (IME/CJK, 5 members + watch
+  for more iOS / Android dead-key issues across remaining categories)
+- **MCIME-1** macOS CJK IME composing state (IME/CJK, 6 members +
+  watch for more `FlutterTextInputPlugin.mm` symptoms)
+- **WKI-1** Windows Korean IME family (IME/CJK, 5/5 processed; closed)
+- **DSK-IME-1** Desktop IME candidate-window positioning (IME/CJK,
+  5 members + watch for more `setComposingRect`-surface bugs)
+- **CWB-1** CJK word breaks (IME/CJK, 2 members)
+- **CRC-1** Composing-region cursor clamping (IME/CJK, 3 members)
+- **IHK-1** iOS hardware-keyboard IME candidate navigation (IME/CJK,
+  3 members)
+- **AIR-1** Android IME restart on composing-region change (IME/CJK,
+  3 members)
+- **CSR-1** Composing state not reset on disruptive event (IME/CJK,
+  5 members)
+- **DKD-1** Desktop dead-key composition (IME/CJK, 2 members)
+- **WKR-1** Windows synthesized key-event ordering (Hardware keyboard,
+  2 members; sub-cluster of PKC-1)
+
+---
+
 ## Process decisions
 
 Accumulated conventions for this workstream. Add entries here as new
@@ -119,6 +253,24 @@ survey, taxonomy, and any future analysis or strategy artifacts. New
 deliverables go here (top level for canonical outputs, `data/` for
 intermediates). The user commits selected files to git manually; see the
 README for the canonical keep/ignore guidance.
+
+### 2026-04-26 — Cleanup workstream paused for resumption
+
+Per-category cleanup audit (the workstream tracked in the
+"Cleanup workstream — in progress" section above) is paused with 4 of
+31 categories complete. State is fully recoverable from disk:
+`cleanup_reports/`, `regression_tests/`, and `CLEANUP_REPORT_FORMAT.md`
+are all the resumer needs. Pending decision is which category to do
+next; defaults and alternatives listed in the "Pending decision" subsection
+above.
+
+**Why:** Long-running multi-session workstream — paused to let the user
+return on their own schedule without losing context.
+
+**How to apply:** Resumer reads `STATUS.md` (this section + the cleanup
+workstream section) and `CLEANUP_REPORT_FORMAT.md`. No memory or chat-
+history is required — every decision and accumulated learning is on
+disk.
 
 ### 2026-04-22 — Reactions captured per issue
 

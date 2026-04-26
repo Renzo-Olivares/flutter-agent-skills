@@ -44,7 +44,8 @@ Categories in the report appear **in taxonomy order** (count descending).
    every per-category stat (see "Per-category sections" below). Keep
    definitions verbatim with the stat names used downstream.
 5. **Ownership matrix** — `## Ownership matrix (issue counts)`. One markdown
-   table, one row per category in taxonomy order. Columns:
+   table, one row per category in taxonomy order, followed by a **totals row**
+   at the bottom. Columns:
    - `#`, `n`, `category` (first three columns)
    - Then one column per team owner, in this fixed order for the major teams:
      `txt, fmw, des, web, ios, and, win, eng, mac, lin`
@@ -53,6 +54,11 @@ Categories in the report appear **in taxonomy order** (count descending).
    - Cells: the count; a middle-dot (`·`) for zero.
    - Precede the table with a legend mapping abbreviations → full
      `team-*` names.
+   - Totals row: `#` = `—`, `n` = grand total issue count (bolded), `category`
+     = `**Total**`, and each team cell holds that team's sum across all
+     categories (bolded; `·` for zero). The grand total in `n` equals the
+     total-issue count of the dataset, and each team column total equals that
+     team's corpus-wide issue ownership.
 6. **Reaction-weighted ranking** — `## Reaction-weighted ranking`. One table,
    columns `# | category | issues | reactions | avg`, sorted by reaction total
    descending. `avg` is `reactions / issues`, one decimal.

@@ -98,7 +98,12 @@ def write_summary_matrix(f, issues, taxonomy):
     }
 
     f.write("## Ownership matrix (issue counts)\n\n")
-    f.write("One row per category (taxonomy order). Columns are `team-*` abbreviations:\n")
+    f.write(
+        "One row per category (taxonomy order). Columns are `team-*` "
+        "abbreviations; the final **Total** row sums each team column across "
+        "all categories (and matches that team's total issue ownership "
+        "corpus-wide). Abbreviations:\n"
+    )
     f.write(", ".join(f"`{abbrev.get(t, t)}` = {t}" for t in cols) + ".\n\n")
     header = ["#", "n", "category"] + [abbrev.get(t, t) for t in cols]
     f.write("| " + " | ".join(header) + " |\n")
@@ -110,6 +115,14 @@ def write_summary_matrix(f, issues, taxonomy):
             v = counts.get(t, 0)
             row.append(str(v) if v else "·")
         f.write("| " + " | ".join(row) + " |\n")
+    # Per-team totals row (sum of each team column).
+    col_totals = {t: sum(by_cat[c["name"]].get(t, 0) for c in taxonomy["categories"]) for t in cols}
+    grand_total = sum(col_totals.values())
+    totals_row = ["—", f"**{grand_total}**", "**Total**"]
+    for t in cols:
+        v = col_totals[t]
+        totals_row.append(f"**{v}**" if v else "·")
+    f.write("| " + " | ".join(totals_row) + " |\n")
     f.write("\n")
 
 

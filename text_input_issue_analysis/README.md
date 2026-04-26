@@ -33,6 +33,9 @@ text_input_issue_analysis/
 ├── text_input_taxonomy.json        # 31-category taxonomy with descriptions and examples
 ├── category_profiles.md            # per-category profiles: ownership, reactions, priority, platform, tilt, age, recency, repro, top issues
 ├── CATEGORY_PROFILE_FORMAT.md      # portable spec for the category_profiles.md format
+├── CLEANUP_REPORT_FORMAT.md        # portable spec for per-category cleanup reports (dedup + stale + regression-test audit)
+├── cleanup_reports/                # one <category>.md per audited category (iterative, issue-by-issue)
+├── regression_tests/               # per-category framework-level regression tests authored during cleanup
 ├── scripts/                        # pipeline steps (Python 3, stdlib-only)
 │   ├── fetch_issues.py             # Step 1a: GraphQL fetch with cursor pagination + checkpointing
 │   ├── merge_and_own.py            # Step 1b: dedupe by issue number, derive ownership
@@ -149,7 +152,7 @@ Categories are sorted by `count` descending.
   `text_input_issues.json` *given the same inputs*, but re-running the
   summarization or categorization agents will produce different (not
   necessarily worse) outputs.
-- The summarization prompt lives inside the orchestrating Claude Code
+- The summarization prompt lives inside the orchestrating agent
   session, not in a script — the scripts only do the mechanical pre/post
   processing.
 
