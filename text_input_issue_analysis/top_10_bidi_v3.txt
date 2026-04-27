@@ -1,0 +1,2106 @@
+### #61069 - [proposal] ability to change text overflow on the TextField
+URL: https://github.com/flutter/flutter/issues/61069
+Created: 2020-07-08T05:01:37Z Updated: 2025-07-18T13:13:51Z
+Reactions: {'total': 65, 'by_type': {'THUMBS_UP': 65}}
+Labels: ['a: text input', 'c: new feature', 'framework', 'f: material design', 'c: proposal', 'P2', 'team-text-input', 'triaged-text-input']
+Ownership: team-text-input
+Summary: Comments are largely me-too and bumps spanning multiple years with no root-cause analysis. One substantive comment links a related DevTools bug and notes @LongCatIsLooong is working on overflow ellipsis. The auto_size_text_field package is offered as an imperfect workaround; a TextPainter-based manual ellipsis workaround is also shared. No PR opened.
+Body snippet: If the user inputs more text than can fit into the available space of a single line `TextFormField`, then end of the text is simply cropped. 
+In debug mode, an overflow warning is also displayed on screen.
+
+Unlike the `Text` widget however, the `TextFormField` does not have an `overflow` parameter so that we can for example show an ellipsis in this situation.
+
+Implementing `overflow` handling for the `TextFormField` will allow us to give valuable visual feedback to users....
+Raw Comments Count: 31
+  Comment: any news?
+  ---
+  Comment: Any news? The ability to change text overflow in the TextField/TextFormField is absolutely important for us since we are having this option in Text. Please consider ... 
+  ---
+  Comment: +1
+Using TextFormField and as soon as the user inputs more than can be shown it goes blank.
+I'd go as far as saying this is a bug rather than a new feature - since it looks as though the text has disappeared completely
+  ---
+  Comment: Is there any update on this/has anyone found a workaround? 
+  ---
+  Comment: Any updates on this?
+  ---
+  Comment: Bumping for an update, any developments?
+  ---
+  Comment: We definitely need a proper solution baked into `TextField` and `TextFormField`. But in the meanwhile, the [auto_size_text_field](https://pub.dev/packages/auto_size_text_field) package might help you out a little bit:
+
+```dart
+AutoSizeTextField(
+  controller: _controller,
+  overflowReplacement: Text(
+  _controller.text,
+  style: const TextStyle(overflow: TextOverflow.ellipsis),
+),
+```
+
+
+https://user-images.githubusercontent.com/43783196/138687452-81541ee5-4ca1-4d35-9ff2-12fb2554665e.mov
+
+
+
+But be aware it's not a perfect solution. Try out the full example and you'll see why:
+
+<details>
+<summary>Full example</summary>
+<br>
+
+```dart
+import 'package:auto_size_text_field/auto_size_text_field.dart';
+import 'package:flutter/material.dart';
+
+void main() => runApp(const MyApp());
+
+class MyApp extends StatelessWidget {
+  const MyApp();
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      home: HomePage(),
+    );
+  }
+}
+
+class HomePage extends StatefulWidget {
+  const HomePage();
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  static const _style = TextStyle(color: Colors.black, fontSize: 15, overflow: TextOverflow.ellipsis);
+  final _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(),
+            borderRadius: BorderRadius.circular(5),
+          ),
+          width: 200,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: AutoSizeTextField(
+              controller: _controller,
+              cursorColor: Colors.black,
+              decoration: const InputDecoration(border: InputBorder.none),
+              minFontSize: _style.fontSize!,
+              onChanged: (_) => setState(() {}),
+              overflowReplacement: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 15),
+                child: Text(
+                  _controller.text,
+                  style: _style,
+                ),
+              ),
+              style: _style,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+```
+</details>
+  ---
+  Comment: Any update or workaround?
+  ---
+  Comment: Any update? It's almost 2 years. ^^
+  ---
+  Comment: Disappointing this has received no attention for over 2 years..
+  ---
+  Comment: Hello darkness my old friend. So bascially just having the same need here ! :D
+  ---
+  Comment: Try this...  I am using with TextField
+maxLines: 1
+decoration : InputDecoration( isDense: true )
+
+  ---
+  Comment: Why is this not being added? There are legitimate reasons for using that, e.g. if you have a label on your TextField and then want to programmatically add some text over the controller. Having the text cut off on the right is not particularly aesthetic and just building a custom TextField for that seems thus overkill.
+  ---
+  Comment: two years now without advances on this simple issue?
+  ---
+  Comment: any update?
+  ---
+  Comment: Besides handling `TextOverflow`, I have another concern: to customize how overflow relates to programmatical updates with a `TextEditingController`.
+
+Right now I can scroll through a `isDense` + `maxLines:1` by hand, but I can't set the `TextField` to just show the last characters instead.
+  ---
+  Comment: waiting for updates too 
+  ---
+  Comment: Waiting for updates....
+  ---
+  Comment: Any updates? this is like a needed feature! A proper solution is needed, or is there any work around for that?
+  ---
+  Comment: > Try this... I am using with TextField maxLines: 1 decoration : InputDecoration( isDense: true )
+
+not a complete solution, but this one worked for me!
+  ---
+  Comment: Any update?
+
+https://stackoverflow.com/questions/73281953/how-to-show-overflow-on-textfields-value-ellipsis
+  ---
+  Comment: Bug it DevTools: https://github.com/flutter/devtools/issues/7130
+
+![image](https://github.com/flutter/flutter/assets/12115586/b71f6b0d-d940-4240-aacd-77adf047e24b)
+
+  ---
+  Comment: any update in 2024??? 
+
+  ---
+  Comment: This issue is missing a priority label. Please set a priority label when adding the `triaged-design` label.
+  ---
+  Comment: @polina-c I think this issue is not related to the devtools bug that you mentioned.
+
+I believe this issue is about wanting something like [TextOverflow](https://main-api.flutter.dev/flutter/painting/TextOverflow.html) for EditableText. So the video in the comment https://github.com/flutter/flutter/issues/61069#issuecomment-950826914 shows what I would expect a solution to this problem to do.
+
+CC @LongCatIsLooong who's working on the overflow ellipsis right now.
+  ---
+  Comment: Any news?
+  ---
+  Comment: Thanks, @justinmc 
+@kenzieschmoll, FYI 
+  ---
+  Comment: Glad to hear this issue is being worked on, would like to add that this would be an extremely useful feature when TextField is used in datatables where space is constrained. Any possibility for an update on the status of this feature and/or an expected timeline?
+  ---
+  Comment: Is there any update on this issue? Please let me know about it.
+  ---
+  Comment: Any update on this?
+  ---
+  Comment: Hi there, this workaround helped me a lot:
+
+```
+Size measureTextSize(
+      String text,
+      TextStyle style, {
+      int maxLines = 1,
+      double maxWidth = double.infinity,
+    }) {
+      final TextPainter textPainter = TextPainter(
+        text: TextSpan(text: text, style: style),
+        textDirection: TextDirection.ltr,
+        maxLines: maxLines,
+      )..layout(minWidth: 0, maxWidth: maxWidth);
+
+      return textPainter.size;
+    }
+```
+...
+```
+
+child: LayoutBuilder(
+builder:
+                                        (context, constraints) => TextField(
+...
+                                          decoration: InputDecoration(
+                                            suffix:
+                                                measureTextSize(
+                                                          yourtext,
+                                                          const TextStyle(),
+                                                        ).width >=
+                                                        constraints.maxWidth
+                                                    ? Text('...')
+                                                    : null,
+...
+                                          ),
+),
+```
+
+Hope it helps you as well.
+  ---
+================================================================================
+
+### #51258 - Need to find how much of a long word could fit in one line before an unnatural line break
+URL: https://github.com/flutter/flutter/issues/51258
+Created: 2020-02-22T11:31:17Z Updated: 2023-07-08T01:41:26Z
+Reactions: {'total': 28, 'by_type': {'THUMBS_UP': 24, 'EYES': 4}}
+Labels: ['a: text input', 'framework', 'a: typography', 'c: proposal', 'P3', 'team-framework', 'triaged-framework']
+Ownership: team-framework
+Summary: None
+Body snippet: As described in issue #35994, there are a number of use cases for doing non rectangular LTR or RTL text layout. Although not convenient, it is possible to do custom text layout by breaking a string into short runs and measuring each run as a `Paragraph` itself before painting it at some desired location. A word/line breaker would make this easier (see issue #50171), but for general cases breaking at a space works OK.
+
+A problem arises, though, when there is text run that is longer than the ava...
+Raw Comments Count: 0
+================================================================================
+
+### #77023 - [Web] [CanvasKit][Feature Request]: Load fonts as soon as detecting browser locale
+URL: https://github.com/flutter/flutter/issues/77023
+Created: 2021-03-02T00:16:39Z Updated: 2025-10-30T11:24:09Z
+Reactions: {'total': 21, 'by_type': {'THUMBS_UP': 17, 'EYES': 4}}
+Labels: ['a: text input', 'c: new feature', 'a: internationalization', 'a: typography', 'platform-web', 'c: proposal', 'c: rendering', 'e: web_canvaskit', 'P2', 'team-web', 'triaged-web']
+Ownership: team-web
+Summary: Comments identify the root cause as CanvasKit dynamically loading CJK fonts when unknown characters are first encountered; switching to the HTML renderer avoids the issue. The workaround of using a custom font family (bundled) also resolves it. Community notes this affects Hebrew and Arabic too, and persists through 3.32.4. The issue was marked P1 but has had no recent owner; status is stalled.
+Body snippet: Currently, when I am testing the TexField I saw a weird effect. Below is the demo (web application).
+
+![demo1](https://user-images.githubusercontent.com/44708790/108788895-f4b48880-75b3-11eb-813d-c6a4db59e6bc.gif)
+
+As you can see, initially when you typed in the Chinese character, it will show the gibberish character first then render the correct Chinese character. After the first try, it works kinda fine afterward. But sometimes you can still see the gibberish character interchangeably. How...
+Raw Comments Count: 30
+  Comment: Verified on latest master using `flutter run -d chrome` command.
+
+
+https://user-images.githubusercontent.com/67046386/109614190-4df25e00-7b58-11eb-8d7e-4cbab1fcb233.mov
+
+
+Per https://github.com/flutter/flutter/issues/76473#issuecomment-785486137, labeling it as feature request rather than a bug.
+
+  ---
+  Comment: ![1](https://user-images.githubusercontent.com/17728229/118069519-eddd2b00-b3d6-11eb-9a5f-c29f1f73af7c.gif)
+
+我也遇到了这个问题，请问怎么解决
+
+  ---
+  Comment: It works fine with the following code:
+```dart
+  SizedBox(
+    child: Text(
+      "折扣折扣折扣折扣折扣",
+      maxLines: 2,
+      strutStyle: StrutStyle(
+        height: 1.15,
+        forceStrutHeight: true,
+      ),
+    ),
+  );
+```
+  ---
+  Comment: Why is this feature request instead of bug?
+  ---
+  Comment: Such a bad product experience is the main reason why I don't use flutter-web, and you call it a "feature request"?! 
+
+of course, if you only want to promote in English-speaking regions, it doesn't matter.
+
+  ---
+  Comment: does anyone have a fix / workaround to this?
+thanks.
+  ---
+  Comment: This is a very influence of the experience, but I have no power to this.hope someone help me。
+  ---
+  Comment: 什么版本可以解决
+  ---
+  Comment: 
+
+
+> 什么版本可以解决
+
+GFW
+  ---
+  Comment: I also am experiencing this, any progress? 
+  ---
+  Comment: @darshankawar to me this looks like a bug and a regression rather than a feature request
+possibly related to 
+https://github.com/flutter/flutter/issues/77465
+https://github.com/flutter/flutter/issues/85793
+
+before closing the issue I recommend to add some test to prevent similar issues from re-emerging (goldens?)
+https://github.com/flutter/flutter/issues/71627
+https://github.com/flutter/flutter/issues/73645
+https://github.com/flutter/flutter/issues/73165
+https://github.com/flutter/flutter/issues/75131
+https://github.com/flutter/flutter/issues/73628
+https://github.com/flutter/flutter/issues/90705
+https://github.com/flutter/flutter/issues/95306
+  ---
+  Comment: Hi , for those who asked for a workaround, @Dall127  @guuguo @j-cheung @Qson8 :
+
+When I jump back and read the duplicated issue #97909, I found out that @darshankawar  mentioned that we can use "html renderer" instead of the default canvaskit renderer. Not sure if two renderers have any known difference.
+
+I will come back to try flutter again, hope this can help.
+  ---
+  Comment: > Hi , for those who asked for a workaround, @Dall127 @guuguo @j-cheung @Qson8 :
+> 
+> When I jump back and read the duplicated issue #97909, I found out that @darshankawar mentioned that we can use "html renderer" instead of the default canvaskit renderer. Not sure if two renderers have any known difference.
+> 
+> I will come back to try flutter again, hope this can help.
+
+html renderer does help
+  ---
+  Comment: I have a similar problem.
+![image](https://user-images.githubusercontent.com/5051456/165018728-9f67661a-2cd5-4ddc-adf5-be9066c16fba.png)
+  ---
+  Comment: > 
+
+The html renderer will cause some UI inconsistencies, 
+I have to use CanvasKit, and still can't find a solution.
+  ---
+  Comment: any update?
+  ---
+  Comment: > > 
+> 
+> The html renderer will cause some UI inconsistencies, I have to use CanvasKit, and still can't find a solution.
+
+Is there an example? And I think that would be another issue.
+  ---
+  Comment: It was my Expanded usage that was wrong, and later solved it by using custom FontFamily.
+
+
+  ---
+  Comment: I have same problem
+- flutter-web
+- flutter-ios
+  ---
+  Comment: I found a solution.
+do not use google fonts..
+
+
+
+  ---
+  Comment: This issue is marked P1 but has had no recent status updates.
+
+The P1 label indicates high-priority issues that are at the top of the work list. This is the highest priority level a bug can have if it isn't affecting a top-tier customer or breaking the build. Bugs marked P1 are generally actively being worked on unless the assignee is dealing with a P0 bug (or another P1 bug). Issues at this level should be resolved in a matter of months and should have monthly updates on GitHub.
+
+Please consider where this bug really falls in our current priorities, and label it or assign it accordingly. This allows people to have a clearer picture of what work is actually planned. Thanks!
+  ---
+  Comment: Noone is assigned to work on it yet, but we still want to do this at some point.
+  ---
+  Comment: This issue is marked P1 but has had no recent status updates.
+
+The P1 label indicates high-priority issues that are at the top of the work list. This is the highest priority level a bug can have if it isn't affecting a top-tier customer or breaking the build. Bugs marked P1 are generally actively being worked on unless the assignee is dealing with a P0 bug (or another P1 bug). Issues at this level should be resolved in a matter of months and should have monthly updates on GitHub.
+
+Please consider where this bug really falls in our current priorities, and label it or assign it accordingly. This allows people to have a clearer picture of what work is actually planned. Thanks!
+  ---
+  Comment: ![b65a638bf563f12c11c735e6d9c61bb](https://github.com/flutter/flutter/assets/62126718/83f9b24c-0262-47e9-bb0d-88e7ab2f1790)
+![0c31d4aee47749cd42376b1fb5aea8f](https://github.com/flutter/flutter/assets/62126718/b5bba2cd-e202-4ea1-b722-e811454562c6)
+![29b2f773baba609534662b7f6884370](https://github.com/flutter/flutter/assets/62126718/25bbe574-2bec-47b4-bfb7-8d3bdb1cc1de)
+
+It is works for chrome with mobile mode ( Dimension: Responsive or other android device). 
+  ---
+  Comment: The same problem occurs at: https://flutterweb-wasm.web.app/
+
+Any non-English words will load a rather large font file
+
+
+https://github.com/flutter/flutter/assets/27877470/02f481a7-3d6b-456c-b62d-59941c9fcfb5
+
+
+  ---
+  Comment: What about this bug? this also happens in both Hebrew and Arabic. (I'm using flutter version 3.29.0)
+  ---
+  Comment: this is happening with Arabic too 
+
+non-english letters displayed as boxes 
+  ---
+  Comment: Why can't flutter web just query system fonts and use arbitrary system fonts? While it's good to bundle fonts for consistency, I'd rather have inconsistent system fonts than temporary tofu boxes.
+
+If I set the fallback system font to serif, sans-serif, or monospace, flutter should be able to find any serif/sans-serif/monospace font that contains the letters I type.
+
+For web applications where non-english text input is important, temporary tofu boxes are a deal breaker.
+
+Flutter can't guess which fonts it needs based on my web browser's locale which is set to english.
+
+The real solution is for flutter to use something like fontconfig which can query arbitrary system fonts.
+
+Google has access to chrome browser. Make a new font API if you have to. Just delegate to the OS font picker such as fontconfig.
+  ---
+  Comment: same problem (flutter 3.32.4)
+  ---
+  Comment: @amano-kenji Here is info on why canvas kit cannot use system fonts https://github.com/flutter/flutter/issues/105863#issuecomment-1155686892
+
+But, at the very least, it would be good if fonts were cached between sessions. The font is loaded, and as soon as I refresh the page, it has to be reloaded again.
+  ---
+================================================================================
+
+### #34610 - Mixing RTL and LTR text bugs
+URL: https://github.com/flutter/flutter/issues/34610
+Created: 2019-06-17T23:02:13Z Updated: 2024-03-06T21:14:32Z
+Reactions: {'total': 18, 'by_type': {'THUMBS_UP': 14, 'ROCKET': 1, 'EYES': 3}}
+Labels: ['a: text input', 'framework', 'engine', 'a: typography', 'customer: crowd', 'P2', 'team-engine', 'triaged-engine']
+Ownership: team-engine
+Summary: Early comment identified root cause: ParagraphStyle directionality is LTR for mixed text, causing spaces to be inserted at the wrong end of Arabic spans. The SkParagraph switch (#39420) was expected to fix many behaviors. Subsequent comments report partial improvements but deletion with opposite-direction keyboards remains broken.
+Body snippet: We are seeing strange behavior when mixing RTL and LTR text.
+
+Notably:
+
+- Type arabic, Type chinese, Type arabic, switch to chinese keyboard, delete. The arabic will delete all at once.
+- Emojis work strangely when mixing with RTL and LTR.
+- Caret positioning is not consistent.
+
+There are a few other minor issues that I am not clear on how to describe....
+Raw Comments Count: 8
+  Comment: After some investigation, when mixing LTR and RTL text, the ParagraphStyle's directionality is LTR. This is causing the space to be inserted at the wrong end of the arabic span. We should handle arabic spaces in a RTL manner even if the paragraph direction is LTR. The correct solution to this is to change the paragraph to RTL when dealing with RTL text, however, when arabic snippets are inline with primarily LTR text, this may not be possible.
+  ---
+  Comment: Caret positioning has vastly improved with https://github.com/flutter/engine/pull/9489
+
+The primary remaining issue is handling deletion properly with keyboards of opposite direction.
+  ---
+  Comment: This should be put on hold until https://github.com/flutter/flutter/issues/39420 (SkParagraph switch) is completed, as SkParagraph will fix many of these behaviors.
+  ---
+  Comment: another problem is when we have rtl and ltr text mixed up like (english & persian) and the we put then `overflow` property to `TextOverflow.ellipsis`. the 3 dots will apear in the middle between the persian and english text instead of it apearing at the end
+  ---
+  Comment: Any Updates?
+
+  ---
+  Comment: this feels like an eternity :cry: 
+  ---
+  Comment: I am facing the same issue with `obscureText` in TextFormField when it is switched while the locale is RTL  (probably because of the symbol for obscured text which is • is considered agnostic or RTL), but when the `obscureText` is switched to false the caret position gets misplaced even when switching back and forth it wouldn't matter.
+
+### Minimal code to reproduce the bug
+
+```dart
+bool obscurePassword = true;
+
+TextFormField(
+    keyboardType: TextInputType.visiblePassword,
+    obscureText: obscurePassword,
+    obscuringCharacter: '●',
+  
+    decoration: InputDecoration(
+      labelText: 'password',
+      suffixIcon: IconButton(
+        icon: Icon(
+          obscurePassword
+              ? Icons.visibility
+              : Icons.visibility_off,
+        ),
+        onPressed: () {
+          setState(() {
+            obscurePassword = !obscurePassword;
+          });
+        },
+      ),
+    ),
+    validator: (value) {
+      if (value.isEmpty) {
+        return translate('input_errors.required');
+      } else if (value.length < 2) {
+        return translatePlural(
+            'input_errors.min_length', 2);
+      }
+      return null;
+    },
+  ),
+```
+
+
+It works perfectly fine when the locale is LTR or English, but in Arabic or RTL it gets messed up.
+
+<details>
+<summary>Flutter doctor -v</summary>
+
+```
+
+[√] Flutter (Channel stable, 1.22.2, on Microsoft Windows [Version 10.0.19041.572], locale en-US)
+    • Flutter version 1.22.2 at C:\src\flutter
+    • Framework revision 84f3d28555 (13 days ago), 2020-10-15 16:26:19 -0700
+    • Engine revision b8752bbfff
+    • Dart version 2.10.2
+
+ 
+[√] Android toolchain - develop for Android devices (Android SDK version 29.0.3)
+    • Android SDK at C:\Users\pc\AppData\Local\Android\Sdk
+    • Platform android-30, build-tools 29.0.3
+    • ANDROID_HOME = C:\Users\pc\AppData\Local\Android\Sdk
+    • Java binary at: C:\Program Files\Android\Android Studio\jre\bin\java
+    • Java version OpenJDK Runtime Environment (build 1.8.0_242-release-1644-b01)
+    • All Android licenses accepted.
+
+[√] Android Studio (version 4.0)
+    • Android Studio at C:\Program Files\Android\Android Studio
+    • Flutter plugin version 48.1.2
+    • Dart plugin version 193.7547
+    • Java version OpenJDK Runtime Environment (build 1.8.0_242-release-1644-b01)
+
+[√] VS Code (version 1.50.1)
+    • VS Code at C:\Users\pc\AppData\Local\Programs\Microsoft VS Code
+    • Flutter extension version 3.15.1
+
+[√] Connected device (1 available)
+    • Redmi Note 9 Pro (mobile) • 7d3b60de • android-arm64 • Android 10 (API 29)
+
+• No issues found!
+```
+
+</details>
+
+  ---
+  Comment: any updates? I have the same problem. In particular, the cursor position jumps around
+My issue is [#70835](https://github.com/flutter/flutter/issues/70835)
+  ---
+================================================================================
+
+### #40648 - Trailing space doesn't work with TextField with TextAlign.right 
+URL: https://github.com/flutter/flutter/issues/40648
+Created: 2019-09-17T06:02:47Z Updated: 2025-01-29T12:53:32Z
+Reactions: {'total': 16, 'by_type': {'THUMBS_UP': 16}}
+Labels: ['a: text input', 'framework', 'f: material design', 'has reproducible steps', 'P2', 'found in release: 2.5', 'found in release: 2.6', 'team-framework', 'triaged-framework']
+Ownership: team-framework
+Summary: Comments confirm the bug persists through 2025 on all tested stable versions. The trailing space is visually trimmed/not rendered when TextAlign.right is used. A Skia bug was filed at bugs.chromium.org/p/skia/issues/detail?id=11933 and accepted. One commenter notes SkParagraph treats \r as a soft line break with CodeUnitFlag 0x0006, which may be related. A layout workaround using IntrinsicWidth inside a Row was suggested. No fix has landed in Flutter; status is stalled.
+Body snippet: TextField  Widget Option textAlign Setting for [TextAlign.right] ,input  space key cursor fault
+
+
+ `TextField(
+            textAlign: TextAlign.right,
+          )
+`...
+Raw Comments Count: 24
+  Comment: Hello @dev-zl !
+
+Thank you for posting an issue.
+Can you please provide more details and steps on how to reproduce it? Also, could you please attach `flutter doctor -v` command output?
+
+Thank you.
+  ---
+  Comment: @janmoppel 
+
+`flutter doctor -v`
+
+[√] Flutter (Channel stable, v1.7.8+hotfix.3, on Microsoft Windows [Version 10.0.17134.112], locale zh-CN)
+    • Flutter version 1.7.8+hotfix.3
+    • Framework revision b712a172f9 (10 weeks ago), 
+    • Engine revision 54ad777fd2
+    • Dart version 2.4.0
+[√] Android toolchain - develop for Android devices (Android SDK version 28.0.3)
+    • Android NDK location not configured (optional; useful for native profiling support)
+    • Platform android-28, build-tools 28.0.3
+    • Java version OpenJDK Runtime Environment (build 1.8.0_202-release-1483-b03)
+    • All Android licenses accepted.
+
+[√] Android Studio (version 3.5)
+    • Flutter plugin version 39.0.3
+    • Dart plugin version 191.8423
+    • Java version OpenJDK Runtime Environment (build 1.8.0_202-release-1483-b03)
+
+
+
+Abnormal process:
+![v](https://user-images.githubusercontent.com/36152331/65016779-a8ddc880-d957-11e9-9a3f-571d8442ca0f.gif)
+
+
+code:[Forms.txt]
+[Forms.txt](https://github.com/flutter/flutter/files/3619585/Forms.txt)
+
+
+
+
+
+  ---
+  Comment: Issue still exist 
+
+<details>
+ <summary>Code Sample</summary>
+
+```
+import 'package:flutter/material.dart';
+
+void main() => runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final appTitle = 'Form Validation Demo';
+
+    return MaterialApp(
+      title: appTitle,
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text(appTitle),
+        ),
+        body: MyCustomForm(),
+      ),
+    );
+  }
+}
+
+class MyCustomForm extends StatefulWidget {
+  @override
+  MyCustomFormState createState() {
+    return MyCustomFormState();
+  }
+}
+
+class MyCustomFormState extends State<MyCustomForm> {
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Form(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          TextFormField(
+            autofocus: true,
+            decoration:
+                InputDecoration(border: InputBorder.none, hintText: 'test 1'),
+            validator: (value) {
+              if (value.isEmpty) {
+                return 'Please enter some text';
+              }
+              return null;
+            },
+          ),
+          TextFormField(
+            autofocus: true,
+            textAlign: TextAlign.right,
+            decoration:
+                InputDecoration(border: InputBorder.none, hintText: 'test 2'),
+          ),
+          TextField(
+            textAlign: TextAlign.right,
+            decoration:
+                InputDecoration(border: InputBorder.none, hintText: 'test 3'),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            child: RaisedButton(
+              onPressed: () {
+                // Validate returns true if the form is valid, or false
+                // otherwise.
+                if (_formKey.currentState.validate()) {
+                  // If the form is valid, display a Snackbar.
+                  Scaffold.of(context)
+                      .showSnackBar(SnackBar(content: Text('Processing Data')));
+                }
+              },
+              child: Text('Submit'),
+            ),
+          ),
+        ],
+      ),
+      key: _formKey,
+    );
+  }
+}
+
+```
+
+</details>
+
+<details>
+<summary>flutter doctor -v</summary>
+
+```
+[✓] Flutter (Channel dev, v1.18.0-dev.5.0, on Mac OS X 10.15.4 19E287, locale
+    en-GB)
+    • Flutter version 1.18.0-dev.5.0 at /Users/taha/Code/flutter_dev
+    • Framework revision 7f56b53de4 (3 days ago), 2020-04-12 12:00:01 -0400
+    • Engine revision beb8a7ec48
+    • Dart version 2.8.0 (build 2.8.0-dev.20.0 89b0f67261)
+ 
+[✓] Android toolchain - develop for Android devices (Android SDK version 29.0.3)
+    • Android SDK at /Users/taha/Code/sdk
+    • Platform android-29, build-tools 29.0.3
+    • ANDROID_HOME = /Users/taha/Code/sdk
+    • Java binary at: /Applications/Android
+      Studio.app/Contents/jre/jdk/Contents/Home/bin/java
+    • Java version OpenJDK Runtime Environment (build
+      1.8.0_212-release-1586-b4-5784211)
+    • All Android licenses accepted.
+[✓] Xcode - develop for iOS and macOS (Xcode 11.4)
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • Xcode 11.4, Build version 11E146
+    • CocoaPods version 1.9.1
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+[✓] Android Studio (version 3.6)
+    • Android Studio at /Applications/Android Studio.app/Contents
+    • Flutter plugin version 45.1.1
+    • Dart plugin version 192.7761
+    • Java version OpenJDK Runtime Environment (build
+      1.8.0_212-release-1586-b4-5784211)
+[✓] VS Code (version 1.44.1)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.9.1
+[✓] Connected device (4 available)
+    • Taha’s iPhone • 00008020-001059882212002E • ios            • iOS 13.4.1
+    • macOS         • macOS                     • darwin-x64     • Mac OS X
+      10.15.4 19E287
+    • Chrome        • chrome                    • web-javascript • Google Chrome
+      81.0.4044.92
+    • Web Server    • web-server                • web-javascript • Flutter Tools
+• No issues found!
+```
+
+</details>
+  ---
+  Comment: Having the same problem on Channel beta, 1.21.0-9.2.pre, on Mac OS X 10.15.4 19E287
+  ---
+  Comment: Issue reproducible on latest stable and master.
+
+<img width="345" alt="Screenshot 2021-01-22 at 6 22 36 PM" src="https://user-images.githubusercontent.com/67046386/105493065-e1757b00-5cde-11eb-9d14-04905c176941.png">
+
+<details>
+<summary>flutter doctor -v</summary>
+
+```bash
+
+  ╔════════════════════════════════════════════════════════════════════════════╗
+  ║                 Welcome to Flutter! - https://flutter.dev                  ║
+  ║                                                                            ║
+  ║ The Flutter tool uses Google Analytics to anonymously report feature usage ║
+  ║ statistics and basic crash reports. This data is used to help improve      ║
+  ║ Flutter tools over time.                                                   ║
+  ║                                                                            ║
+  ║ Flutter tool analytics are not sent on the very first run. To disable      ║
+  ║ reporting, type 'flutter config --no-analytics'. To display the current    ║
+  ║ setting, type 'flutter config'. If you opt out of analytics, an opt-out    ║
+  ║ event will be sent, and then no further information will be sent by the    ║
+  ║ Flutter tool.                                                              ║
+  ║                                                                            ║
+  ║ By downloading the Flutter SDK, you agree to the Google Terms of Service.  ║
+  ║ Note: The Google Privacy Policy describes how data is handled in this      ║
+  ║ service.                                                                   ║
+  ║                                                                            ║
+  ║ Moreover, Flutter includes the Dart SDK, which may send usage metrics and  ║
+  ║ crash reports to Google.                                                   ║
+  ║                                                                            ║
+  ║ Read about data we send with crash reports:                                ║
+  ║ https://flutter.dev/docs/reference/crash-reporting                         ║
+  ║                                                                            ║
+  ║ See Google's privacy policy:                                               ║
+  ║ https://policies.google.com/privacy                                        ║
+  ╚════════════════════════════════════════════════════════════════════════════╝
+
+[✓] Flutter (Channel stable, 1.22.5, on Mac OS X 10.15.4 19E2269 darwin-x64, locale en-IN)
+    • Flutter version 1.22.5 at /Users/dhs/Code/flutter_stable
+    • Framework revision 7891006299 (6 weeks ago), 2020-12-10 11:54:40 -0800
+    • Engine revision ae90085a84
+    • Dart version 2.10.4
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 30.0.0)
+    • Android SDK at /Users/dhs/Library/Android/sdk
+    • Platform android-30, build-tools 30.0.0
+    • Java binary at: /Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/bin/java
+    • Java version OpenJDK Runtime Environment (build 1.8.0_242-release-1644-b3-6915495)
+    • All Android licenses accepted.
+
+[✓] Xcode - develop for iOS and macOS (Xcode 12.3)
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • Xcode 12.3, Build version 12C33
+    • CocoaPods version 1.9.3
+
+[!] Android Studio (version 4.1)
+    • Android Studio at /Applications/Android Studio.app/Contents
+    ✗ Flutter plugin not installed; this adds Flutter specific functionality.
+    ✗ Dart plugin not installed; this adds Dart specific functionality.
+    • Java version OpenJDK Runtime Environment (build 1.8.0_242-release-1644-b3-6915495)
+
+[✓] VS Code (version 1.52.1)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.16.0
+
+[✓] Connected device (2 available)
+    • AOSP on IA Emulator (mobile) • emulator-5554                        • android-x86 • Android 9 (API 28) (emulator)
+    • iPhone 12 Pro Max (mobile)   • A5473606-0213-4FD8-BA16-553433949729 • ios         • com.apple.CoreSimulator.SimRuntime.iOS-14-3 (simulator)
+
+! Doctor found issues in 1 category.
+```
+```bash
+[✓] Flutter (Channel master, 1.26.0-13.0.pre.117, on Mac OS X 10.15.4 19E2269 darwin-x64, locale en-IN)
+    • Flutter version 1.26.0-13.0.pre.117 at /Users/dhs/Code/flutter_master
+    • Framework revision 1f07fde45d (8 hours ago), 2021-01-21 19:15:35 -0800
+    • Engine revision 90641fa923
+    • Dart version 2.12.0 (build 2.12.0-248.0.dev)
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 30.0.0)
+    • Android SDK at /Users/dhs/Library/Android/sdk
+    • Platform android-30, build-tools 30.0.0
+    • Java binary at: /Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/bin/java
+    • Java version OpenJDK Runtime Environment (build 1.8.0_242-release-1644-b3-6915495)
+    • All Android licenses accepted.
+
+[!] Xcode - develop for iOS and macOS
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • Xcode 12.3, Build version 12C33
+    ! CocoaPods 1.9.3 out of date (1.10.0 is recommended).
+        CocoaPods is used to retrieve the iOS and macOS platform side's plugin code that responds to your plugin usage on the Dart side.
+        Without CocoaPods, plugins will not work on iOS or macOS.
+        For more info, see https://flutter.dev/platform-plugins
+      To upgrade see https://guides.cocoapods.org/using/getting-started.html#installation for instructions.
+
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] Android Studio (version 4.1)
+    • Android Studio at /Applications/Android Studio.app/Contents
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 1.8.0_242-release-1644-b3-6915495)
+
+[✓] VS Code (version 1.52.1)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.16.0
+
+[✓] Connected device (4 available)
+    • AOSP on IA Emulator (mobile) • emulator-5554                        • android-x86    • Android 9 (API 28) (emulator)
+    • iPhone 12 Pro Max (mobile)   • A5473606-0213-4FD8-BA16-553433949729 • ios            • com.apple.CoreSimulator.SimRuntime.iOS-14-3 (simulator)
+    • macOS (desktop)              • macos                                • darwin-x64     • Mac OS X 10.15.4 19E2269 darwin-x64
+    • Chrome (web)                 • chrome                               • web-javascript • Google Chrome 87.0.4280.141
+
+! Doctor found issues in 1 category.
+```
+
+</details>
+
+  ---
+  Comment: Same here
+  ---
+  Comment: Same problem too
+
+```
+Flutter 2.0.3 • channel stable • https://github.com/flutter/flutter.git
+Framework • revision 4d7946a68d (2 weeks ago) • 2021-03-18 17:24:33 -0700
+Engine • revision 3459eb2436
+Tools • Dart 2.12.2
+```
+  ---
+  Comment: experience the same problem.
+  ---
+  Comment: I've listed the issue at skia: https://bugs.chromium.org/p/skia/issues/detail?id=11933 -- it has been accepted and should be able to fix this issue in Flutter.
+  ---
+  Comment: 
+Hi @dev-zl
+Thanks for filing the issue, I verified this on the latest stable and the master channel and the issue is reproducible.
+<details>
+<summary>code sample</summary>
+
+```dart
+import 'package:flutter/material.dart';
+
+void main() => runApp(const MyApp());
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    const appTitle = 'Form Validation Demo';
+
+    return MaterialApp(
+      title: appTitle,
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text(appTitle),
+        ),
+        body: MyCustomForm(),
+      ),
+    );
+  }
+}
+
+class MyCustomForm extends StatefulWidget {
+  @override
+  MyCustomFormState createState() {
+    return MyCustomFormState();
+  }
+}
+
+class MyCustomFormState extends State<MyCustomForm> {
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          TextFormField(
+            autofocus: true,
+            decoration: const InputDecoration(
+                border: InputBorder.none, hintText: 'test 1'),
+          ),
+          TextFormField(
+            autofocus: true,
+            textAlign: TextAlign.right,
+            decoration: const InputDecoration(
+                border: InputBorder.none, hintText: 'test 2'),
+          ),
+          const TextField(
+            textAlign: TextAlign.right,
+            decoration:
+                InputDecoration(border: InputBorder.none, hintText: 'test 3'),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            child: ElevatedButton(
+              onPressed: () {},
+              child: const Text('Submit'),
+            ),
+          ),
+        ],
+      ),
+      key: _formKey,
+    );
+  }
+}
+
+
+```
+</details>
+
+<details>
+<summary>output</summary>
+<img src="https://user-images.githubusercontent.com/92717368/138247077-197a9fad-2141-4250-8f34-62fbb44f4e0c.png" width="250" height="550" />
+</details>
+
+<details>
+<summary>flutter doctor -v</summary>
+
+```bash
+[✓] Flutter (Channel stable, 2.5.3, on macOS 11.5.2 20G95 darwin-x64, locale en-US)
+    • Flutter version 2.5.3 at /Users/flo/development/flutter
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision 18116933e7 (5 days ago), 2021-10-15 10:46:35 -0700
+    • Engine revision d3ea636dc5
+    • Dart version 2.14.4
+
+[!] Android toolchain - develop for Android devices (Android SDK version 31.0.0)
+    • Android SDK at /Users/flo/Library/Android/sdk
+    • Platform android-31, build-tools 31.0.0
+    • Java binary at: /Applications/Android Studio.app/Contents/jre/Contents/Home/bin/java
+    • Java version OpenJDK Runtime Environment (build 11.0.10+0-b96-7281165)
+    ! Some Android licenses not accepted.  To resolve this, run: flutter doctor --android-licenses
+
+[✓] Xcode - develop for iOS and macOS
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • Xcode 13.0, Build version 13A5212g
+    • CocoaPods version 1.11.0
+
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] Android Studio (version 2020.3)
+    • Android Studio at /Applications/Android Studio.app/Contents
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 11.0.10+0-b96-7281165)
+
+[✓] VS Code (version 1.60.0)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.27.0
+
+[✓] Connected device (4 available)
+    • sdk gphone x86 (mobile)    • emulator-5554                        • android-x86    • Android 11 (API 30) (emulator)
+    • iPhone 12 Pro Max (mobile) • 98CBBFB1-4069-4A28-B7F7-138911ACBE72 • ios            •
+      com.apple.CoreSimulator.SimRuntime.iOS-15-0 (simulator)
+    • macOS (desktop)            • macos                                • darwin-x64     • macOS 11.5.2 20G95 darwin-x64
+    • Chrome (web)               • chrome                               • web-javascript • Google Chrome 93.0.4577.63
+
+! Doctor found issues in 1 category.
+```
+```bash
+[✓] Flutter (Channel master, 2.6.0-12.0.pre.436, on macOS 11.5.2 20G95 darwin-x64, locale en-US)
+    • Flutter version 2.6.0-12.0.pre.436 at /Users/flo/fvm/versions/master
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision 062d1e5c20 (52 minutes ago), 2021-10-21 02:48:04 -0400
+    • Engine revision d4e2709791
+    • Dart version 2.15.0 (build 2.15.0-233.0.dev)
+
+[!] Android toolchain - develop for Android devices (Android SDK version 31.0.0)
+    • Android SDK at /Users/flo/Library/Android/sdk
+    • Platform android-31, build-tools 31.0.0
+    • Java binary at: /Applications/Android Studio.app/Contents/jre/Contents/Home/bin/java
+    • Java version OpenJDK Runtime Environment (build 11.0.10+0-b96-7281165)
+    ! Some Android licenses not accepted.  To resolve this, run: flutter doctor --android-licenses
+
+[✓] Xcode - develop for iOS and macOS (Xcode 13.0)
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • CocoaPods version 1.11.0
+
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] Android Studio (version 2020.3)
+    • Android Studio at /Applications/Android Studio.app/Contents
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 11.0.10+0-b96-7281165)
+
+[✓] VS Code (version 1.60.0)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.27.0
+
+[✓] Connected device (4 available)
+    • sdk gphone x86 (mobile)    • emulator-5554                        • android-x86    • Android 11 (API 30) (emulator)
+    • iPhone 12 Pro Max (mobile) • 98CBBFB1-4069-4A28-B7F7-138911ACBE72 • ios            • com.apple.CoreSimulator.SimRuntime.iOS-15-0 (simulator)
+    • macOS (desktop)            • macos                                • darwin-x64     • macOS 11.5.2 20G95 darwin-x64
+    • Chrome (web)               • chrome                               • web-javascript • Google Chrome 93.0.4577.63
+
+! Doctor found issues in 1 category.
+```
+
+</details>
+
+Thank you
+
+  ---
+  Comment: Is this problem resolved，that space doesn't show  in end of TextField ？
+  ---
+  Comment: @darshankawar This issue is quite annoying and it has been a while. Is it possible to prioritize?
+  ---
+  Comment: I have the same thing, could someone please look into this? 🙏 
+  ---
+  Comment: same thing
+  ---
+  Comment: from 2019 to 2022 still haven't fix it yet.
+  ---
+  Comment: try this  Row(
+                                    children: [
+                                      Align(
+                                      alignment: AlignmentDirectional.centerEnd,
+                                      child: IntrinsicWidth(
+                                        child: TextField(),
+                                      ),
+                                    )
+                                    ],
+                                  );
+  ---
+  Comment: Hey guys! if this is a problem because you want to add RTL in your app then it's not an issue. Flutter handles RTL very well i thought smth was wrong at first because I used the normal latin alfabet - that's when It started to get weird so I tried using this solution - just adding `textAlign: TextAlign.right` But if you use normal text that supports RTL texts (arabic etc.) then it's all fine and you don't have to do anything just change the apps Locale :D 
+  ---
+  Comment: 3 years and the problem still persists. Is it possible to prioritise this issue ?
+  ---
+  Comment: 2023, Still an issue :(
+  ---
+  Comment: This issue is missing a priority label. Please set a priority label when adding the `triaged-framework` label.
+  ---
+  Comment: experience the same problem.
+If is use `textDirection: TextDirection.rtl` 
+then **['@' character reverses the string inside text widget in RTL text direction #74302](https://github.com/flutter/flutter/issues/74302)**
+ occurs
+
+Issue needs more priority
+  ---
+  Comment: same issue, help
+  ---
+  Comment: 2024 and still an issue
+  ---
+  Comment: 2025 still an issue.
+
+flutter doctor -v
+ `[√] Flutter (Channel stable, 3.27.2, on Microsoft Windows [Version 10.0.19045.5371], locale en-IN)
+    • Flutter version 3.27.2 on channel stable at C:\DEVELOPER\flutter
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision 68415ad1d9 (2 weeks ago), 2025-01-13 10:22:03 -0800
+    • Engine revision e672b006cb
+    • Dart version 3.6.1
+    • DevTools version 2.40.2
+
+[√] Windows Version (Installed version of Windows is version 10 or higher)
+
+[√] Android toolchain - develop for Android devices (Android SDK version 35.0.0)
+    • Android SDK at C:\Users\ALGIN ANTO\AppData\Local\Android\sdk
+    • Platform android-35, build-tools 35.0.0
+    • Java binary at: C:\Program Files\Java\jdk-17\bin\java
+    • Java version Java(TM) SE Runtime Environment (build 17.0.13+10-LTS-268)
+    • All Android licenses accepted.
+
+[√] Chrome - develop for the web
+    • Chrome at C:\Program Files\Google\Chrome\Application\chrome.exe
+
+[√] Visual Studio - develop Windows apps (Visual Studio Build Tools 2019 16.11.37)
+    • Visual Studio at C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools
+    • Visual Studio Build Tools 2019 version 16.11.34931.43
+    • Windows 10 SDK version 10.0.19041.0
+
+[√] Android Studio (version 2024.2)
+    • Android Studio at C:\Program Files\Android\Android Studio
+    • Flutter plugin can be installed from:
+       https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+       https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 21.0.3+-12282718-b509.11)
+
+[√] VS Code (version 1.96.4)
+    • VS Code at C:\Users\ALGIN ANTO\AppData\Local\Programs\Microsoft VS Code
+    • Flutter extension version 3.102.0
+
+[√] Connected device (3 available)
+    • Windows (desktop) • windows • windows-x64    • Microsoft Windows [Version 10.0.19045.5371]
+    • Chrome (web)      • chrome  • web-javascript • Google Chrome 127.0.6533.89
+    • Edge (web)        • edge    • web-javascript • Microsoft Edge 132.0.2957.127
+
+[√] Network resources
+    • All expected network resources are available.
+
+• No issues found!`
+  ---
+================================================================================
+
+### #78660 - Arrow keys in RTL move the wrong way
+URL: https://github.com/flutter/flutter/issues/78660
+Created: 2021-03-19T23:24:09Z Updated: 2024-03-06T21:14:29Z
+Reactions: {'total': 15, 'by_type': {'THUMBS_UP': 15}}
+Labels: ['a: text input', 'framework', 'f: material design', 'a: internationalization', 'has reproducible steps', 'P2', 'found in release: 2.1', 'team-framework', 'triaged-framework']
+Ownership: team-framework
+Summary: Visual order (left = left, right = right) traversal support is acknowledged as a planned feature but not yet implemented. A commenter noted the existing Intent/Action system uses a `forward` boolean that may need to be extended to support left/right explicitly. Status: stalled, planned but not implemented.
+Body snippet: The left/right arrow keys should move the caret left/right respectively, regardless of the text direction.  In Flutter they move in the wrong direction in RTL text.
+
+The methods that handle this in RenderEditable should be updated to perform the correct behavior without being renamed.  ~~So for example, the method [_moveGivenSelectionLeft](https://github.com/flutter/flutter/blob/8c44abc009a333b0494598c0cfda0fbc07358234/packages/flutter/lib/src/rendering/editable.dart#L735) actually moves the s...
+Raw Comments Count: 14
+  Comment: I can reproduce on an Android device 
+
+<details> 
+<summary>flutter doctor -v</summary> 
+
+```bash
+[✓] Flutter (Channel master, 2.1.0-13.0.pre.323, on Microsoft Windows [Version 10.0.19042.870], locale en-US)
+    • Flutter version 2.1.0-13.0.pre.323 at C:\Users\Taha\Code\flutter_master
+    • Framework revision 2cdd51900c (5 hours ago), 2021-03-30 10:16:05 +0200
+    • Engine revision dbcbf69a57
+    • Dart version 2.13.0 (build 2.13.0-175.0.dev)
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 30.0.3)
+    • Android SDK at C:\Users\Taha\Code\SDK
+    • Platform android-30, build-tools 30.0.3
+    • ANDROID_HOME = C:\Users\Taha\Code\SDK
+    • Java binary at: C:\Users\Taha\Code\android-studio\jre\bin\java
+    • Java version OpenJDK Runtime Environment (build 1.8.0_242-release-1644-b01)
+    • All Android licenses accepted.
+
+[✓] Chrome - develop for the web
+    • Chrome at C:\Program Files\Google\Chrome\Application\chrome.exe
+
+[✓] Visual Studio - develop for Windows (Visual Studio Community 2019 16.9.2)
+    • Visual Studio at C:\Program Files (x86)\Microsoft Visual Studio\2019\Community
+    • Visual Studio Community 2019 version 16.9.31112.23
+    • Windows 10 SDK version 10.0.19041.0
+
+[✓] Android Studio (version 4.1.0)
+    • Android Studio at C:\Users\Taha\Code\android-studio
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 1.8.0_242-release-1644-b01)
+
+[✓] VS Code (version 1.54.3)
+    • VS Code at C:\Users\Taha\AppData\Local\Programs\Microsoft VS Code
+    • Flutter extension version 3.20.0
+
+[✓] Connected device (4 available)
+    • Redmi K20 Pro (mobile) • def0ad20 • android-arm64  • Android 10 (API 29)
+    • Windows (desktop)      • windows  • windows-x64    • Microsoft Windows [Version 10.0.19042.870]
+    • Chrome (web)           • chrome   • web-javascript • Google Chrome 89.0.4389.90
+    • Edge (web)             • edge     • web-javascript • Microsoft Edge 89.0.774.63
+
+• No issues found!
+```
+	
+</details>
+  ---
+  Comment: Reproduced on my Android and iOS devices
+<img src="https://user-images.githubusercontent.com/6780703/113087325-fb1ecb80-9215-11eb-918f-f15271b23b8f.png" height="450" />
+
+<details>
+<summary>flutter doctor -v</summary>
+
+```
+[✓] Flutter (Channel unknown, 1.22.1, on macOS 11.0.1 20B50, locale zh-Hans-CN)
+    • Flutter version 1.22.1 at /Users/lipeng27/flutter
+    • Framework revision f30b7f4db9 (6 months ago), 2020-10-08 10:06:30 -0700
+    • Engine revision 75bef9f6c8
+    • Dart version 2.10.1
+    • Pub download mirror https://pub.flutter-io.cn
+    • Flutter download mirror https://storage.flutter-io.cn
+
+ 
+[✓] Android toolchain - develop for Android devices (Android SDK version 30.0.2)
+    • Android SDK at /Users/lipeng27/Library/Android/sdk
+    • Platform android-30, build-tools 30.0.2
+    • ANDROID_HOME = /Users/lipeng27/Library/Android/sdk
+    • Java binary at: /Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/bin/java
+    • Java version OpenJDK Runtime Environment (build 1.8.0_242-release-1644-b3-6915495)
+    • All Android licenses accepted.
+
+[✓] Xcode - develop for iOS and macOS (Xcode 12.2)
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • Xcode 12.2, Build version 12B45b
+    • CocoaPods version 1.9.3
+
+[!] Android Studio (version 4.1)
+    • Android Studio at /Applications/Android Studio.app/Contents
+    ✗ Flutter plugin not installed; this adds Flutter specific functionality.
+    ✗ Dart plugin not installed; this adds Dart specific functionality.
+    • Java version OpenJDK Runtime Environment (build 1.8.0_242-release-1644-b3-6915495)
+
+[✓] VS Code (version 1.54.3)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.20.0
+
+[✓] Connected device (1 available)
+    • SM N970U (mobile) • R58N13C6WGT • android-arm64 • Android 10 (API 29)
+```
+</details>
+
+
+  ---
+  Comment: Works now!
+
+Link with video evidence:
+
+https://twitter.com/noga_dev/status/1393190403504017409?s=20
+
+<details>
+  <summary>Flutter doctor -v</summary>
+  
+  ```
+[√] Flutter (Channel stable, 2.0.6, on Microsoft Windows [Version 10.0.19043.985], locale en-US)
+    • Flutter version 2.0.6 at C:\flutter
+    • Framework revision 1d9032c7e1 (2 weeks ago), 2021-04-29 17:37:58 -0700
+    • Engine revision 05e680e202
+    • Dart version 2.12.3
+
+[√] Android toolchain - develop for Android devices (Android SDK version 30.0.3)
+    • Android SDK at C:\Users\Agone\AppData\Local\Android\sdk
+    • Platform android-30, build-tools 30.0.3
+    • Java binary at: C:\Program Files\Android\Android Studio\jre\bin\java
+    • Java version OpenJDK Runtime Environment (build 1.8.0_242-release-1644-b01)
+    • All Android licenses accepted.
+
+[√] Chrome - develop for the web
+    • Chrome at C:\Program Files\Google\Chrome\Application\chrome.exe
+
+[√] Visual Studio - develop for Windows (Visual Studio Community 2019 16.9.4)
+    • Visual Studio at C:\Program Files (x86)\Microsoft Visual Studio\2019\Community
+    • Visual Studio Community 2019 version 16.9.31205.134
+    • Windows 10 SDK version 10.0.19041.0
+
+[√] Android Studio (version 4.1.0)
+    • Android Studio at C:\Program Files\Android\Android Studio
+    • Flutter plugin can be installed from:
+       https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+       https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 1.8.0_242-release-1644-b01)
+
+[√] VS Code (version 1.56.2)
+    • VS Code at C:\Users\Agone\AppData\Local\Programs\Microsoft VS Code
+    • Flutter extension version 3.22.0
+
+[√] Connected device (4 available)
+    • Redmi Note 5 (mobile) • e85b6adc • android-arm64  • Android 11 (API 30)
+    • Windows (desktop)     • windows  • windows-x64    • Microsoft Windows [Version 10.0.19043.985]
+    • Chrome (web)          • chrome   • web-javascript • Google Chrome 90.0.4430.212
+    • Edge (web)            • edge     • web-javascript • Microsoft Edge 90.0.818.56
+
+• No issues found!
+  ```
+  
+</details>
+
+Edit: spoke too soon. Combining LTR with RTL results in some undesired side effects...
+
+
+  ---
+  Comment: @justinmc any news on this, this issue is so annoying
+  ---
+  Comment: 
+
+### REPRO
+
+```dart
+import 'package:flutter/material.dart';
+
+const Color darkBlue = Color.fromARGB(255, 18, 32, 47);
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: darkBlue,
+      ),
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        body: Center(
+          child: MyWidget(),
+        ),
+      ),
+    );
+  }
+}
+
+class MyWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Directionality(
+                textDirection: TextDirection.rtl,
+      child: TextFormField()
+      );
+  }
+}
+
+```
+- open above code in dart pad in chrome
+- Type "123 456" (with space, in the input above. 
+- then try to navigate the caret to the left with the arrow keys in chrome.
+
+# Result
+ The caret behavior is that it does not follow the arrows and seemingly heratic.
+
+  ---
+  Comment: any news on this, this issue is so annoying
+  ---
+  Comment: Any news?
+It's frustrating!
+  ---
+  Comment: Hi there,
+I also have the same problem. Any update regarding this issue would be appreciated.
+  ---
+  Comment: @LongCatIsLooong maybe there is a simple fix for this with your Intent/Action system in EditableText?  I think the Intents that handle cursor movement use [a forward boolean](https://github.com/flutter/flutter/blob/c40baf47c5c8dabc10a2f375239fcdb61da2b7b7/packages/flutter/lib/src/widgets/text_editing_intents.dart#L24) to decide the direction, but maybe this should specifically indicate left/right in some situations?
+  ---
+  Comment: Visual order traversal support is planned but it has not been implemented yet. Consider :+1: this issue to bump the priority if you need this feature.
+  ---
+  Comment: > Visual order traversal support is planned but it has not been implemented yet. Consider 👍 this issue to bump the priority if you need this feature.
+
+Can you send the link of the issue?
+  ---
+  Comment: Any update ?
+
+  ---
+  Comment: Hi there,
+Can you please provide an update on this matter?
+  ---
+  Comment: When there is an update, it'll be posted on this thread — there's no need to ask. Before adding a comment, please read these:
+https://github.com/flutter/flutter/wiki/Issue-hygiene#when-will-my-bug-be-fixed
+https://github.com/flutter/flutter/wiki/Issue-hygiene#do-not-add-me-too-or-same-or-is-there-an-update-comments-to-bugs
+
+  ---
+================================================================================
+
+### #36854 - Feature request: Setting paragraph distance in Text and TextField
+URL: https://github.com/flutter/flutter/issues/36854
+Created: 2019-07-24T16:34:05Z Updated: 2024-03-06T21:15:12Z
+Reactions: {'total': 12, 'by_type': {'THUMBS_UP': 12}}
+Labels: ['a: text input', 'c: new feature', 'framework', 'f: material design', 'a: typography', 'P3', 'team-framework', 'triaged-framework']
+Ownership: team-framework
+Summary: None
+Body snippet: Currently, we have no control over paragraph spacing in both Text and TextField. This feature is important in text stying. ...
+Raw Comments Count: 5
+  Comment: any news update?
+  ---
+  Comment: I would like to add information to this: Flutter currently has letterSpacing and even wordSpacing, I don't think paragraphSpacing would be hard. Instead of applying horizontal space to each " ", it would apply vertical space to each "\n".
+  ---
+  Comment: Also spacing control for `u2029` and `u2028` will be great.
+  ---
+  Comment: Any updates ? 🙂 we should be able to define this on a TextStyle like in Figma
+  ---
+  Comment: This issue is missing a priority label. Please set a priority label when adding the `triaged-framework` label.
+  ---
+================================================================================
+
+### #39755 - Selection of any justified-text is inaccurate in non-latin languages
+URL: https://github.com/flutter/flutter/issues/39755
+Created: 2019-09-03T16:42:40Z Updated: 2024-03-06T21:14:15Z
+Reactions: {'total': 10, 'by_type': {'THUMBS_UP': 9, 'EYES': 1}}
+Labels: ['a: text input', 'framework', 'f: material design', 'a: internationalization', 'a: typography', 'has reproducible steps', 'P2', 'found in release: 3.3', 'found in release: 3.7', 'team-framework', 'triaged-framework']
+Ownership: team-framework
+Summary: Comments narrow the scope: the inaccurate selection highlight affects Korean, Arabic, Hebrew, and Persian scripts but not Cyrillic (Russian). Using a language-appropriate font (e.g., Amiri for Arabic) fixes the issue for pure RTL text, but mixed Latin+RTL text remains broken even with a proper font. The `selectionHeightStyle`/`selectionWidthStyle` options partially helped but did not fully resolve the issue. The problem is present in all text-alignment modes for RTL scripts, not only justified text. Status: open since 2019, no PR, long-standing stall.
+Body snippet: I hope I can clarify this issue because it is a little weird. It took me a while to figure out when exactly does it occur.
+
+Here is a very primitive application:
+
+```dart
+// main.dart
+import 'package:flutter/material.dart';
+void main() => runApp(MaterialApp(
+  home: Scaffold(
+    appBar: AppBar(),
+    body: Padding(
+      padding: const EdgeInsets.all(18.0),
+      child: TextField(
+        textAlign: TextAlign.justify,
+        maxLines: null,
+      ),
+    ),
+  ),
+));
+```
+
+No...
+Raw Comments Count: 17
+  Comment: CC @GaryQian 
+  ---
+  Comment: It does not have to be a text input to reproduce the issue. Any selectable text would show the same behavior (text inputs, SelectableText, SelectableText.rich ... etc). So I think it's better to remove `a: text input` label.
+  ---
+  Comment: @OsamaAbbas The labels are not exclusive, if it impacts an area or is reasonably relevant, we should add the label so that the right people can find the right bug.
+
+This looks like we are somehow missing the justification_x_offset from the code_units in LibTxt. The curious part is somehow, alphabetic text works, which indicates it isn't a blatant omission of the justification_x_offset but rather something more subtle.
+  ---
+  Comment: Russian language does NOT have this issue. (I thought it would, because it uses non latin chars)
+  ---
+  Comment: A more likely explanation is that some scripts treat spaces as forming a new run of text, while latin script treats spaces as a part of the same run of text. I'm reviewing the justify logic to see how we deal with spaces as a delimiter for runs and if we are justifying properly there.
+  ---
+  Comment: I really appreciate your effort. Thank you.
+
+Maybe related: Mixed text (latin and non latin characters) breaks the RTL justification but fixes the selection accuracy! However, not all combinations have this effect, some combinations only fixes the selection accuracy on the same line. I did many trials but have not recorded them. By a 'combination' I mean: single latin character, one character plus a space, one word without spaces, multi-words ... etc.
+  ---
+  Comment: The handles of the selection highlight (in non latin text) is also inaccurate in the other `textAlign` cases in the case of multi word selection.
+
+Third problem: the spaces between words are given a smaller height than the words.
+
+![20190909_151634](https://user-images.githubusercontent.com/3346502/64507214-0ef19c80-d315-11e9-9554-7b398dc5745f.jpg)
+
+  ---
+  Comment: An important update: changing the font to an appropriate Arabic font (I used Amiri Font) solves the accuracy problem. It also makes spaces have the same height as the surrounding text.
+
+I will try with a Korean font later.
+  ---
+  Comment: You can now use `selectionHeightStyle` and `selectionWidthStyle` to choose how the selection highlighting will look. See https://github.com/flutter/flutter/pull/48917
+
+I recommend trying `max` or `strut`
+  ---
+  Comment: Actually, the issue above only partially resolves this. Reopening!
+  ---
+  Comment: Any updates on this issue? [This](https://github.com/flutter/flutter/issues/39755#issuecomment-529315991) is something we're facing too in Arabic text selection no matter what the text alignment is. It's not just a justification issue, and I think the title should reflect that. We've tried different fonts and no solution. Even on latest release v1.17.1. 
+
+<img width="615" alt="Screen Shot 2020-05-15 at 9 22 33 AM" src="https://user-images.githubusercontent.com/15626884/82082047-ff222780-96ef-11ea-8a9c-512d76555db7.png">
+
+Thank you.
+  ---
+  Comment: <details> 
+<summary>flutter doctor -v</summary> 
+
+``` 
+[✓] Flutter (Channel dev, 1.20.0-2.0.pre, on Mac OS X 10.15.5 19F101, locale
+    en-GB)
+    • Flutter version 1.20.0-2.0.pre at /Users/tahatesser/Code/flutter_dev
+    • Framework revision 15a28159bc (9 days ago), 2020-06-23 04:52:58 -0700
+    • Engine revision 91a63d6a44
+    • Dart version 2.9.0 (build 2.9.0-19.0.dev 7e72c9ae7e)
+
+ 
+[✓] Android toolchain - develop for Android devices (Android SDK version 30.0.0)
+    • Android SDK at /Users/tahatesser/Code/sdk
+    • Platform android-30, build-tools 30.0.0
+    • ANDROID_HOME = /Users/tahatesser/Code/sdk
+    • Java binary at: /Applications/Android
+      Studio.app/Contents/jre/jdk/Contents/Home/bin/java
+    • Java version OpenJDK Runtime Environment (build
+      1.8.0_242-release-1644-b3-6222593)
+    • All Android licenses accepted.
+
+[✓] Xcode - develop for iOS and macOS (Xcode 11.5)
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • Xcode 11.5, Build version 11E608c
+    • CocoaPods version 1.9.3
+
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] Android Studio (version 4.0)
+    • Android Studio at /Applications/Android Studio.app/Contents
+    • Flutter plugin version 47.1.2
+    • Dart plugin version 193.7361
+    • Java version OpenJDK Runtime Environment (build
+      1.8.0_242-release-1644-b3-6222593)
+
+[✓] VS Code (version 1.46.1)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.12.1
+
+[✓] Connected device (5 available)
+    • SM M305F      • 32003c30dc19668f          • android-arm64  • Android 10
+      (API 29)
+    • Taha’s iPhone • 00008020-001059882212002E • ios            • iOS 13.5.1
+    • macOS desktop • macos                     • darwin-x64     • Mac OS X
+      10.15.5 19F101
+    • Web Server    • web-server                • web-javascript • Flutter Tools
+    • Chrome        • chrome                    • web-javascript • Google Chrome
+      83.0.4103.116
+
+• No issues found!
+
+``` 
+
+</details> 
+  ---
+  Comment: I have same issue in my project (flutter web)
+incorrect selection in  arabic (RTL) language 
+  ---
+  Comment: ### Update: 
+After investigating a bit more into this issue I can confirm that it has to do something with the font being used. In another application with a custom font containing glyphs for Persian language it's working as intended but using the default font brings back the issue.
+
+![Nov-01-2021 13-35-49](https://user-images.githubusercontent.com/8766492/139655432-5a48c810-52d9-446e-b5a1-70a31d3295a2.gif)
+Top textfield uses a custom font and bottom textfield is using default font (I guess Roboto because of `MaterialApp`).
+
+---
+
+2021 is about to end and it's been open since 2019. Seems like Flutter's non-English community is so small since it only got 6 thumbs up in more than 2 years and has been inactive in a year!
+
+Can any of Flutter's contributors define a clear path on possible solutions to fixing this issue? I'm willing to start working on it but I'm not familiar with Flutter's huge codebase and this issue seems to be related to many places from Flutter's engine to the Flutter's text related widgets.
+
+P.S. I think the issue title should drop the justified-text since it's happening (at least for RTL languages) without the justification too.
+
+<details>
+  <summary>flutter doctor -v</summary>
+  
+```
+[✓] Flutter (Channel stable, 2.2.1, on macOS 12.0.1 21A559 darwin-arm, locale
+    en-US)
+    • Flutter version 2.2.1 at /Users/amirpanahandeh/flutter
+    • Framework revision 02c026b03c (5 months ago), 2021-05-27 12:24:44 -0700
+    • Engine revision 0fdb562ac8
+    • Dart version 2.13.1
+
+[!] Android toolchain - develop for Android devices (Android SDK version 31.0.0)
+    • Android SDK at /Users/amirpanahandeh/SDK
+    • Platform android-31, build-tools 31.0.0
+    • ANDROID_HOME = /Users/amirpanahandeh/SDK
+    • Java binary at: /Applications/Android
+      Studio.app/Contents/jre/Contents/Home/bin/java
+    • Java version OpenJDK Runtime Environment (build 11.0.10+0-b96-7249189)
+    ✗ Android license status unknown.
+      Run `flutter doctor --android-licenses` to accept the SDK licenses.
+      See https://flutter.dev/docs/get-started/install/macos#android-setup for
+      more details.
+
+[✓] Xcode - develop for iOS and macOS
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • Xcode 13.1, Build version 13A1030d
+    • CocoaPods version 1.11.2
+
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[!] Android Studio (version 2020.3)
+    • Android Studio at /Applications/Android Studio.app/Contents
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+    ✗ Unable to find bundled Java version.
+    • Try updating or re-installing Android Studio.
+
+[✓] IntelliJ IDEA Community Edition (version 2021.1.3)
+    • IntelliJ at /Applications/IntelliJ IDEA CE.app
+    • Flutter plugin version 58.0.3
+    • Dart plugin version 211.7727
+
+[✓] VS Code (version 1.61.2)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.27.0
+
+[✓] Connected device (2 available)
+    • iPhone 13 (mobile) • 0CD16DF2-3FBF-4207-8EE5-A49F45806CD4 • ios
+      • com.apple.CoreSimulator.SimRuntime.iOS-15-0 (simulator)
+    • Chrome (web)       • chrome                               • web-javascript
+      • Google Chrome 95.0.4638.54
+
+! Doctor found issues in 2 categories.
+```
+</details>
+
+<img src="https://user-images.githubusercontent.com/8766492/139648892-d1d2aec0-4643-438c-9b9f-7aa365df1c69.gif" width="300" height="650"/>
+  ---
+  Comment: Looks like this is still an issue with languages like Hebrew, Arabic 
+
+### Hebrew (Flutter)
+<img width="385" alt="image" src="https://user-images.githubusercontent.com/31410839/209028205-06455c4b-a38c-4df6-a070-c8e6efa2a38c.png">
+
+### Hebrew (Native)
+<img width="382" alt="image" src="https://user-images.githubusercontent.com/31410839/209028458-df9fcb40-045f-4d55-adcc-04865e27fd34.png">
+
+### Arabic(Flutter)
+<img width="368" alt="image" src="https://user-images.githubusercontent.com/31410839/209028697-3a9ef322-13a3-42f2-aaca-048c12c5068f.png">
+
+
+### Korean single word selection
+<img width="347" alt="image" src="https://user-images.githubusercontent.com/31410839/209027955-54bf3281-7625-41a1-8e71-935ded346269.png">
+
+### Korean line selection
+<img width="366" alt="image" src="https://user-images.githubusercontent.com/31410839/209027820-38390d03-fdb4-49df-a4fb-e68d012a07df.png">
+
+
+<details>
+<summary>flutter doctor -v (mac)</summary>
+
+```
+[✓] Flutter (Channel master, 3.7.0-3.0.pre.33, on macOS 12.6 21G115 darwin-arm64, locale en-IN)
+    • Flutter version 3.7.0-3.0.pre.33 on channel master 
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision 5201856805 (38 minutes ago), 2022-12-05 18:27:21 -0800
+    • Engine revision a309d239c4
+    • Dart version 2.19.0 (build 2.19.0-463.0.dev)
+    • DevTools version 2.20.0
+    • If those were intentional, you can disregard the above warnings; however it is recommended to use "git" directly
+      to perform update checks and upgrades.
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 33.0.0-rc4)
+    • Android SDK at /Users/mahesh/Library/Android/sdk
+    • Platform android-33, build-tools 33.0.0-rc4
+    • ANDROID_HOME = /Users/mahesh/Library/Android/sdk
+    • Java binary at: /Applications/Android Studio.app/Contents/jre/Contents/Home/bin/java
+    • Java version OpenJDK Runtime Environment (build 11.0.12+0-b1504.28-7817840)
+    • All Android licenses accepted.
+
+[✓] Xcode - develop for iOS and macOS (Xcode 14.0.1)
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • Build 14A400
+    • CocoaPods version 1.11.3
+
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] Android Studio (version 2021.2)
+    • Android Studio at /Applications/Android Studio.app/Contents
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 11.0.12+0-b1504.28-7817840)
+
+[✓] IntelliJ IDEA Community Edition (version 2021.2.1)
+    • IntelliJ at /Applications/IntelliJ IDEA CE.app
+    • Flutter plugin version 61.2.4
+    • Dart plugin version 212.5080.8
+
+[✓] VS Code (version 1.70.2)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.55.20221129
+
+[✓] Connected device (3 available)
+    • iPhone 12 Pro (mobile) • 026D5789-9E78-4AD5-B1B2-3F8D4E7F65E4 • ios            •
+      com.apple.CoreSimulator.SimRuntime.iOS-14-5 (simulator)
+    • macOS (desktop)        • macos                                • darwin-arm64   • macOS 12.6 21G115 darwin-arm64
+    • Chrome (web)           • chrome                               • web-javascript • Google Chrome 108.0.5359.94
+
+[✓] HTTP Host Availability
+    • All required HTTP hosts are available
+
+• No issues found!
+```
+```
+[✓] Flutter (Channel stable, 3.3.9, on macOS 12.6 21G115 darwin-arm, locale en-IN)
+    • Flutter version 3.3.9 on channel stable at /Users/mahesh/Development/flutter
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision b8f7f1f986 (24 hours ago), 2022-11-23 06:43:51 +0900
+    • Engine revision 8f2221fbef
+    • Dart version 2.18.5
+    • DevTools version 2.15.0
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 33.0.0-rc4)
+    • Android SDK at /Users/mahesh/Library/Android/sdk
+    • Platform android-33, build-tools 33.0.0-rc4
+    • ANDROID_HOME = /Users/mahesh/Library/Android/sdk
+    • Java binary at: /Applications/Android Studio.app/Contents/jre/Contents/Home/bin/java
+    • Java version OpenJDK Runtime Environment (build 11.0.12+0-b1504.28-7817840)
+    • All Android licenses accepted.
+
+[✓] Xcode - develop for iOS and macOS (Xcode 14.0.1)
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • Build 14A400
+    • CocoaPods version 1.11.3
+
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] Android Studio (version 2021.2)
+    • Android Studio at /Applications/Android Studio.app/Contents
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 11.0.12+0-b1504.28-7817840)
+
+[✓] IntelliJ IDEA Community Edition (version 2021.2.1)
+    • IntelliJ at /Applications/IntelliJ IDEA CE.app
+    • Flutter plugin version 61.2.4
+    • Dart plugin version 212.5080.8
+
+[✓] VS Code (version 1.70.2)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.53.20221101
+
+[✓] Connected device (3 available)
+    • iPhone 12 Pro (mobile) • 026D5789-9E78-4AD5-B1B2-3F8D4E7F65E4 • ios            •
+      com.apple.CoreSimulator.SimRuntime.iOS-14-5 (simulator)
+    • macOS (desktop)        • macos                                • darwin-arm64   • macOS 12.6 21G115 darwin-arm
+    • Chrome (web)           • chrome                               • web-javascript • Google Chrome 107.0.5304.110
+
+[✓] HTTP Host Availability
+    • All required HTTP hosts are available
+
+• No issues found!
+```
+</details>
+  ---
+  Comment: This issue still exist in v3.7.0.
+
+Some notes:
+
+- In pure rtl texts, the issue can be solved using a proper font for the target language. For example: Amiri font for Arabic script.
+- In mixed texts (i.e. Arabic with some English words), the issue exists even with a proper font.
+
+![image](https://user-images.githubusercontent.com/3346502/214938162-bda21ceb-944c-4e47-81b8-58de8fcb5107.png)
+
+  ---
+  Comment: This issue is missing a priority label. Please set a priority label when adding the `triaged-framework` label.
+  ---
+================================================================================
+
+### #90058 - TextFormField with textAlign: TextAlign.right  whitespace doesn't show unless text is entered.
+URL: https://github.com/flutter/flutter/issues/90058
+Created: 2021-09-14T15:04:37Z Updated: 2025-08-13T18:06:38Z
+Reactions: {'total': 6, 'by_type': {'THUMBS_UP': 6}}
+Labels: ['a: text input', 'framework', 'f: material design', 'has reproducible steps', 'P2', 'found in release: 2.5', 'found in release: 2.6', 'team-design', 'triaged-design']
+Ownership: team-design
+Summary: Comments confirm the trailing whitespace rendering bug with `TextAlign.right` is reproducible on all platforms (web, macOS, Android, Windows) on stable and master. The space exists in the string but is not rendered because of text alignment trimming. A creative hack workaround (transparent TextField overlaid with a Text widget) is provided but is not suitable for production. The issue is missing a priority label as noted by a bot. Status: open, stalled, workaround available.
+Body snippet:  I use TextFormField and property textAlign: TextAlign.right in my web application but I see prob when typing space, it don't show if don't have any text after it :(
+ Please help!...
+Raw Comments Count: 8
+  Comment: Hi @lqmminh, thanks for filing the issue. 
+
+Can you please provide your `flutter doctor -v` and `flutter run --verbose` logs, and a [minimal complete reproducible code sample](https://stackoverflow.com/help/minimal-reproducible-example)?
+
+Please provide any more context that will be necessary.
+
+Thank you
+  ---
+  Comment: <details>
+<summary>flutter doctor -v</summary>
+
+```console
+[✓] Flutter (Channel stable, 2.5.0, on macOS 11.5.2 20G95 darwin-x64, locale en-VN)
+    • Flutter version 2.5.0 at /Users/lqm/development/flutter
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision 4cc385b4b8 (8 days ago), 2021-09-07 23:01:49 -0700
+    • Engine revision f0826da7ef
+    • Dart version 2.14.0
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 31.0.0)
+    • Android SDK at /Users/lqm/Library/Android/sdk
+    • Platform android-31, build-tools 31.0.0
+    • Java binary at: /Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/bin/java
+    • Java version OpenJDK Runtime Environment (build 11.0.8+10-b944.6916264)
+    • All Android licenses accepted.
+
+[✓] Xcode - develop for iOS and macOS
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • Xcode 12.5.1, Build version 12E507
+    • CocoaPods version 1.10.1
+
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] Android Studio (version 4.2)
+    • Android Studio at /Applications/Android Studio.app/Contents
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 11.0.8+10-b944.6916264)
+
+[✓] VS Code (version 1.60.0)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension can be installed from:
+      🔨 https://marketplace.visualstudio.com/items?itemName=Dart-Code.flutter
+
+[✓] Connected device (4 available)
+    • Star 5 (mobile)   • BRG00051732 • android-arm64  • Android 11 (API 30)
+    • SM M315F (mobile) • R58NC2Z7ZRH • android-arm64  • Android 11 (API 30)
+    • macOS (desktop)   • macos       • darwin-x64     • macOS 11.5.2 20G95 darwin-x64
+    • Chrome (web)      • chrome      • web-javascript • Google Chrome 93.0.4577.82
+
+• No issues found!
+```
+</details>
+  ---
+  Comment: About code sample is just:
+
+```dart
+TextFormField(
+    textAlign: TextAlign.right,
+  )
+```
+Thank for response @danagbemava-nc 
+  ---
+  Comment: Issue is reproducible on `master` and `stable` on all platforms. 
+
+When the text in the `TextFormField` is aligned to the right, hitting the `space bar` doesn't show the whitespace unless text is entered in which case the whitespace will be visible. 
+
+<details>
+<summary>code sample</summary>
+
+```dart
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MaterialApp(home: Home()));
+}
+
+class Home extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Center(
+        child: TextFormField(
+          textAlign: TextAlign.right,
+        ),
+      ),
+    );
+  }
+}
+```
+</details>
+
+<details>
+<summary>flutter doctor -v</summary>
+
+```console
+[✓] Flutter (Channel master, 2.6.0-6.0.pre.114, on macOS 11.5.1 20G80
+    darwin-arm, locale en-GB)
+    • Flutter version 2.6.0-6.0.pre.114 at /Users/nexus/dev/sdks/flutters
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision cd1892f04f (2 hours ago), 2021-09-15 22:17:02 -0700
+    • Engine revision 5a09f16031
+    • Dart version 2.15.0 (build 2.15.0-110.0.dev)
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 31.0.0)
+    • Android SDK at /Users/nexus/Library/Android/sdk
+    • Platform android-31, build-tools 31.0.0
+    • Java binary at: /Applications/Android
+      Studio.app/Contents/jre/Contents/Home/bin/java
+    • Java version OpenJDK Runtime Environment (build 11.0.10+0-b96-7249189)
+    • All Android licenses accepted.
+
+[✓] Xcode - develop for iOS and macOS (Xcode 12.5.1)
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • CocoaPods version 1.11.0
+
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] Android Studio (version 2020.3)
+    • Android Studio at /Applications/Android Studio.app/Contents
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 11.0.10+0-b96-7249189)
+
+[✓] VS Code (version 1.60.1)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.26.0
+
+[✓] Connected device (4 available)
+    • M2007J20CG (mobile)    • 5dd3be00                  • android-arm64  •
+      Android 11 (API 30)
+    • Nexus’ IPhone (mobile) • 00008020-001875E83A38002E • ios            • iOS
+      14.7.1 18G82
+    • macOS (desktop)        • macos                     • darwin-arm64   •
+      macOS 11.5.1 20G80 darwin-arm
+    • Chrome (web)           • chrome                    • web-javascript •
+      Google Chrome 93.0.4577.82
+
+• No issues found!
+```
+
+```console
+[✓] Flutter (Channel stable, 2.5.0, on macOS 11.5.1 20G80 darwin-arm, locale
+    en-GB)
+    • Flutter version 2.5.0 at /Users/nexus/dev/sdks/flutter
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision 4cc385b4b8 (8 days ago), 2021-09-07 23:01:49 -0700
+    • Engine revision f0826da7ef
+    • Dart version 2.14.0
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 31.0.0)
+    • Android SDK at /Users/nexus/Library/Android/sdk
+    • Platform android-31, build-tools 31.0.0
+    • Java binary at: /Applications/Android
+      Studio.app/Contents/jre/Contents/Home/bin/java
+    • Java version OpenJDK Runtime Environment (build 11.0.10+0-b96-7249189)
+    • All Android licenses accepted.
+
+[✓] Xcode - develop for iOS and macOS
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • Xcode 12.5.1, Build version 12E507
+    • CocoaPods version 1.11.0
+
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] Android Studio (version 2020.3)
+    • Android Studio at /Applications/Android Studio.app/Contents
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 11.0.10+0-b96-7249189)
+
+[✓] VS Code (version 1.60.1)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.26.0
+
+[✓] Connected device (4 available)
+    • M2007J20CG (mobile)    • 5dd3be00                  • android-arm64  •
+      Android 11 (API 30)
+    • Nexus’ IPhone (mobile) • 00008020-001875E83A38002E • ios            • iOS
+      14.7.1 18G82
+    • macOS (desktop)        • macos                     • darwin-arm64   •
+      macOS 11.5.1 20G80 darwin-arm
+    • Chrome (web)           • chrome                    • web-javascript •
+      Google Chrome 93.0.4577.82
+
+• No issues found!
+```
+</details>
+
+<details>
+<summary>video</summary>
+
+
+https://user-images.githubusercontent.com/88313112/133598357-7d268a01-d184-46e0-a9d6-ca009506d8be.MP4
+
+
+</details>
+
+Edit: add video
+  ---
+  Comment: Is there any timeline on when this issue be addressed?
+  ---
+  Comment: > ### **SOLUTION!**
+
+Here is an Alternative of doing this If someone know better way of doing it Comment below
+
+```
+TextEditingController controller = TextEditingController();
+
+Container(
+              width: 200,
+              color: Colors.grey.shade300,
+              padding: const EdgeInsets.only(right: 5),
+              child: Stack(
+                children: [
+                  Positioned(
+                      right: 5,
+                      top: 15,
+                      child: Text(controller.text)),
+                  TextField(
+                    controller: controller,
+                    textAlign: TextAlign.right,
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      fillColor: Colors.red,
+                    ),
+                    onChanged: (value) {
+                      setState(() {});
+                    },
+                    style: const TextStyle(color: Colors.transparent),
+                  ),
+                ],
+              ),
+            ),
+```
+  ---
+  Comment: This issue is still present in the current flutter version.
+
+```dart
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(body: Center(child: TextField(textAlign: TextAlign.right))),
+    );
+  }
+}
+```
+  ---
+  Comment: This issue is missing a priority label. Please set a priority label when adding the `triaged-design` label.
+  ---
+================================================================================
+
+### #71083 - TextFormField (and TextField) widgets do not wrap text correctly
+URL: https://github.com/flutter/flutter/issues/71083
+Created: 2020-11-23T14:50:43Z Updated: 2024-03-06T21:14:56Z
+Reactions: {'total': 5, 'by_type': {'THUMBS_UP': 5}}
+Labels: ['a: text input', 'framework', 'f: material design', 'dependency: skia', 'a: typography', 'P2', 'team-design', 'triaged-design']
+Ownership: team-design
+Summary: Comments confirm the bug is distinct from #18761 (which is about read-only Text widgets), and the issue persists through at least Flutter 3.10.6 / Dart 3.0 on macOS. Multiple commenters reproduced it with long URLs in `TextFormField` using `FractionallySizedBox`. No proposed fix or PR exists; status is open and unresolved.
+Body snippet: Similar to the issues reported in #18761, the input fields in Flutter suffer from the same disfunction.
+
+Currently, the text input fields in Flutter do not wrap their input correctly. Instead of breaking a word in the middle and wrapping the remainder to the next line, Flutter is breaking the string at the word boundary closest to the end of the line, which is non buono.
+
+#### Flutter
+<img width="240" alt="Screen Shot 2020-11-23 at 16 37 05" src="https://user-images.githubusercontent.com/92...
+Raw Comments Count: 12
+  Comment: @benPesso 
+how does this issue differ from the one you [referenced](https://github.com/flutter/flutter/issues/18761)?
+isn't it a duplicate
+  ---
+  Comment: @iapicca That one is for Text (read-only) widgets, whereas this one is for input widgets. It's about the **wrapping** of text. Not clipping. With input fields, you don't want to clip the text, but to wrap it, so it's 100% visible.
+
+Here's another wacky example:
+<img width="217" alt="Screen Shot 2020-11-23 at 17 40 30" src="https://user-images.githubusercontent.com/921173/99982398-2c444680-2db3-11eb-97e5-7378a623d40a.png">
+
+  ---
+  Comment: Have you ever found a solution to this problem @benPesso?
+
+  ---
+  Comment: @Sembauke Not really, no. I haven't tested it in a while (after #18761 was resolved). If you're experiencing this, I guess that fix did not resolve this issue. 
+  ---
+  Comment: @benPesso This seems like it it fixed in the newest version of Flutter. But please confirm yourself.
+  ---
+  Comment: @Sembauke  Still not really working as expected.
+https://github.com/flutter/flutter/assets/921173/07a721d1-319c-4ec9-8aaa-39aef3ec6b8c
+
+
+  ---
+  Comment: are you sure you are on 3.10?
+  ---
+  Comment: [✓] Flutter (Channel stable, 3.10.3, on macOS 13.0 22A380 darwin-x64, locale en-US)
+  ---
+  Comment: > [✓] Flutter (Channel stable, 3.10.3, on macOS 13.0 22A380 darwin-x64, locale en-US)
+
+Have you set the Dart SDK to 3.0 in your pubspec.yaml?
+  ---
+  Comment: Yes, I created a brand new project for it.
+>  sdk: '>=3.0.3 <4.0.0'
+
+The input field was set in a `FractionallySizedBox`:
+```
+FractionallySizedBox(
+  widthFactor: .8,
+  child: TextFormField(
+    decoration: const InputDecoration(border: OutlineInputBorder()),
+    minLines: null,
+    maxLines: null,
+    initialValue: 'https://www.example.com/some/thingweirdisgoingon.here',
+  ),
+),
+```
+  ---
+  Comment: Same here, flutter: 3.10.6 dart: 3.0+
+![image](https://github.com/flutter/flutter/assets/13160176/cd262fc9-04f9-4295-b282-ed9474f17f24)
+
+  ---
+  Comment: This issue is missing a priority label. Please set a priority label when adding the `triaged-design` label.
+  ---
+================================================================================
+
