@@ -1,0 +1,1265 @@
+[
+  {
+    "number": 61069,
+    "title": "[proposal] ability to change text overflow on the TextField",
+    "url": "https://github.com/flutter/flutter/issues/61069",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "c: new feature",
+      "framework",
+      "f: material design",
+      "c: proposal",
+      "P2",
+      "team-text-input",
+      "triaged-text-input"
+    ],
+    "assignees": [],
+    "ownership": "team-text-input",
+    "created_at": "2020-07-08T05:01:37Z",
+    "updated_at": "2025-07-18T13:13:51Z",
+    "body": "If the user inputs more text than can fit into the available space of a single line `TextFormField`, then end of the text is simply cropped. \r\nIn debug mode, an overflow warning is also displayed on screen.\r\n\r\nUnlike the `Text` widget however, the `TextFormField` does not have an `overflow` parameter so that we can for example show an ellipsis in this situation.\r\n\r\nImplementing `overflow` handling for the `TextFormField` will allow us to give valuable visual feedback to users.",
+    "reactions": {
+      "total": 65,
+      "by_type": {
+        "THUMBS_UP": 65
+      }
+    },
+    "comment_summary": "Comments are largely me-too and bumps spanning multiple years with no root-cause analysis. One substantive comment links a related DevTools bug and notes @LongCatIsLooong is working on overflow ellipsis. The auto_size_text_field package is offered as an imperfect workaround; a TextPainter-based manual ellipsis workaround is also shared. No PR opened.",
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 51258,
+    "title": "Need to find how much of a long word could fit in one line before an unnatural line break",
+    "url": "https://github.com/flutter/flutter/issues/51258",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "framework",
+      "a: typography",
+      "c: proposal",
+      "P3",
+      "team-framework",
+      "triaged-framework"
+    ],
+    "assignees": [],
+    "ownership": "team-framework",
+    "created_at": "2020-02-22T11:31:17Z",
+    "updated_at": "2023-07-08T01:41:26Z",
+    "body": "As described in issue #35994, there are a number of use cases for doing non rectangular LTR or RTL text layout. Although not convenient, it is possible to do custom text layout by breaking a string into short runs and measuring each run as a `Paragraph` itself before painting it at some desired location. A word/line breaker would make this easier (see issue #50171), but for general cases breaking at a space works OK.\r\n\r\nA problem arises, though, when there is text run that is longer than the available length for the line. Take the following example:\r\n\r\n```\r\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\r\n```\r\n\r\nThere are no spaces to break at. That means that you have to measure every character or use some algorithm to test chunks of various lengths to see how much of it will fit. An unnatural break will be inserted at that location. The rest of the run will continue onto the next line.\r\n\r\nA further complication is that some languages (like Mongolian and Arabic) use different size glyphs depending on the context. For example, here is a Mongolian word rendered correctly on the left, but the same word with the characters as they would look in isolation. \r\n\r\n![Mongolian word](https://user-images.githubusercontent.com/10300220/75090963-252da500-55a3-11ea-910b-dbd31511a16e.png)\r\n\r\nThe size is obviously different so simply taking the sum of the size of each character is not a viable option to find the length. Even taking a substring of the long word and measuring it would be different because the character at the break point would think it was at a final rather than a medial position and thus return the wrong size. A workaround would be to insert a Zero Width Joiner at the break point before measuring, but this is a lot of extra work compared to the feature request below. \r\n\r\n## Feature request\r\n\r\nIt would be very useful to have a feature like Android's `Paint.breakText` (see [example](https://stackoverflow.com/questions/45253574/does-paint-breaktext-include-the-character-at-the-maxwidth)). You feed it a string and a max length, and it tells you how many characters of that string will fit within the specified length.",
+    "reactions": {
+      "total": 28,
+      "by_type": {
+        "THUMBS_UP": 24,
+        "EYES": 4
+      }
+    },
+    "comment_summary": null,
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 77023,
+    "title": "[Web] [CanvasKit][Feature Request]: Load fonts as soon as detecting browser locale",
+    "url": "https://github.com/flutter/flutter/issues/77023",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "c: new feature",
+      "a: internationalization",
+      "a: typography",
+      "platform-web",
+      "c: proposal",
+      "c: rendering",
+      "e: web_canvaskit",
+      "P2",
+      "team-web",
+      "triaged-web"
+    ],
+    "assignees": [],
+    "ownership": "team-web",
+    "created_at": "2021-03-02T00:16:39Z",
+    "updated_at": "2025-10-30T11:24:09Z",
+    "body": "Currently, when I am testing the TexField I saw a weird effect. Below is the demo (web application).\r\n\r\n![demo1](https://user-images.githubusercontent.com/44708790/108788895-f4b48880-75b3-11eb-813d-c6a4db59e6bc.gif)\r\n\r\nAs you can see, initially when you typed in the Chinese character, it will show the gibberish character first then render the correct Chinese character. After the first try, it works kinda fine afterward. But sometimes you can still see the gibberish character interchangeably. However, I am not sure if this is the nature of how it is... but to me, something seems wrong here.\r\n\r\nHere is another demo for Japanese!\r\n\r\n![demo2_jp](https://user-images.githubusercontent.com/44708790/108790134-ee73db80-75b6-11eb-94ea-045535c072d4.gif)\r\n\r\n\r\nBased on @yjbanov commented in #76473, it might be flutter loading fonts dynamically. Flutter detects that it doesn't have enough fonts and that is likely the reason. \r\n\r\n<details>\r\n<summary>flutter doctor -v</summary>\r\n\r\n```\r\n[\u221a] Flutter (Channel beta, 1.26.0-17.6.pre, on Microsoft Windows [Version 10.0.19041.804], locale zh-TW)\r\n    \u2022 Flutter version 1.26.0-17.6.pre at D:\\flutterdevelopment\\flutter     \r\n    \u2022 Framework revision a29104a69b (5 days ago), 2021-02-16 09:26:56 -0800\r\n    \u2022 Engine revision 21fa8bb99e\r\n    \u2022 Dart version 2.12.0 (build 2.12.0-259.12.beta)\r\n\r\n[\u221a] Android toolchain - develop for Android devices (Android SDK version 30.0.2) \r\n    \u2022 Android SDK at D:\\androidsdk\r\n    \u2022 Platform android-30, build-tools 30.0.2\r\n    \u2022 ANDROID_SDK_ROOT = D:\\androidsdk\r\n    \u2022 Java binary at: C:\\Program Files\\Android\\Android Studio\\jre\\bin\\java       \r\n    \u2022 Java version OpenJDK Runtime Environment (build 1.8.0_242-release-1644-b01)\r\n    \u2022 All Android licenses accepted.\r\n\r\n[\u221a] Chrome - develop for the web\r\n    \u2022 Chrome at C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe      \r\n\r\n[\u221a] Android Studio (version 4.1.0)\r\n    \u2022 Android Studio at C:\\Program Files\\Android\\Android Studio\r\n    \u2022 Java version OpenJDK Runtime Environment (build 1.8.0_242-release-1644-b01)\r\n\r\n[\u221a] VS Code (version 1.53.2)\r\n    \u2022 Flutter extension version 3.19.0\r\n\r\n[\u221a] Connected device (2 available)\r\n    \u2022 Chrome (web) \u2022 chrome \u2022 web-javascript \u2022 Google Chrome 88.0.4324.182\r\n    \u2022 Edge (web)   \u2022 edge   \u2022 web-javascript \u2022 Microsoft Edge 88.0.705.56\r\n\r\n```\r\n</details>\r\n\r\n_Originally posted by @AscentionOne in https://github.com/flutter/flutter/issues/76473#issuecomment-783794373_",
+    "reactions": {
+      "total": 21,
+      "by_type": {
+        "THUMBS_UP": 17,
+        "EYES": 4
+      }
+    },
+    "comment_summary": "Comments identify the root cause as CanvasKit dynamically loading CJK fonts when unknown characters are first encountered; switching to the HTML renderer avoids the issue. The workaround of using a custom font family (bundled) also resolves it. Community notes this affects Hebrew and Arabic too, and persists through 3.32.4. The issue was marked P1 but has had no recent owner; status is stalled.",
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 34610,
+    "title": "Mixing RTL and LTR text bugs",
+    "url": "https://github.com/flutter/flutter/issues/34610",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "framework",
+      "engine",
+      "a: typography",
+      "customer: crowd",
+      "P2",
+      "team-engine",
+      "triaged-engine"
+    ],
+    "assignees": [],
+    "ownership": "team-engine",
+    "created_at": "2019-06-17T23:02:13Z",
+    "updated_at": "2024-03-06T21:14:32Z",
+    "body": "We are seeing strange behavior when mixing RTL and LTR text.\r\n\r\nNotably:\r\n\r\n- Type arabic, Type chinese, Type arabic, switch to chinese keyboard, delete. The arabic will delete all at once.\r\n- Emojis work strangely when mixing with RTL and LTR.\r\n- Caret positioning is not consistent.\r\n\r\nThere are a few other minor issues that I am not clear on how to describe.",
+    "reactions": {
+      "total": 18,
+      "by_type": {
+        "THUMBS_UP": 14,
+        "ROCKET": 1,
+        "EYES": 3
+      }
+    },
+    "comment_summary": "Early comment identified root cause: ParagraphStyle directionality is LTR for mixed text, causing spaces to be inserted at the wrong end of Arabic spans. The SkParagraph switch (#39420) was expected to fix many behaviors. Subsequent comments report partial improvements but deletion with opposite-direction keyboards remains broken.",
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 40648,
+    "title": "Trailing space doesn't work with TextField with TextAlign.right ",
+    "url": "https://github.com/flutter/flutter/issues/40648",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "framework",
+      "f: material design",
+      "has reproducible steps",
+      "P2",
+      "found in release: 2.5",
+      "found in release: 2.6",
+      "team-framework",
+      "triaged-framework"
+    ],
+    "assignees": [],
+    "ownership": "team-framework",
+    "created_at": "2019-09-17T06:02:47Z",
+    "updated_at": "2025-01-29T12:53:32Z",
+    "body": "TextField  Widget Option textAlign Setting for [TextAlign.right] ,input  space key cursor fault\r\n\r\n\r\n `TextField(\r\n            textAlign: TextAlign.right,\r\n          )\r\n`",
+    "reactions": {
+      "total": 16,
+      "by_type": {
+        "THUMBS_UP": 16
+      }
+    },
+    "comment_summary": "Comments confirm the bug persists through 2025 on all tested stable versions. The trailing space is visually trimmed/not rendered when TextAlign.right is used. A Skia bug was filed at bugs.chromium.org/p/skia/issues/detail?id=11933 and accepted. One commenter notes SkParagraph treats \\r as a soft line break with CodeUnitFlag 0x0006, which may be related. A layout workaround using IntrinsicWidth inside a Row was suggested. No fix has landed in Flutter; status is stalled.",
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 78660,
+    "title": "Arrow keys in RTL move the wrong way",
+    "url": "https://github.com/flutter/flutter/issues/78660",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "framework",
+      "f: material design",
+      "a: internationalization",
+      "has reproducible steps",
+      "P2",
+      "found in release: 2.1",
+      "team-framework",
+      "triaged-framework"
+    ],
+    "assignees": [],
+    "ownership": "team-framework",
+    "created_at": "2021-03-19T23:24:09Z",
+    "updated_at": "2024-03-06T21:14:29Z",
+    "body": "The left/right arrow keys should move the caret left/right respectively, regardless of the text direction.  In Flutter they move in the wrong direction in RTL text.\r\n\r\nThe methods that handle this in RenderEditable should be updated to perform the correct behavior without being renamed.  ~~So for example, the method [_moveGivenSelectionLeft](https://github.com/flutter/flutter/blob/8c44abc009a333b0494598c0cfda0fbc07358234/packages/flutter/lib/src/rendering/editable.dart#L735) actually moves the selection upstream right now, not necessarily left.  It should be modified to move the selection left like it says.~~ This is out of date, see below.\r\n\r\n## Steps to Reproduce\r\n\r\n1. Run the app below, which is just a TextField with some Arabic text in it, on a device with arrow keys.\r\n2. Try to navigate with the left and right arrow keys.\r\n\r\n**Expected results:** The cursor moves left with the left key and right with the right key.  Tested on TextEdit on a Mac after changing my keyboard to Arabic.\r\n\r\n**Actual results:** The cursor movement direction is reversed.\r\n\r\n<details>\r\n  <summary>Code</summary>\r\n\r\n```dart\r\nimport 'package:flutter/material.dart';\r\n \r\nvoid main() {\r\n  runApp(MyApp());\r\n}\r\n \r\nclass MyApp extends StatelessWidget {\r\n  final TextEditingController controller = TextEditingController(text: '\u0634\u0633\u064a\u0628');\r\n\r\n  @override\r\n  Widget build(BuildContext context) {\r\n    return MaterialApp(\r\n      home: Scaffold(\r\n        body: Center(\r\n          child: TextField(\r\n            controller: controller,\r\n          ),\r\n        ),\r\n      ),\r\n    );\r\n  }\r\n}\r\n```\r\n\r\n</details>",
+    "reactions": {
+      "total": 15,
+      "by_type": {
+        "THUMBS_UP": 15
+      }
+    },
+    "comment_summary": "Visual order (left = left, right = right) traversal support is acknowledged as a planned feature but not yet implemented. A commenter noted the existing Intent/Action system uses a `forward` boolean that may need to be extended to support left/right explicitly. Status: stalled, planned but not implemented.",
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 36854,
+    "title": "Feature request: Setting paragraph distance in Text and TextField",
+    "url": "https://github.com/flutter/flutter/issues/36854",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "c: new feature",
+      "framework",
+      "f: material design",
+      "a: typography",
+      "P3",
+      "team-framework",
+      "triaged-framework"
+    ],
+    "assignees": [],
+    "ownership": "team-framework",
+    "created_at": "2019-07-24T16:34:05Z",
+    "updated_at": "2024-03-06T21:15:12Z",
+    "body": "Currently, we have no control over paragraph spacing in both Text and TextField. This feature is important in text stying. ",
+    "reactions": {
+      "total": 12,
+      "by_type": {
+        "THUMBS_UP": 12
+      }
+    },
+    "comment_summary": null,
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 39755,
+    "title": "Selection of any justified-text is inaccurate in non-latin languages",
+    "url": "https://github.com/flutter/flutter/issues/39755",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "framework",
+      "f: material design",
+      "a: internationalization",
+      "a: typography",
+      "has reproducible steps",
+      "P2",
+      "found in release: 3.3",
+      "found in release: 3.7",
+      "team-framework",
+      "triaged-framework"
+    ],
+    "assignees": [],
+    "ownership": "team-framework",
+    "created_at": "2019-09-03T16:42:40Z",
+    "updated_at": "2024-03-06T21:14:15Z",
+    "body": "I hope I can clarify this issue because it is a little weird. It took me a while to figure out when exactly does it occur.\r\n\r\nHere is a very primitive application:\r\n\r\n```dart\r\n// main.dart\r\nimport 'package:flutter/material.dart';\r\nvoid main() => runApp(MaterialApp(\r\n  home: Scaffold(\r\n    appBar: AppBar(),\r\n    body: Padding(\r\n      padding: const EdgeInsets.all(18.0),\r\n      child: TextField(\r\n        textAlign: TextAlign.justify,\r\n        maxLines: null,\r\n      ),\r\n    ),\r\n  ),\r\n));\r\n```\r\n\r\nNow, type any latin charachter text. Try to select any single or multiple words, you will find that the selection blue highlight matches accurately the boundaries of the word(s). See this screen shot:\r\n\r\n![image](https://user-images.githubusercontent.com/3346502/64191394-5a3e2200-ceb3-11e9-82a9-6f48d6333256.png)\r\n\r\n_____________________\r\n\r\nThen, put some Korean text. You will find that some words are poorly highlighted:\r\n\r\n![image](https://user-images.githubusercontent.com/3346502/64191512-9bcecd00-ceb3-11e9-85ea-4002d85f54da.png)\r\n\r\n> \ud55c\uad6d\uc5b4(\u97d3\u570b\u8a9e)\ub294 \ub300\ud55c\ubbfc\uad6d\uacfc \uc870\uc120\ubbfc\uc8fc\uc8fc\uc758\uc778\ubbfc\uacf5\ud654\uad6d\uc758 \uacf5\uc6a9\uc5b4\ub85c, \ub300\ud55c\ubbfc\uad6d\uc5d0\uc11c\ub294 \ud55c\uad6d\uc5b4 \ub610\ub294 \ud55c\uad6d\ub9d0\uc774\ub77c\uace0 \ubd80\ub974\uace0, \uc870\uc120\ubbfc\uc8fc\uc8fc\uc758\uc778\ubbfc\uacf5\ud654\uad6d\uc5d0\uc11c\ub294 \uc870\uc120\ub9d0\uc774\ub77c\uace0 \ubd80\ub978\ub2e4.\r\n\r\n_____________________\r\n\r\nAlso in Arabic texts (it does not matter here that the `textDirection` is not RTL. Both RTL and LTR have the same issue):\r\n\r\n![image](https://user-images.githubusercontent.com/3346502/64191648-e18b9580-ceb3-11e9-8e5c-6fe5a3bb1dba.png)\r\n\r\n> \u0627\u0644\u0639\u0631\u0628\u064a\u0629 \u0644\u063a\u0629 \u0631\u0633\u0645\u064a\u0629 \u0641\u064a \u0643\u0644 \u062f\u0648\u0644 \u0627\u0644\u0648\u0637\u0646 \u0627\u0644\u0639\u0631\u0628\u064a \u0625\u0636\u0627\u0641\u0629 \u0625\u0644\u0649 \u0643\u0648\u0646\u0647\u0627 \u0644\u063a\u0629 \u0631\u0633\u0645\u064a\u0629 \u0641\u064a \u062a\u0634\u0627\u062f \u0648\u0625\u0631\u064a\u062a\u0631\u064a\u0627 \u0648\u0625\u0633\u0631\u0627\u0626\u064a\u0644. \u0648\u0647\u064a \u0625\u062d\u062f\u0649 \u0627\u0644\u0644\u063a\u0627\u062a \u0627\u0644\u0631\u0633\u0645\u064a\u0629 \u0627\u0644\u0633\u062a \u0641\u064a \u0645\u0646\u0638\u0645\u0629 \u0627\u0644\u0623\u0645\u0645 \u0627\u0644\u0645\u062a\u062d\u062f\u0629\u060c \u0648\u064a\u064f\u062d\u062a\u0641\u0644 \u0628\u0627\u0644\u064a\u0648\u0645 \u0627\u0644\u0639\u0627\u0644\u0645\u064a \u0644\u0644\u063a\u0629 \u0627\u0644\u0639\u0631\u0628\u064a\u0629 \u0641\u064a 18 \u062f\u064a\u0633\u0645\u0628\u0631 \u0643\u0630\u0643\u0631\u0649 \u0627\u0639\u062a\u0645\u0627\u062f \u0627\u0644\u0639\u0631\u0628\u064a\u0629 \u0628\u064a\u0646 \u0644\u063a\u0627\u062a \u0627\u0644\u0639\u0645\u0644 \u0641\u064a \u0627\u0644\u0623\u0645\u0645 \u0627\u0644\u0645\u062a\u062d\u062f\u0629.\r\n\r\n_____________________\r\n\r\nSame in Hebrew:\r\n\r\n![image](https://user-images.githubusercontent.com/3346502/64191829-5068ee80-ceb4-11e9-84f2-780841b134b3.png)\r\n\r\n> \u05e2\u05b4\u05d1\u05b0\u05e8\u05b4\u05d9\u05ea \u05d4\u05d9\u05d0 \u05e9\u05e4\u05d4 \u05e9\u05de\u05d9\u05ea, \u05de\u05de\u05e9\u05e4\u05d7\u05ea \u05d4\u05e9\u05e4\u05d5\u05ea \u05d4\u05d0\u05e4\u05e8\u05d5-\u05d0\u05e1\u05d9\u05d0\u05ea\u05d9\u05d5\u05ea, \u05d4\u05d9\u05d3\u05d5\u05e2\u05d4 \u05db\u05e9\u05e4\u05ea\u05dd \u05e9\u05dc \u05d4\u05d9\u05d4\u05d5\u05d3\u05d9\u05dd \u05d5\u05e9\u05dc \u05d4\u05e9\u05d5\u05de\u05e8\u05d5\u05e0\u05d9\u05dd, \u05d0\u05e9\u05e8 \u05e0\u05d9\u05d1 \u05de\u05d5\u05d3\u05e8\u05e0\u05d9 \u05e9\u05dc\u05d4 (\u05e2\u05d1\u05e8\u05d9\u05ea \u05d9\u05e9\u05e8\u05d0\u05dc\u05d9\u05ea) \u05d4\u05d5\u05d0 \u05e9\u05e4\u05ea\u05d4 \u05d4\u05e8\u05e9\u05de\u05d9\u05ea \u05e9\u05dc \u05de\u05d3\u05d9\u05e0\u05ea \u05d9\u05e9\u05e8\u05d0\u05dc, \u05de\u05e2\u05de\u05d3 \u05e9\u05e2\u05d5\u05d2\u05df \u05d1\u05e9\u05e0\u05ea 2018 \u05d1\u05d7\u05d5\u05e7 \u05d9\u05e1\u05d5\u05d3: \u05d9\u05e9\u05e8\u05d0\u05dc \u2013 \u05de\u05d3\u05d9\u05e0\u05ea \u05d4\u05dc\u05d0\u05d5\u05dd \u05e9\u05dc \u05d4\u05e2\u05dd \u05d4\u05d9\u05d4\u05d5\u05d3\u05d9.\r\n\r\n_____________________\r\n\r\nJust copy these texts and paste them in the input field, then try to select one word. In all cases above I just long tapped on one word and the highlight missed the word boundry as shown.\r\n\r\nIt does have to be a text field or input though. Any justified selectable text would reproduce the same behavior. I tried in both stable and master channels.\r\n\r\nHere is my `flutter doctor` output:\r\n\r\n```\r\nDoctor summary (to see all details, run flutter doctor -v):\r\n[\u2713] Flutter (Channel master, v1.9.8-pre.54, on Linux, locale en_US.UTF-8)\r\n \r\n[\u2713] Android toolchain - develop for Android devices (Android SDK version 29.0.2)\r\n[\u2713] Android Studio (version 3.5)\r\n[\u2713] VS Code (version 1.37.1)\r\n[\u2713] Connected device (1 available)\r\n\r\n\u2022 No issues found!\r\n```",
+    "reactions": {
+      "total": 10,
+      "by_type": {
+        "THUMBS_UP": 9,
+        "EYES": 1
+      }
+    },
+    "comment_summary": "Comments narrow the scope: the inaccurate selection highlight affects Korean, Arabic, Hebrew, and Persian scripts but not Cyrillic (Russian). Using a language-appropriate font (e.g., Amiri for Arabic) fixes the issue for pure RTL text, but mixed Latin+RTL text remains broken even with a proper font. The `selectionHeightStyle`/`selectionWidthStyle` options partially helped but did not fully resolve the issue. The problem is present in all text-alignment modes for RTL scripts, not only justified text. Status: open since 2019, no PR, long-standing stall.",
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 90058,
+    "title": "TextFormField with textAlign: TextAlign.right  whitespace doesn't show unless text is entered.",
+    "url": "https://github.com/flutter/flutter/issues/90058",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "framework",
+      "f: material design",
+      "has reproducible steps",
+      "P2",
+      "found in release: 2.5",
+      "found in release: 2.6",
+      "team-design",
+      "triaged-design"
+    ],
+    "assignees": [],
+    "ownership": "team-design",
+    "created_at": "2021-09-14T15:04:37Z",
+    "updated_at": "2025-08-13T18:06:38Z",
+    "body": " I use TextFormField and property textAlign: TextAlign.right in my web application but I see prob when typing space, it don't show if don't have any text after it :(\r\n Please help!",
+    "reactions": {
+      "total": 6,
+      "by_type": {
+        "THUMBS_UP": 6
+      }
+    },
+    "comment_summary": "Comments confirm the trailing whitespace rendering bug with `TextAlign.right` is reproducible on all platforms (web, macOS, Android, Windows) on stable and master. The space exists in the string but is not rendered because of text alignment trimming. A creative hack workaround (transparent TextField overlaid with a Text widget) is provided but is not suitable for production. The issue is missing a priority label as noted by a bot. Status: open, stalled, workaround available.",
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 71083,
+    "title": "TextFormField (and TextField) widgets do not wrap text correctly",
+    "url": "https://github.com/flutter/flutter/issues/71083",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "framework",
+      "f: material design",
+      "dependency: skia",
+      "a: typography",
+      "P2",
+      "team-design",
+      "triaged-design"
+    ],
+    "assignees": [],
+    "ownership": "team-design",
+    "created_at": "2020-11-23T14:50:43Z",
+    "updated_at": "2024-03-06T21:14:56Z",
+    "body": "Similar to the issues reported in #18761, the input fields in Flutter suffer from the same disfunction.\r\n\r\nCurrently, the text input fields in Flutter do not wrap their input correctly. Instead of breaking a word in the middle and wrapping the remainder to the next line, Flutter is breaking the string at the word boundary closest to the end of the line, which is non buono.\r\n\r\n#### Flutter\r\n<img width=\"240\" alt=\"Screen Shot 2020-11-23 at 16 37 05\" src=\"https://user-images.githubusercontent.com/921173/99974945-44fc2e80-2daa-11eb-9599-691eed55a0c6.png\">\r\n\r\n#### Chrome\r\nWeb browsers correctly split the string at the character that would otherwise overflow.\r\n<img width=\"343\" alt=\"Screen Shot 2020-11-23 at 16 44 58\" src=\"https://user-images.githubusercontent.com/921173/99975781-5265e880-2dab-11eb-9d40-81ee07b07921.png\">\r\n\r\n\r\n#### Code snippet\r\n```dart\r\nTextFormField(\r\n  decoration: InputDecoration(border: OutlineInputBorder()),\r\n  minLines: null,\r\n  maxLines: null,\r\n  initialValue: 'https://www.example.com/some/thingweirdisgoingon.here',\r\n)\r\n```\r\n",
+    "reactions": {
+      "total": 5,
+      "by_type": {
+        "THUMBS_UP": 5
+      }
+    },
+    "comment_summary": "Comments confirm the bug is distinct from #18761 (which is about read-only Text widgets), and the issue persists through at least Flutter 3.10.6 / Dart 3.0 on macOS. Multiple commenters reproduced it with long URLs in `TextFormField` using `FractionallySizedBox`. No proposed fix or PR exists; status is open and unresolved.",
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 91738,
+    "title": "[Proposal] Add support for automatically switching text input to `RTL` or `LTR` based on first character typed",
+    "url": "https://github.com/flutter/flutter/issues/91738",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "c: new feature",
+      "framework",
+      "a: internationalization",
+      "c: proposal",
+      "P3",
+      "team-framework",
+      "triaged-framework"
+    ],
+    "assignees": [],
+    "ownership": "team-framework",
+    "created_at": "2021-10-13T10:38:12Z",
+    "updated_at": "2023-09-15T22:45:35Z",
+    "body": "<!-- Thank you for using Flutter!\r\n\r\n     If you are looking for support, please check out our documentation\r\n     or consider asking a question on Stack Overflow:\r\n      * https://flutter.dev/\r\n      * https://api.flutter.dev/\r\n      * https://stackoverflow.com/questions/tagged/flutter?sort=frequent\r\n\r\n     If you have found a bug or if our documentation doesn't have an answer\r\n     to what you're looking for, then fill out the template below. Please read\r\n     our guide to filing a bug first: https://flutter.dev/docs/resources/bug-reports\r\n-->\r\n\r\n## Use case\r\n\r\n<!--\r\n     Please tell us the problem you are running into that led to you wanting\r\n     a new feature.\r\n\r\n     Is your feature request related to a problem? Please give a clear and\r\n     concise description of what the problem is.\r\n\r\n     Describe the alternative solutions you've considered. Is there a package\r\n     on pub.dev/flutter that already solves this?\r\n-->\r\n\r\nIn multilingual text fields, Bidirectional text input is automatically recognised. For example, typing `\u0628 ` as the first character in `Whatsapp` places the cursor the right side and typing `b` as the first, places the cursor at the left side. That is it automatically detects the language and makes the text input appropriate, whether it is an `RTL` or `LTR` language.\r\n\r\n## Proposal\r\n\r\n<!--\r\n     Briefly but precisely describe what you would like Flutter to be able to do.\r\n\r\n     Consider attaching something showing what you are imagining:\r\n      * images\r\n      * videos\r\n      * code samples\r\n\r\n     Does this have to be provided by Flutter directly, or can it be provided\r\n     by a package on pub.dev/flutter? If so, maybe consider implementing and\r\n     publishing such a package rather than filing a bug.\r\n-->\r\n\r\nI think flutter must detect bidirectional text input out of the box, no matter what is the current `Directionality.of(context)`. The same behaviour stated above should be exhibited in flutter textfields.",
+    "reactions": {
+      "total": 5,
+      "by_type": {
+        "THUMBS_UP": 4,
+        "HEART": 1
+      }
+    },
+    "comment_summary": "Discussion notes the Bidi class exists in Flutter's intl. Suggestion to add an auto value similar to HTML's dir attribute. Noted as technically feasible via ICU ubidi API. Adding to TextPainter suggested, along with needing a low-level API for WidgetSpan writing directions.",
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 91010,
+    "title": "`dart:ui.LineMetrics` should include the line boundaries ",
+    "url": "https://github.com/flutter/flutter/issues/91010",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "engine",
+      "a: typography",
+      "c: proposal",
+      "P3",
+      "team-engine",
+      "triaged-engine"
+    ],
+    "assignees": [],
+    "ownership": "team-engine",
+    "created_at": "2021-09-30T06:16:02Z",
+    "updated_at": "2023-09-19T01:58:18Z",
+    "body": "The information is currently manually stripped when constructing a `LineMetrics`:\r\nhttps://github.com/google/skia/blob/a92b268f7d78e0069b2a61b22cb7ce615d12a60e/modules/skparagraph/include/Metrics.h#L39-L93\r\n\r\nIt will be much easier to implement vertical caret movements for up/down arrow keys with the line boundary information included. This corresponds to a todo item in https://github.com/flutter/flutter/pull/90684 .\r\n",
+    "reactions": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 3,
+        "EYES": 1
+      }
+    },
+    "comment_summary": "A commenter confirmed the need for TextRange in LineMetrics and described the current workaround: calling Paragraph.getPositionForOffset to derive line text ranges, which is inconvenient and indirect.",
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 41324,
+    "title": "TextField/TextFormField labelText and hintText should be right-aligned with TextDirection.rtl",
+    "url": "https://github.com/flutter/flutter/issues/41324",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "c: new feature",
+      "framework",
+      "f: material design",
+      "a: internationalization",
+      "P2",
+      "team-text-input",
+      "triaged-text-input"
+    ],
+    "assignees": [],
+    "ownership": "team-text-input",
+    "created_at": "2019-09-25T22:38:16Z",
+    "updated_at": "2026-02-16T20:09:34Z",
+    "body": "There is forgotten attribute **write** for the `labelText of(TextFormField or TextField)` from right to left.\r\nI tried with `textAlign`, `textDirection`. Although, it works with `hintText` and the user input, it doesn't work with the `labelText`.\r\n\r\n\r\n![Screenshot](https://user-images.githubusercontent.com/15935347/65644781-86058100-dff5-11e9-82f0-60321192c474.png)\r\n[textfield.txt](https://github.com/flutter/flutter/files/3655101/textfield.txt)\r\n\r\n\r\n\r\n```dart\r\nTextFormField(\r\n        textAlign: Language.lang  == 'NotArabic'  ?TextAlign.left:TextAlign.right,\r\n        validator: (value) {\r\n          return Validators().validateEmail(value);\r\n        },\r\n        controller: _emailController,\r\n        decoration: new InputDecoration(\r\n            hintStyle: new TextStyle(color: Colors.grey[500],),\r\n            labelStyle: new TextStyle(color: Colors.grey[900],),\r\n            hintText: 'hint Email',\r\n            labelText: 'label Email',\r\n            fillColor: Colors.white70),\r\n        textDirection:\r\n            Language.lang == 'NotArabic' ? TextDirection.ltr : TextDirection.rtl,\r\n      ) \r\n```",
+    "reactions": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "comment_summary": "Confirmed reproducible with a code sample; video demonstration added. A commenter noted they implemented a solution fixing RTL alignment inconsistencies in InputDecoration.",
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 93934,
+    "title": "[Desktop] TextField with pasted CRLF endings has invisible CR char",
+    "url": "https://github.com/flutter/flutter/issues/93934",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "framework",
+      "platform-windows",
+      "a: desktop",
+      "has reproducible steps",
+      "P2",
+      "found in release: 2.5",
+      "found in release: 2.6",
+      "found in release: 2.8",
+      "team-windows",
+      "triaged-windows"
+    ],
+    "assignees": [],
+    "ownership": "team-windows",
+    "created_at": "2021-11-19T20:50:04Z",
+    "updated_at": "2024-06-07T19:08:08Z",
+    "body": "When I paste some text with CRLF endings into a TextField and click on the end of the line, cursor is placed after invisible `\\r` char. When I press left arrow, it goes over that char to the actual text end. Now when I press right arrow, it skips to the next line like there wasn't any additional char. But that `\\r` is still there after I click there with mouse again.\r\n\r\nI found that it is `\\r` by selecting it and pasting it into hex editor.\r\n\r\nThis only happens in Windows build, tried on web and it doesn't happen there. Don't know about the other platforms.\r\n\r\n<details>\r\n<summary>Code sample</summary>\r\n\r\n```dart\r\nimport 'package:flutter/material.dart';\r\n\r\nvoid main() {\r\n  runApp(const MyApp());\r\n}\r\n\r\nclass MyApp extends StatelessWidget {\r\n  const MyApp({Key? key}) : super(key: key);\r\n\r\n  @override\r\n  Widget build(BuildContext context) {\r\n    return MaterialApp(\r\n      home: Scaffold(\r\n        body: Container(\r\n          padding: const EdgeInsets.all(8),\r\n          child: const TextField(\r\n            style: TextStyle(fontSize: 50),\r\n            expands: true,\r\n            minLines: null,\r\n            maxLines: null,\r\n          ),\r\n        ),\r\n      ),\r\n    );\r\n  }\r\n}\r\n```\r\n\r\n</details>\r\n\r\n<details>\r\n  <summary>Logs</summary>\r\n\r\n```\r\n[\u221a] Flutter (Channel beta, 2.8.0-3.1.pre, on Microsoft Windows [Version 10.0.22000.318], locale en-GB)\r\n    \u2022 Flutter version 2.8.0-3.1.pre at C:\\Users\\husar\\AppData\\Local\\Flutter\\SDK\\flutter\r\n    \u2022 Upstream repository https://github.com/flutter/flutter.git\r\n    \u2022 Framework revision 3dab555040 (7 days ago), 2021-11-12 11:50:00 -0800\r\n    \u2022 Engine revision 09f1520e8b\r\n    \u2022 Dart version 2.15.0 (build 2.15.0-268.8.beta)\r\n\r\n[!] Android toolchain - develop for Android devices (Android SDK version 30.0.2)\r\n    \u2022 Android SDK at C:\\Users\\husar\\AppData\\Local\\Android\\sdk\r\n    X cmdline-tools component is missing\r\n      Run `path/to/sdkmanager --install \"cmdline-tools;latest\"`\r\n      See https://developer.android.com/studio/command-line for more details.\r\n    X Android license status unknown.\r\n      Run `flutter doctor --android-licenses` to accept the SDK licenses.\r\n      See https://flutter.dev/docs/get-started/install/windows#android-setup for more details.\r\n\r\n[\u221a] Chrome - develop for the web\r\n    \u2022 Chrome at C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe\r\n\r\n[\u221a] Visual Studio - develop for Windows (Visual Studio Community 2019 16.11.0)\r\n    \u2022 Visual Studio at C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\r\n    \u2022 Visual Studio Community 2019 version 16.11.31605.320\r\n    \u2022 Windows 10 SDK version 10.0.19041.0\r\n\r\n[\u221a] Android Studio (version 4.0)\r\n    \u2022 Android Studio at C:\\Program Files\\Android\\Android Studio\r\n    \u2022 Flutter plugin version 47.1.2\r\n    \u2022 Dart plugin version 193.7361\r\n    \u2022 Java version OpenJDK Runtime Environment (build 1.8.0_242-release-1644-b01)\r\n\r\n[\u221a] IntelliJ IDEA Community Edition (version 2021.2)\r\n    \u2022 IntelliJ at C:\\Program Files\\JetBrains\\IntelliJ IDEA Community Edition 2021.2\r\n    \u2022 Flutter plugin can be installed from:\r\n       https://plugins.jetbrains.com/plugin/9212-flutter\r\n    \u2022 Dart plugin can be installed from:\r\n       https://plugins.jetbrains.com/plugin/6351-dart\r\n\r\n[\u221a] VS Code, 64-bit edition (version 1.62.2)\r\n    \u2022 VS Code at C:\\Program Files\\Microsoft VS Code\r\n    \u2022 Flutter extension version 3.28.0\r\n\r\n[\u221a] Connected device (3 available)\r\n    \u2022 Windows (desktop) \u2022 windows \u2022 windows-x64    \u2022 Microsoft Windows [Version 10.0.22000.318]\r\n    \u2022 Chrome (web)      \u2022 chrome  \u2022 web-javascript \u2022 Google Chrome 95.0.4638.69\r\n    \u2022 Edge (web)        \u2022 edge    \u2022 web-javascript \u2022 Microsoft Edge 93.0.961.52\r\n\r\n! Doctor found issues in 1 category.\r\n```\r\n\r\n</details>\r\n\r\nVideo:\r\n\r\n\r\n\r\nhttps://user-images.githubusercontent.com/13891066/142689108-0109464f-b223-41cf-bc75-83b9f90373f0.mp4\r\n\r\n\r\n\r\nEDIT:\r\nBy pasting text with CRLF line endings I meant like when you open some file with text and that text has `\\r\\n` as line endings. You select that text and paste it into TextField.\r\n\r\nI have created another repro with comparison of LF / CRLF.\r\n\r\n<details>\r\n<summary>Code sample</summary>\r\n\r\n```dart\r\nimport 'dart:io';\r\n\r\nimport 'package:flutter/material.dart';\r\n\r\nvoid main() {\r\n  runApp(const MyApp());\r\n}\r\n\r\nclass MyApp extends StatelessWidget {\r\n  const MyApp({Key? key}) : super(key: key);\r\n\r\n  @override\r\n  Widget build(BuildContext context) {\r\n    return const MaterialApp(\r\n      home: Main(),\r\n    );\r\n  }\r\n}\r\n\r\nclass Main extends StatefulWidget {\r\n  const Main({Key? key}) : super(key: key);\r\n\r\n  @override\r\n  _MainState createState() => _MainState();\r\n}\r\n\r\nclass _MainState extends State<Main> {\r\n  final _lfFilePath = 'C:/Projects/Flutter/bug_repro/lf.txt';\r\n  final _crlfFilePath = 'C:/Projects/Flutter/bug_repro/crlf.txt';\r\n\r\n  final _lfController = TextEditingController();\r\n  final _crlfController = TextEditingController();\r\n\r\n  @override\r\n  void initState() {\r\n    super.initState();\r\n    _lfController.text = File(_lfFilePath).readAsStringSync();\r\n    _crlfController.text = File(_crlfFilePath).readAsStringSync();\r\n  }\r\n\r\n  @override\r\n  Widget build(BuildContext context) {\r\n    return Scaffold(\r\n      body: Container(\r\n        padding: const EdgeInsets.all(8),\r\n        child: Column(\r\n          mainAxisSize: MainAxisSize.max,\r\n          crossAxisAlignment: CrossAxisAlignment.start,\r\n          children: [\r\n            const Text('LF'),\r\n            Expanded(\r\n              child: TextField(\r\n                controller: _lfController,\r\n                style: const TextStyle(fontSize: 50),\r\n                expands: true,\r\n                minLines: null,\r\n                maxLines: null,\r\n              ),\r\n            ),\r\n            const Text('CRLF'),\r\n            Expanded(\r\n              child: TextField(\r\n                controller: _crlfController,\r\n                style: const TextStyle(fontSize: 50),\r\n                expands: true,\r\n                minLines: null,\r\n                maxLines: null,\r\n              ),\r\n            ),\r\n          ],\r\n        ),\r\n      ),\r\n    );\r\n  }\r\n}\r\n```\r\n\r\n</details>\r\n\r\nDownload these two files:\r\n[crlf.txt](https://github.com/flutter/flutter/files/7588894/crlf.txt)\r\n[lf.txt](https://github.com/flutter/flutter/files/7588895/lf.txt)\r\n\r\nBoth are created in VS Code and one is just saved with CRLF endings and the other one with LF endings:\r\n![image](https://user-images.githubusercontent.com/13891066/143046452-90bbbe67-0b06-4dd7-89ce-c3f3f792f8ad.png)\r\n\r\nChange paths to yours in `_lfFilePath` and `_crlfFilePath` variables, run it.\r\n\r\nIf you place cursor at the end of the line, in the LF part is everything ok\r\n![image](https://user-images.githubusercontent.com/13891066/143046717-ecd74467-d90f-4f50-a3f3-19137fb1f173.png)\r\n\r\nBut in the CRLF part is this invisible `\\r` char:\r\n![image](https://user-images.githubusercontent.com/13891066/143046954-93929c1f-c9cd-419e-b95c-260ff7067e22.png)\r\n\r\nI have also noticed that when you copy / paste it, Windows (presumably?) automatically converts LF to CRLF, so this actually happens even if you try to copy / paste LF text. But by directly comparing those two files it's clearer.",
+    "reactions": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "comment_summary": "A commenter confirmed reproduction on both macOS and Windows desktop (not on web). The issue affects both stable and master channels. No fix or PR was proposed; status is open and stalled.",
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 117139,
+    "title": "Incorrect selection area in RTL TextField.",
+    "url": "https://github.com/flutter/flutter/issues/117139",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "framework",
+      "a: internationalization",
+      "has reproducible steps",
+      "P2",
+      "found in release: 3.3",
+      "found in release: 3.7",
+      "team-framework",
+      "triaged-framework"
+    ],
+    "assignees": [],
+    "ownership": "team-framework",
+    "created_at": "2022-12-15T13:15:07Z",
+    "updated_at": "2023-07-08T02:03:21Z",
+    "body": "A dot at the end of a line that is followed by another line makes the text selection area incorrect!\r\nFirst, create a simple app with an RTL multiline TextField. (or use my sample code.)\r\n\r\nSteps to Reproduce:\r\n1. Add a line with this text: \"Select a word and see the selected area.\"\r\n2. Add another line\r\n3. Double click on the \"word\" to select it.\r\n\r\nExpected:\r\nThe selection area should match the \"word\" area.\r\n\r\nActual:\r\nThe selected area is not matched with the \"word\" area.\r\n\r\n<details>\r\n<summary>Sample code</summary>\r\n\r\n```dart\r\nimport 'package:flutter/material.dart';\r\n\r\nvoid main() =>\r\n  runApp(MaterialApp(\r\n    home: Scaffold(\r\n      body: Column(\r\n        mainAxisAlignment: MainAxisAlignment.center,\r\n        children: [\r\n          TextField(\r\n            controller: TextEditingController(text: '\\nSelect a word and see the incorrect selected area.\\n'),\r\n            textDirection: TextDirection.rtl,\r\n            maxLines: null,\r\n          ),\r\n          TextField(\r\n            controller: TextEditingController(text: '\\nSelect a word and see the correct selected area.\\n'),\r\n            maxLines: null,\r\n          ),\r\n        ],\r\n      ),\r\n    ),\r\n  ));\r\n```\r\n</details>",
+    "reactions": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "comment_summary": "Triage confirmed reproduction on master 3.7 on Android and iOS. Root cause identified: Skia SkParagraph's `getRectsForRange` API; a Skia bug was filed at https://bugs.chromium.org/p/skia/issues/detail?id=14035. A whitespace workaround was suggested.",
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 181759,
+    "title": "RTL TextField breaks when inserting emojis between existing emojis",
+    "url": "https://github.com/flutter/flutter/issues/181759",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "platform-android",
+      "framework",
+      "f: material design",
+      "platform-macos",
+      "P2",
+      "team-text-input",
+      "triaged-text-input"
+    ],
+    "assignees": [],
+    "ownership": "team-text-input",
+    "created_at": "2026-01-31T19:50:07Z",
+    "updated_at": "2026-03-06T01:26:39Z",
+    "body": "### Steps to reproduce\n\nWhen using a TextField with RTL text direction, inserting an emoji between two existing emojis sometimes breaks the text, showing ? character.\n\n### Expected results\n\nInserting emojis between existing emojis in an RTL TextField should render correctly.\n\n### Actual results\n\nThe inserted emoji breaks the text and may render as ?.\n\n### Code sample\n\n<details open><summary>Code sample</summary>\n\n```dart\nTextField(textDirection: TextDirection.rtl)\n```\n\n</details>\n\n\n### Screenshots or Video\n\n<details open>\n<summary>Screenshots / Video demonstration</summary>\n\nhttps://github.com/user-attachments/assets/706052f5-2309-4bdf-a44b-6ab05848f8a7\n\n</details>\n\n\n### Logs\n\n<details colose><summary>Logs</summary>\n\n```console\nn/a\n```\n\n</details>\n\n\n### Flutter Doctor output\n\n<details colose><summary>Doctor output</summary>\n\n```console\nn/a\n```\n\n</details>\n",
+    "reactions": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "comment_summary": "Comments identify the root cause: on macOS and Linux, dynamically changing `textDirection` during IME composition triggers a `wstring_convert::to_bytes` exception in the engine (built with `-fno-exceptions`), causing an abort; on Android the IME composing state is invalidated, producing `?`/replacement characters. iOS and web cannot reproduce. A crash log from macOS shows the engine decoding an invalid JSON surrogate pair. A comment in #183112 indicates this cannot be fixed in the framework and requires fixes in each affected embedder (macOS, Linux). Status: needs engine/embedder fix.",
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 41641,
+    "title": "[web] Support line height + word spacing in text fields",
+    "url": "https://github.com/flutter/flutter/issues/41641",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "c: new feature",
+      "framework",
+      "platform-web",
+      "P3",
+      "team-web",
+      "triaged-web"
+    ],
+    "assignees": [],
+    "ownership": "team-web",
+    "created_at": "2019-09-30T20:25:30Z",
+    "updated_at": "2024-03-06T21:14:49Z",
+    "body": "TextInput.setStyle method call informs the engine about the styling info of an editable text.\r\n\r\nThis method does not support line height and word spacing. \r\n",
+    "reactions": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "comment_summary": null,
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 71318,
+    "title": "TextField RTL input problem with LTR letters/numbers while obscureText is true",
+    "url": "https://github.com/flutter/flutter/issues/71318",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "framework",
+      "engine",
+      "f: material design",
+      "a: typography",
+      "has reproducible steps",
+      "P2",
+      "found in release: 3.3",
+      "found in release: 3.7",
+      "team-design",
+      "triaged-design"
+    ],
+    "assignees": [],
+    "ownership": "team-design",
+    "created_at": "2020-11-27T16:52:58Z",
+    "updated_at": "2024-07-11T10:52:42Z",
+    "body": "I believe there's a bug with textfield when writing LTR characters in an obscured field.\r\n\r\nThe characters are not written in the correct direction while typing (this issue appears only when obscureText is true).\r\n\r\nThe input value actually is submitted correctly with no problems and also if the password is made visible it is shown in the right way with no issues, the issue only is while typing so it makes it feel like if the password is written in a reversed direction.\r\n\r\n**While typing the letters are written to the left not to the right as expected.**\r\n\r\n### Steps to Reproduce\r\n\r\n1. Create an empty application.\r\n2. Add a TextField  or TextFormField to the application.\r\n3. Set textDirection: TextDirection.rtl\r\n4. Set obscureText: true.\r\n5. type something in English.\r\n\r\n\r\n![screen-20201127-184354](https://user-images.githubusercontent.com/30502213/100470646-51052a80-30e1-11eb-84a7-838968ba2232.gif)\r\n\r\n\r\n### Expected behavior\r\n\r\nTo act the same like when obscureText: false.\r\n\r\n### Flutter Doctor\r\n\r\n[\u2713] Flutter (Channel stable, 1.22.4, on Mac OS X 10.15.7 19H2 darwin-x64, locale en-EG)\r\n \r\n[\u2713] Android toolchain - develop for Android devices (Android SDK version 30.0.0)\r\n \r\n[\u2713] Xcode - develop for iOS and macOS (Xcode 11.6)\r\n[\u2713] Android Studio (version 4.0)\r\n[\u2713] VS Code (version 1.51.1)\r\n[\u2713] Connected device (1 available)\r\n\r\n\r\n",
+    "reactions": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "comment_summary": "Reproduced across many Flutter versions up through 3.3.x. The cursor visually appears on the left during typing but the submitted value is correct. Multiple related RTL issues linked (#47745, #50098, #54099). Status: stalled, long-standing RTL/obscureText regression affecting Android and iOS.",
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 78864,
+    "title": "Text does not draw correctly based on text direction",
+    "url": "https://github.com/flutter/flutter/issues/78864",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "framework",
+      "f: material design",
+      "a: internationalization",
+      "a: typography",
+      "has reproducible steps",
+      "P2",
+      "found in release: 2.1",
+      "team-design",
+      "triaged-design"
+    ],
+    "assignees": [],
+    "ownership": "team-design",
+    "created_at": "2021-03-23T12:53:11Z",
+    "updated_at": "2025-07-22T15:26:14Z",
+    "body": "I was create the flutter application to format the date time and the text was rendered incorrectly. The text formatted correctly but it rendered wrongly. \r\n\r\n## Steps to Reproduce\r\n\r\n1. Run the sample with below code\r\n2. Set the locale as 'en' and change the directionality text direction as rtl(formatted texts are 06 PM, PM 06 but rendered PM 06, PM 06)\r\n3. See both the different formatted text(english) rendered like same.\r\n4. again change the locale as 'he' and change the directionality text direction as ltr\r\n5. See both the different formatted text(hebrew) rendered like same.\r\n\r\n<details>\r\n<summary>code sample</summary>\r\n\r\n```dart\r\nvoid main() {\r\n  return runApp(LocalizationSupport());\r\n}\r\n\r\nclass LocalizationSupport extends StatelessWidget {\r\n  @override\r\n  Widget build(BuildContext context) {\r\n    return MaterialApp(\r\n      localizationsDelegates: [\r\n        GlobalMaterialLocalizations.delegate,\r\n        GlobalWidgetsLocalizations.delegate,\r\n      ],\r\n      supportedLocales: [\r\n        const Locale('en'),\r\n        const Locale('zh'),\r\n        const Locale('ru'),\r\n        const Locale('fr', 'BE'),\r\n        const Locale('fr', 'CA'),\r\n        const Locale('ja'),\r\n        const Locale('de'),\r\n        const Locale('hi'),\r\n        const Locale('ar'),\r\n        const Locale('he'),\r\n      ],\r\n      locale: const Locale('en'),\r\n      debugShowCheckedModeBanner: false,\r\n      home: StringLocale(),\r\n    );\r\n  }\r\n}\r\nclass StringLocale extends StatefulWidget {\r\n  @override\r\n  State<StatefulWidget> createState() => StringLocaleState();\r\n}\r\nclass StringLocaleState extends State<StringLocale> {\r\n  @override\r\n  void initState() {\r\n    super.initState();\r\n  }\r\n\r\n  late String _locale;\r\n  @override\r\n  void didChangeDependencies() {\r\n    _locale = Localizations.localeOf(context).toString();\r\n    super.didChangeDependencies();\r\n  }\r\n\r\n  @override\r\n  Widget build(BuildContext context) {\r\n    String data = DateFormat('hh a', _locale)\r\n        .format(DateTime.now())\r\n        .toString();\r\n    print(data);\r\n\r\n    String data1 = DateFormat('a hh', _locale)\r\n        .format(DateTime.now())\r\n        .toString();\r\n    print(data1);\r\n\r\n    if(data == data1){\r\n      print('Same');\r\n    }\r\n\r\n    return Scaffold(\r\n      body:\r\n      Directionality(textDirection: TextDirection.rtl,\r\n          child: SafeArea(child: Column(\r\n        children: <Widget>[\r\n          Expanded(\r\n            child: Container(\r\n          alignment: Alignment.center,\r\n              height: double.infinity,\r\n              width: double.infinity,\r\n              child: Text(data),\r\n      )\r\n            ),Expanded(\r\n              child: Container(\r\n                alignment: Alignment.center,\r\n                height: double.infinity,\r\n                width: double.infinity,\r\n                child: Text(data1),\r\n              )\r\n          )\r\n      ]\r\n          ),\r\n      ),\r\n    ));\r\n  }\r\n}\r\n\r\n```\r\n</details>\r\n\r\n**Expected results:** \r\n\r\n- Text will rendered correctly based on direction\r\n\r\n**Actual results:** \r\n\r\n- Text will not rendered correctly based on direction\r\n\r\n**Issue Replication Images:**\r\n\r\n**In en locale on RTL direction:**\r\n\r\n![Screen Shot 2021-03-23 at 6 06 30 PM](https://user-images.githubusercontent.com/44917578/112148447-e9c93400-8c03-11eb-9e2b-596d693e1195.png)\r\n\r\n**In he locale on LTR direction:**\r\n\r\n![Screen Shot 2021-03-23 at 6 06 07 PM](https://user-images.githubusercontent.com/44917578/112148530-01082180-8c04-11eb-9b5c-63a1302c2197.png)\r\n\r\n<details>\r\n  <summary>Flutter doctor</summary>\r\n\r\n```\r\n[\u2713] Flutter (Channel beta, 2.0.1, on Mac OS X 10.15.3 19D76 darwin-x64, locale en-US)\r\n[!]Android toolchain - develop for Android devices (Android SDK version 29.0.3)\r\n    \u2717 Android license status unknown.\r\n      Run `flutter doctor --android-licenses` to accept the SDK licenses.\r\n      See https://flutter.dev/docs/get-started/install/macos#android-setup for more details.\r\n[!] Xcode - develop for iOS and macOS\r\n    ! Xcode 11.3.1 out of date (12.0.1 is recommended).\r\n      Download the latest version or update via the Mac App Store.\r\n    \u2717 Xcode requires additional components to be installed in order to run.\r\n      Launch Xcode and install additional required components when prompted or run:\r\n        sudo xcodebuild -runFirstLaunch\r\n    ! CocoaPods 1.9.3 out of date (1.10.0 is recommended).\r\n        CocoaPods is used to retrieve the iOS and macOS platform side's plugin code that responds to your plugin usage on the Dart side.\r\n        Without CocoaPods, plugins will not work on iOS or macOS.\r\n        For more info, see https://flutter.dev/platform-plugins\r\n      To upgrade see https://guides.cocoapods.org/using/getting-started.html#installation for instructions.\r\n[\u2713] Chrome - develop for the web\r\n[\u2713] Android Studio (version 3.6)\r\n[\u2713] VS Code (version 1.52.0)\r\n[\u2713] Connected device (2 available)\r\n```\r\n\r\n<details>",
+    "reactions": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "comment_summary": "Comments are limited to a compile error in the original sample and a single confirmation screenshot; no root cause, fix, or additional platform data added beyond what is in the body.",
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 84317,
+    "title": "Share code between RenderParagraph and RenderEditable",
+    "url": "https://github.com/flutter/flutter/issues/84317",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "framework",
+      "a: typography",
+      "P2",
+      "c: tech-debt",
+      "team-framework",
+      "triaged-framework"
+    ],
+    "assignees": [],
+    "ownership": "team-framework",
+    "created_at": "2021-06-10T03:37:23Z",
+    "updated_at": "2023-07-08T01:50:26Z",
+    "body": "In https://github.com/flutter/flutter/pull/83537, we realized that a lot of code is shared between RenderParagraph and RenderEditable, especially for WidgetSpan support.\r\n\r\nAs we consider adding WidgetSpan support for SelectableText as well (https://github.com/flutter/flutter/issues/38474), this leads us to prefer code reuse rather than three extremely similar codebases to maintain.\r\n\r\nWe may be able to restructure it to inherit, or potentially a mixin, though I am still unclear how sharable the code actually is.",
+    "reactions": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "comment_summary": null,
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 86668,
+    "title": "TextField doesn't handle trailing space as characters if textAlign is TextAlign.right/TextAlign.center",
+    "url": "https://github.com/flutter/flutter/issues/86668",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "framework",
+      "f: material design",
+      "has reproducible steps",
+      "P2",
+      "found in release: 2.2",
+      "found in release: 2.4",
+      "team-text-input",
+      "triaged-text-input"
+    ],
+    "assignees": [],
+    "ownership": "team-text-input",
+    "created_at": "2021-07-19T18:04:12Z",
+    "updated_at": "2024-09-26T22:13:56Z",
+    "body": "## Steps to Reproduce\r\n\r\n1. Run `flutter create bug`.\r\n2. Update main.dart as follows: ... \r\n```import 'package:flutter/material.dart';\r\n\r\nvoid main() {\r\n  runApp(MyApp());\r\n}\r\n\r\nclass MyApp extends StatelessWidget {\r\n  @override\r\n  Widget build(BuildContext context) {\r\n    return MaterialApp(\r\n      title: 'TextField trailing space',\r\n      theme: ThemeData(\r\n        primarySwatch: Colors.blue,\r\n      ),\r\n      home: MyHomePage(title: 'Flutter Demo Home Page'),\r\n    );\r\n  }\r\n}\r\n\r\nclass MyHomePage extends StatefulWidget {\r\n  MyHomePage({Key? key, required this.title}) : super(key: key);\r\n  final String title;\r\n\r\n  @override\r\n  _MyHomePageState createState() => _MyHomePageState();\r\n}\r\n\r\nclass _MyHomePageState extends State<MyHomePage> {\r\n  var textAlign = TextAlign.center;\r\n\r\n  @override\r\n  Widget build(BuildContext context) {\r\n    return Scaffold(\r\n      appBar: AppBar(\r\n        title: Text(widget.title),\r\n      ),\r\n      body: Center(\r\n        child: Column(\r\n          mainAxisAlignment: MainAxisAlignment.center,\r\n          children: <Widget>[\r\n            Text(\r\n              'You have pushed the button this many times:',\r\n            ),\r\n            TextField(\r\n              maxLines: null,\r\n              textAlign: textAlign,\r\n            ),\r\n          ],\r\n        ),\r\n      ),\r\n      floatingActionButton: FloatingActionButton(\r\n        onPressed: () {setState(() {\r\n          textAlign = (textAlign == TextAlign.right) ? TextAlign.center : TextAlign.right;\r\n        });},\r\n        tooltip: 'Increment',\r\n        child: Icon(Icons.add),\r\n      ), \r\n    );\r\n  }\r\n}\r\n```\r\n\r\n3. Write a single character, then press space repeatedly until the end of line is reached. Then type a character eg 'a'.\r\n\r\n**Expected results:** proper line break for space characters/ space characters push back input string textAlign is TextAlign.right\r\n\r\n**Actual results:** space characters are stopped at the end of TextField and won't be handle as normal character input (break into new line, pushing the input string if textAlign is TextAlign.right).\r\n\r\n<details>\r\n  <summary>Logs</summary>\r\n\r\n<!--\r\n      Run your application with `flutter run --verbose` and attach all the\r\n      log output below between the lines with the backticks. If there is an\r\n      exception, please see if the error message includes enough information\r\n      to explain how to solve the issue.\r\n-->\r\n\r\n```\r\n[  +70 ms] executing: [C:\\flutter/] git -c log.showSignature=false log -n 1 --pretty=format:%H\r\n[ +400 ms] Exit code 0 from: git -c log.showSignature=false log -n 1 --pretty=format:%H\r\n[   +2 ms] 02c026b03cd31dd3f867e5faeb7e104cce174c5f\r\n[        ] executing: [C:\\flutter/] git tag --points-at 02c026b03cd31dd3f867e5faeb7e104cce174c5f\r\n[ +126 ms] Exit code 0 from: git tag --points-at 02c026b03cd31dd3f867e5faeb7e104cce174c5f\r\n[   +1 ms] 2.2.1\r\n[   +5 ms] executing: [C:\\flutter/] git rev-parse --abbrev-ref --symbolic @{u}\r\n[  +31 ms] Exit code 0 from: git rev-parse --abbrev-ref --symbolic @{u}\r\n[   +1 ms] origin/stable\r\n[        ] executing: [C:\\flutter/] git ls-remote --get-url origin\r\n[  +26 ms] Exit code 0 from: git ls-remote --get-url origin\r\n[        ] https://github.com/flutter/flutter.git\r\n[ +114 ms] executing: [C:\\flutter/] git rev-parse --abbrev-ref HEAD\r\n[  +34 ms] Exit code 0 from: git rev-parse --abbrev-ref HEAD\r\n[   +1 ms] stable\r\n[  +92 ms] Artifact Instance of 'AndroidGenSnapshotArtifacts' is not required, skipping update.\r\n[   +1 ms] Artifact Instance of 'AndroidInternalBuildArtifacts' is not required, skipping update.\r\n[        ] Artifact Instance of 'IOSEngineArtifacts' is not required, skipping update.\r\n[        ] Artifact Instance of 'FlutterWebSdk' is not required, skipping update.\r\n[   +2 ms] Artifact Instance of 'WindowsEngineArtifacts' is not required, skipping update.\r\n[        ] Artifact Instance of 'MacOSEngineArtifacts' is not required, skipping update.\r\n[        ] Artifact Instance of 'LinuxEngineArtifacts' is not required, skipping update.\r\n[        ] Artifact Instance of 'LinuxFuchsiaSDKArtifacts' is not required, skipping update.\r\n[        ] Artifact Instance of 'MacOSFuchsiaSDKArtifacts' is not required, skipping update.\r\n[        ] Artifact Instance of 'FlutterRunnerSDKArtifacts' is not required, skipping update.\r\n[        ] Artifact Instance of 'FlutterRunnerDebugSymbols' is not required, skipping update.\r\n[  +55 ms] executing: C:\\Users\\LENOVO\\AppData\\Local\\Android\\sdk\\platform-tools\\adb.exe devices -l\r\n[  +42 ms] List of devices attached\r\n           z9q48ln7wsdambss       device product:begonia model:Redmi_Note_8_Pro device:begonia transport_id:4\r\n[   +6 ms] C:\\Users\\LENOVO\\AppData\\Local\\Android\\sdk\\platform-tools\\adb.exe -s z9q48ln7wsdambss shell getprop\r\n[  +73 ms] Artifact Instance of 'AndroidInternalBuildArtifacts' is not required, skipping update.\r\n[        ] Artifact Instance of 'IOSEngineArtifacts' is not required, skipping update.\r\n[   +3 ms] Artifact Instance of 'WindowsEngineArtifacts' is not required, skipping update.\r\n[        ] Artifact Instance of 'MacOSEngineArtifacts' is not required, skipping update.\r\n[        ] Artifact Instance of 'LinuxEngineArtifacts' is not required, skipping update.\r\n[        ] Artifact Instance of 'LinuxFuchsiaSDKArtifacts' is not required, skipping update.\r\n[        ] Artifact Instance of 'MacOSFuchsiaSDKArtifacts' is not required, skipping update.\r\n[        ] Artifact Instance of 'FlutterRunnerSDKArtifacts' is not required, skipping update.\r\n[        ] Artifact Instance of 'FlutterRunnerDebugSymbols' is not required, skipping update.\r\n[ +154 ms] Skipping pub get: version match.\r\n[ +112 ms] Generating D:\\Project\\Flutter\\text_painter\\android\\app\\src\\main\\java\\io\\flutter\\plugins\\GeneratedPluginRegistrant.java\r\n[  +56 ms] ro.hardware = mt6785\r\n[   +1 ms] ro.build.characteristics = default\r\n[  +31 ms] Initializing file store\r\n[  +10 ms] Skipping target: gen_localizations\r\n[   +6 ms] complete\r\n[   +5 ms] Launching lib\\main.dart on Redmi Note 8 Pro in debug mode...\r\n[   +4 ms] C:\\flutter\\bin\\cache\\dart-sdk\\bin\\dart.exe --disable-dart-dev C:\\flutter\\bin\\cache\\artifacts\\engine\\windows-x64\\frontend_server.dart.snapshot --sdk-root C:\\flutter\\bin\\cache\\artifacts\\engine\\common\\flutter_patched_sdk/\r\n--incremental --target=flutter --debugger-module-names --experimental-emit-debug-metadata -DFLUTTER_WEB_AUTO_DETECT=true --output-dill C:\\Users\\LENOVO\\AppData\\Local\\Temp\\flutter_tools.a1da3f28\\flutter_tool.3ff19486\\app.dill\r\n--packages D:\\Project\\Flutter\\text_painter\\.dart_tool\\package_config.json -Ddart.vm.profile=false -Ddart.vm.product=false --enable-asserts --track-widget-creation --filesystem-scheme org-dartlang-root --initialize-from-dill\r\nbuild\\3c113a45063dc6628e68a4111abcacad.cache.dill.track.dill --enable-experiment=alternative-invalidation-strategy\r\n[  +30 ms] executing: C:\\Users\\LENOVO\\AppData\\Local\\Android\\sdk\\build-tools\\30.0.2\\aapt dump xmltree D:\\Project\\Flutter\\text_painter\\build\\app\\outputs\\flutter-apk\\app.apk AndroidManifest.xml\r\n[  +49 ms] Exit code 0 from: C:\\Users\\LENOVO\\AppData\\Local\\Android\\sdk\\build-tools\\30.0.2\\aapt dump xmltree D:\\Project\\Flutter\\text_painter\\build\\app\\outputs\\flutter-apk\\app.apk AndroidManifest.xml\r\n[   +1 ms] N: android=http://schemas.android.com/apk/res/android\r\n             E: manifest (line=2)\r\n               A: android:versionCode(0x0101021b)=(type 0x10)0x1\r\n               A: android:versionName(0x0101021c)=\"1.0.0\" (Raw: \"1.0.0\")\r\n               A: android:compileSdkVersion(0x01010572)=(type 0x10)0x1e\r\n               A: android:compileSdkVersionCodename(0x01010573)=\"11\" (Raw: \"11\")\r\n               A: package=\"com.example.text_painter\" (Raw: \"com.example.text_painter\")\r\n               A: platformBuildVersionCode=(type 0x10)0x1e\r\n               A: platformBuildVersionName=(type 0x10)0xb\r\n               E: uses-sdk (line=7)\r\n                 A: android:minSdkVersion(0x0101020c)=(type 0x10)0x10\r\n                 A: android:targetSdkVersion(0x01010270)=(type 0x10)0x1e\r\n               E: uses-permission (line=14)\r\n                 A: android:name(0x01010003)=\"android.permission.INTERNET\" (Raw: \"android.permission.INTERNET\")\r\n               E: application (line=16)\r\n                 A: android:label(0x01010001)=\"text_painter\" (Raw: \"text_painter\")\r\n                 A: android:icon(0x01010002)=@0x7f080000\r\n                 A: android:debuggable(0x0101000f)=(type 0x12)0xffffffff\r\n                 A: android:appComponentFactory(0x0101057a)=\"androidx.core.app.CoreComponentFactory\" (Raw: \"androidx.core.app.CoreComponentFactory\")\r\n                 E: activity (line=21)\r\n                   A: android:theme(0x01010000)=@0x7f0a0000\r\n                   A: android:name(0x01010003)=\"com.example.text_painter.MainActivity\" (Raw: \"com.example.text_painter.MainActivity\")\r\n                   A: android:launchMode(0x0101001d)=(type 0x10)0x1\r\n                   A: android:configChanges(0x0101001f)=(type 0x11)0x40003fb4\r\n                   A: android:windowSoftInputMode(0x0101022b)=(type 0x11)0x10\r\n                   A: android:hardwareAccelerated(0x010102d3)=(type 0x12)0xffffffff\r\n                   E: meta-data (line=35)\r\n                     A: android:name(0x01010003)=\"io.flutter.embedding.android.NormalTheme\" (Raw: \"io.flutter.embedding.android.NormalTheme\")\r\n                     A: android:resource(0x01010025)=@0x7f0a0001\r\n                   E: meta-data (line=45)\r\n                     A: android:name(0x01010003)=\"io.flutter.embedding.android.SplashScreenDrawable\" (Raw: \"io.flutter.embedding.android.SplashScreenDrawable\")\r\n                     A: android:resource(0x01010025)=@0x7f040000\r\n                   E: intent-filter (line=49)\r\n                     E: action (line=50)\r\n                       A: android:name(0x01010003)=\"android.intent.action.MAIN\" (Raw: \"android.intent.action.MAIN\")\r\n                     E: category (line=52)\r\n                       A: android:name(0x01010003)=\"android.intent.category.LAUNCHER\" (Raw: \"android.intent.category.LAUNCHER\")\r\n                 E: meta-data (line=59)\r\n                   A: android:name(0x01010003)=\"flutterEmbedding\" (Raw: \"flutterEmbedding\")\r\n                   A: android:value(0x01010024)=(type 0x10)0x2\r\n[   +7 ms] executing: C:\\Users\\LENOVO\\AppData\\Local\\Android\\sdk\\platform-tools\\adb.exe -s z9q48ln7wsdambss shell -x logcat -v time -t 1\r\n[   +8 ms] <- compile package:text_painter/main.dart\r\n[ +157 ms] --------- beginning of main\r\n                    07-20 00:54:06.913 I/ADB_SERVICES(23105): post waitpid (pid=31212) status=0000\r\n[  +12 ms] executing: C:\\Users\\LENOVO\\AppData\\Local\\Android\\sdk\\platform-tools\\adb.exe version\r\n[  +22 ms] Android Debug Bridge version 1.0.41\r\n           Version 30.0.4-6686687\r\n           Installed as C:\\Users\\LENOVO\\AppData\\Local\\Android\\sdk\\platform-tools\\adb.exe\r\n[   +2 ms] executing: C:\\Users\\LENOVO\\AppData\\Local\\Android\\sdk\\platform-tools\\adb.exe start-server\r\n[  +24 ms] Building APK\r\n[  +17 ms] Running Gradle task 'assembleDebug'...\r\n[   +9 ms] Using gradle from D:\\Project\\Flutter\\text_painter\\android\\gradlew.bat.\r\n[  +11 ms] executing: [D:\\Project\\Flutter\\text_painter\\android/] D:\\Project\\Flutter\\text_painter\\android\\gradlew.bat -Pverbose=true -Ptarget-platform=android-arm64 -Ptarget=D:\\Project\\Flutter\\text_painter\\lib\\main.dart\r\n-Pdart-defines=RkxVVFRFUl9XRUJfQVVUT19ERVRFQ1Q9dHJ1ZQ== -Pdart-obfuscation=false -Ptrack-widget-creation=true -Ptree-shake-icons=false -Pfilesystem-scheme=org-dartlang-root assembleDebug\r\n[ +797 ms] Welcome to Gradle 6.7!\r\n[   +1 ms] Here are the highlights of this release:\r\n[   +1 ms]  - File system watching is ready for production use\r\n[   +1 ms]  - Declare the version of Java your build requires\r\n[        ]  - Java 15 support\r\n[        ] For more details see https://docs.gradle.org/6.7/release-notes.html\r\n[+4364 ms] > Task :app:compileFlutterBuildDebug\r\n[   +2 ms] [ +118 ms] executing: [C:\\flutter/] git -c log.showSignature=false log -n 1 --pretty=format:%H\r\n[   +2 ms] [ +479 ms] Exit code 0 from: git -c log.showSignature=false log -n 1 --pretty=format:%H\r\n[   +1 ms] [        ] 02c026b03cd31dd3f867e5faeb7e104cce174c5f\r\n[   +5 ms] [        ] executing: [C:\\flutter/] git tag --points-at 02c026b03cd31dd3f867e5faeb7e104cce174c5f\r\n[   +2 ms] [  +56 ms] Exit code 0 from: git tag --points-at 02c026b03cd31dd3f867e5faeb7e104cce174c5f\r\n[   +2 ms] [        ] 2.2.1\r\n[   +1 ms] [  +10 ms] executing: [C:\\flutter/] git rev-parse --abbrev-ref --symbolic @{u}\r\n[   +1 ms] [  +46 ms] Exit code 0 from: git rev-parse --abbrev-ref --symbolic @{u}\r\n[   +1 ms] [        ] origin/stable\r\n[        ] [        ] executing: [C:\\flutter/] git ls-remote --get-url origin\r\n[   +1 ms] [  +27 ms] Exit code 0 from: git ls-remote --get-url origin\r\n[   +1 ms] [        ] https://github.com/flutter/flutter.git\r\n[        ] [  +67 ms] executing: [C:\\flutter/] git rev-parse --abbrev-ref HEAD\r\n[   +4 ms] [  +36 ms] Exit code 0 from: git rev-parse --abbrev-ref HEAD\r\n[   +1 ms] [        ] stable\r\n[   +1 ms] [  +63 ms] Artifact Instance of 'AndroidGenSnapshotArtifacts' is not required, skipping update.\r\n[        ] [        ] Artifact Instance of 'AndroidInternalBuildArtifacts' is not required, skipping update.\r\n[   +3 ms] [        ] Artifact Instance of 'IOSEngineArtifacts' is not required, skipping update.\r\n[   +5 ms] [        ] Artifact Instance of 'FlutterWebSdk' is not required, skipping update.\r\n[   +2 ms] [   +3 ms] Artifact Instance of 'WindowsEngineArtifacts' is not required, skipping update.\r\n[   +1 ms] [        ] Artifact Instance of 'MacOSEngineArtifacts' is not required, skipping update.\r\n[   +2 ms] [        ] Artifact Instance of 'LinuxEngineArtifacts' is not required, skipping update.\r\n[   +3 ms] [        ] Artifact Instance of 'LinuxFuchsiaSDKArtifacts' is not required, skipping update.\r\n[   +2 ms] [        ] Artifact Instance of 'MacOSFuchsiaSDKArtifacts' is not required, skipping update.\r\n[        ] [        ] Artifact Instance of 'FlutterRunnerSDKArtifacts' is not required, skipping update.\r\n[        ] [        ] Artifact Instance of 'FlutterRunnerDebugSymbols' is not required, skipping update.\r\n[   +1 ms] [ +107 ms] Artifact Instance of 'MaterialFonts' is not required, skipping update.\r\n[   +3 ms] [        ] Artifact Instance of 'GradleWrapper' is not required, skipping update.\r\n[   +1 ms] [   +3 ms] Artifact Instance of 'AndroidInternalBuildArtifacts' is not required, skipping update.\r\n[   +1 ms] [        ] Artifact Instance of 'IOSEngineArtifacts' is not required, skipping update.\r\n[        ] [        ] Artifact Instance of 'FlutterWebSdk' is not required, skipping update.\r\n[        ] [        ] Artifact Instance of 'FlutterSdk' is not required, skipping update.\r\n[   +1 ms] [        ] Artifact Instance of 'WindowsEngineArtifacts' is not required, skipping update.\r\n[   +1 ms] [        ] Artifact Instance of 'MacOSEngineArtifacts' is not required, skipping update.\r\n[   +3 ms] [        ] Artifact Instance of 'LinuxEngineArtifacts' is not required, skipping update.\r\n[   +2 ms] [        ] Artifact Instance of 'LinuxFuchsiaSDKArtifacts' is not required, skipping update.\r\n[   +1 ms] [        ] Artifact Instance of 'MacOSFuchsiaSDKArtifacts' is not required, skipping update.\r\n[   +2 ms] [        ] Artifact Instance of 'FlutterRunnerSDKArtifacts' is not required, skipping update.\r\n[   +1 ms] [        ] Artifact Instance of 'FlutterRunnerDebugSymbols' is not required, skipping update.\r\n[   +1 ms] [        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.\r\n[        ] [        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.\r\n[        ] [        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.\r\n[   +1 ms] [        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.\r\n[        ] [        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.\r\n[        ] [        ] Artifact Instance of 'FontSubsetArtifacts' is not required, skipping update.\r\n[   +3 ms] [        ] Artifact Instance of 'PubDependencies' is not required, skipping update.\r\n[   +1 ms] [  +36 ms] Initializing file store\r\n[   +1 ms] [  +22 ms] Skipping target: gen_localizations\r\n[        ] [  +13 ms] kernel_snapshot: Starting due to {}\r\n[   +3 ms] [ +106 ms] C:\\flutter\\bin\\cache\\dart-sdk\\bin\\dart.exe --disable-dart-dev C:\\flutter\\bin\\cache\\artifacts\\engine\\windows-x64\\frontend_server.dart.snapshot --sdk-root\r\nC:\\flutter\\bin\\cache\\artifacts\\engine\\common\\flutter_patched_sdk/ --target=flutter --no-print-incremental-dependencies -DFLUTTER_WEB_AUTO_DETECT=true -Ddart.vm.profile=false -Ddart.vm.product=false --enable-asserts\r\n--track-widget-creation --no-link-platform --packages D:\\Project\\Flutter\\text_painter\\.dart_tool\\package_config.json --output-dill D:\\Project\\Flutter\\text_painter\\.dart_tool\\flutter_build\\60b53fb5fa496bd16c6b90a133d5c8c5\\app.dill\r\n--depfile D:\\Project\\Flutter\\text_painter\\.dart_tool\\flutter_build\\60b53fb5fa496bd16c6b90a133d5c8c5\\kernel_snapshot.d package:text_painter/main.dart\r\n[+9696 ms] [+9823 ms] kernel_snapshot: Complete\r\n[ +701 ms] [ +623 ms] debug_android_application: Starting due to {}\r\n[ +298 ms] [ +338 ms] debug_android_application: Complete\r\n[ +597 ms] [ +564 ms] Persisting file store\r\n[   +1 ms] [   +7 ms] Done persisting file store\r\n[        ] [   +9 ms] build succeeded.\r\n[        ] [  +18 ms] \"flutter assemble\" took 11,689ms.\r\n[ +201 ms] [ +149 ms] ensureAnalyticsSent: 145ms\r\n[   +1 ms] [   +1 ms] Running shutdown hooks\r\n[        ] [        ] Shutdown hooks complete\r\n[        ] [        ] exiting with code 0\r\n[ +185 ms] > Task :app:packLibsflutterBuildDebug UP-TO-DATE\r\n[   +1 ms] > Task :app:preBuild UP-TO-DATE\r\n[   +1 ms] > Task :app:preDebugBuild UP-TO-DATE\r\n[        ] > Task :app:compileDebugAidl NO-SOURCE\r\n[        ] > Task :app:compileDebugRenderscript NO-SOURCE\r\n[        ] > Task :app:generateDebugBuildConfig UP-TO-DATE\r\n[ +107 ms] > Task :app:checkDebugAarMetadata UP-TO-DATE\r\n[   +1 ms] > Task :app:cleanMergeDebugAssets\r\n[        ] > Task :app:mergeDebugShaders UP-TO-DATE\r\n[        ] > Task :app:compileDebugShaders NO-SOURCE\r\n[        ] > Task :app:generateDebugAssets UP-TO-DATE\r\n[        ] > Task :app:mergeDebugAssets\r\n[ +295 ms] > Task :app:copyFlutterAssetsDebug\r\n[   +1 ms] > Task :app:generateDebugResValues UP-TO-DATE\r\n[   +1 ms] > Task :app:generateDebugResources UP-TO-DATE\r\n[        ] > Task :app:mergeDebugResources UP-TO-DATE\r\n[        ] > Task :app:createDebugCompatibleScreenManifests UP-TO-DATE\r\n[        ] > Task :app:extractDeepLinksDebug UP-TO-DATE\r\n[        ] > Task :app:processDebugMainManifest UP-TO-DATE\r\n[        ] > Task :app:processDebugManifest UP-TO-DATE\r\n[        ] > Task :app:processDebugManifestForPackage UP-TO-DATE\r\n[  +84 ms] > Task :app:processDebugResources UP-TO-DATE\r\n[   +1 ms] > Task :app:compileDebugKotlin UP-TO-DATE\r\n[        ] > Task :app:javaPreCompileDebug UP-TO-DATE\r\n[        ] > Task :app:compileDebugJavaWithJavac UP-TO-DATE\r\n[        ] > Task :app:compileDebugSources UP-TO-DATE\r\n[        ] > Task :app:mergeDebugNativeDebugMetadata NO-SOURCE\r\n[ +208 ms] > Task :app:processDebugJavaRes NO-SOURCE\r\n[   +1 ms] > Task :app:mergeDebugJavaResource UP-TO-DATE\r\n[        ] > Task :app:checkDebugDuplicateClasses UP-TO-DATE\r\n[  +94 ms] > Task :app:dexBuilderDebug UP-TO-DATE\r\n[  +98 ms] > Task :app:desugarDebugFileDependencies UP-TO-DATE\r\n[ +102 ms] > Task :app:mergeExtDexDebug UP-TO-DATE\r\n[   +1 ms] > Task :app:mergeDexDebug UP-TO-DATE\r\n[        ] > Task :app:mergeDebugJniLibFolders UP-TO-DATE\r\n[        ] > Task :app:mergeDebugNativeLibs UP-TO-DATE\r\n[        ] > Task :app:stripDebugDebugSymbols UP-TO-DATE\r\n[        ] > Task :app:validateSigningDebug UP-TO-DATE\r\n[+1196 ms] > Task :app:compressDebugAssets\r\n[+2994 ms] > Task :app:packageDebug\r\n[ +107 ms] > Task :app:assembleDebug\r\n[   +1 ms] Deprecated Gradle features were used in this build, making it incompatible with Gradle 7.0.\r\n[        ] Use '--warning-mode all' to show the individual deprecation warnings.\r\n[        ] See https://docs.gradle.org/6.7/userguide/command_line_interface.html#sec:command_line_warnings\r\n[        ] BUILD SUCCESSFUL in 22s\r\n[        ] 32 actionable tasks: 7 executed, 25 up-to-date\r\n[ +602 ms] Running Gradle task 'assembleDebug'... (completed in 22.9s)\r\n[+1496 ms] calculateSha: LocalDirectory: 'D:\\Project\\Flutter\\text_painter\\build\\app\\outputs\\flutter-apk'/app.apk\r\n[ +672 ms] \u221a  Built build\\app\\outputs\\flutter-apk\\app-debug.apk.\r\n[  +22 ms] executing: C:\\Users\\LENOVO\\AppData\\Local\\Android\\sdk\\build-tools\\30.0.2\\aapt dump xmltree D:\\Project\\Flutter\\text_painter\\build\\app\\outputs\\flutter-apk\\app.apk AndroidManifest.xml\r\n[  +91 ms] Exit code 0 from: C:\\Users\\LENOVO\\AppData\\Local\\Android\\sdk\\build-tools\\30.0.2\\aapt dump xmltree D:\\Project\\Flutter\\text_painter\\build\\app\\outputs\\flutter-apk\\app.apk AndroidManifest.xml\r\n[        ] N: android=http://schemas.android.com/apk/res/android\r\n             E: manifest (line=2)\r\n               A: android:versionCode(0x0101021b)=(type 0x10)0x1\r\n               A: android:versionName(0x0101021c)=\"1.0.0\" (Raw: \"1.0.0\")\r\n               A: android:compileSdkVersion(0x01010572)=(type 0x10)0x1e\r\n               A: android:compileSdkVersionCodename(0x01010573)=\"11\" (Raw: \"11\")\r\n               A: package=\"com.example.text_painter\" (Raw: \"com.example.text_painter\")\r\n               A: platformBuildVersionCode=(type 0x10)0x1e\r\n               A: platformBuildVersionName=(type 0x10)0xb\r\n               E: uses-sdk (line=7)\r\n                 A: android:minSdkVersion(0x0101020c)=(type 0x10)0x10\r\n                 A: android:targetSdkVersion(0x01010270)=(type 0x10)0x1e\r\n               E: uses-permission (line=14)\r\n                 A: android:name(0x01010003)=\"android.permission.INTERNET\" (Raw: \"android.permission.INTERNET\")\r\n               E: application (line=16)\r\n                 A: android:label(0x01010001)=\"text_painter\" (Raw: \"text_painter\")\r\n                 A: android:icon(0x01010002)=@0x7f080000\r\n                 A: android:debuggable(0x0101000f)=(type 0x12)0xffffffff\r\n                 A: android:appComponentFactory(0x0101057a)=\"androidx.core.app.CoreComponentFactory\" (Raw: \"androidx.core.app.CoreComponentFactory\")\r\n                 E: activity (line=21)\r\n                   A: android:theme(0x01010000)=@0x7f0a0000\r\n                   A: android:name(0x01010003)=\"com.example.text_painter.MainActivity\" (Raw: \"com.example.text_painter.MainActivity\")\r\n                   A: android:launchMode(0x0101001d)=(type 0x10)0x1\r\n                   A: android:configChanges(0x0101001f)=(type 0x11)0x40003fb4\r\n                   A: android:windowSoftInputMode(0x0101022b)=(type 0x11)0x10\r\n                   A: android:hardwareAccelerated(0x010102d3)=(type 0x12)0xffffffff\r\n                   E: meta-data (line=35)\r\n                     A: android:name(0x01010003)=\"io.flutter.embedding.android.NormalTheme\" (Raw: \"io.flutter.embedding.android.NormalTheme\")\r\n                     A: android:resource(0x01010025)=@0x7f0a0001\r\n                   E: meta-data (line=45)\r\n                     A: android:name(0x01010003)=\"io.flutter.embedding.android.SplashScreenDrawable\" (Raw: \"io.flutter.embedding.android.SplashScreenDrawable\")\r\n                     A: android:resource(0x01010025)=@0x7f040000\r\n                   E: intent-filter (line=49)\r\n                     E: action (line=50)\r\n                       A: android:name(0x01010003)=\"android.intent.action.MAIN\" (Raw: \"android.intent.action.MAIN\")\r\n                     E: category (line=52)\r\n                       A: android:name(0x01010003)=\"android.intent.category.LAUNCHER\" (Raw: \"android.intent.category.LAUNCHER\")\r\n                 E: meta-data (line=59)\r\n                   A: android:name(0x01010003)=\"flutterEmbedding\" (Raw: \"flutterEmbedding\")\r\n                   A: android:value(0x01010024)=(type 0x10)0x2\r\n[   +2 ms] Stopping app 'app.apk' on Redmi Note 8 Pro.\r\n[        ] executing: C:\\Users\\LENOVO\\AppData\\Local\\Android\\sdk\\platform-tools\\adb.exe -s z9q48ln7wsdambss shell am force-stop com.example.text_painter\r\n[ +156 ms] executing: C:\\Users\\LENOVO\\AppData\\Local\\Android\\sdk\\platform-tools\\adb.exe -s z9q48ln7wsdambss shell pm list packages com.example.text_painter\r\n[  +76 ms] package:com.example.text_painter\r\n[   +2 ms] executing: C:\\Users\\LENOVO\\AppData\\Local\\Android\\sdk\\platform-tools\\adb.exe -s z9q48ln7wsdambss shell cat /data/local/tmp/sky.com.example.text_painter.sha1\r\n[  +53 ms] ab183ad7343b06705bd1ea64528edc9748a9ad55\r\n[   +1 ms] Installing APK.\r\n[   +2 ms] Installing build\\app\\outputs\\flutter-apk\\app.apk...\r\n[        ] executing: C:\\Users\\LENOVO\\AppData\\Local\\Android\\sdk\\platform-tools\\adb.exe -s z9q48ln7wsdambss install -t -r D:\\Project\\Flutter\\text_painter\\build\\app\\outputs\\flutter-apk\\app.apk\r\n[+6589 ms] Performing Streamed Install\r\n                    Success\r\n[   +1 ms] Installing build\\app\\outputs\\flutter-apk\\app.apk... (completed in 6.6s)\r\n[   +1 ms] executing: C:\\Users\\LENOVO\\AppData\\Local\\Android\\sdk\\platform-tools\\adb.exe -s z9q48ln7wsdambss shell echo -n b51456567897f09aa40954cddad52944e006976c > /data/local/tmp/sky.com.example.text_painter.sha1\r\n[  +77 ms] executing: C:\\Users\\LENOVO\\AppData\\Local\\Android\\sdk\\platform-tools\\adb.exe -s z9q48ln7wsdambss shell -x logcat -v time -t 1\r\n[ +233 ms] --------- beginning of main\r\n                    07-20 00:54:39.908 D/AppCompatStateReceiver( 5195): json params=[{\"pkg\":\"com.example.text_painter\",\"ver\":\"1\"}]\r\n[   +6 ms] executing: C:\\Users\\LENOVO\\AppData\\Local\\Android\\sdk\\platform-tools\\adb.exe -s z9q48ln7wsdambss shell am start -a android.intent.action.RUN -f 0x20000000 --ez enable-background-compilation true --ez enable-dart-profiling\r\ntrue --ez enable-checked-mode true --ez verify-entry-points true com.example.text_painter/com.example.text_painter.MainActivity\r\n[ +294 ms] Starting: Intent { act=android.intent.action.RUN flg=0x20000000 cmp=com.example.text_painter/.MainActivity (has extras) }\r\n[   +1 ms] Waiting for observatory port to be available...\r\n[+1233 ms] Observatory URL on device: http://127.0.0.1:43745/-LS0ARhsix0=/\r\n[   +1 ms] executing: C:\\Users\\LENOVO\\AppData\\Local\\Android\\sdk\\platform-tools\\adb.exe -s z9q48ln7wsdambss forward tcp:0 tcp:43745\r\n[  +17 ms] 61270\r\n[        ] Forwarded host port 61270 to device port 43745 for Observatory\r\n[   +4 ms] Caching compiled dill\r\n[ +129 ms] Connecting to service protocol: http://127.0.0.1:61270/-LS0ARhsix0=/\r\n[ +335 ms] Launching a Dart Developer Service (DDS) instance at http://127.0.0.1:0, connecting to VM service at http://127.0.0.1:61270/-LS0ARhsix0=/.\r\n[ +154 ms] DDS is listening at http://127.0.0.1:61275/aHs7bxSCInQ=/.\r\n[  +56 ms] Successfully connected to service protocol: http://127.0.0.1:61270/-LS0ARhsix0=/\r\n[  +31 ms] DevFS: Creating new filesystem on the device (null)\r\n[  +80 ms] DevFS: Created new filesystem on the device (file:///data/user/0/com.example.text_painter/code_cache/text_painterUEFLBS/text_painter/)\r\n[   +1 ms] Updating assets\r\n[  +69 ms] Syncing files to device Redmi Note 8 Pro...\r\n[   +2 ms] <- reset\r\n[        ] Compiling dart to kernel with 0 updated files\r\n[   +2 ms] <- recompile package:text_painter/main.dart 9a40f0d2-91f5-4fb6-b5db-736d8da4b362\r\n[        ] <- 9a40f0d2-91f5-4fb6-b5db-736d8da4b362\r\n[  +23 ms] I/OpenGLRenderer(31488): Davey! duration=867ms; Flags=1, IntendedVsync=1826060224492527, Vsync=1826060838091203, OldestInputEvent=9223372036854775807, NewestInputEvent=0, HandleInputStart=1826060855516865,\r\nAnimationStart=1826060855588865, PerformTraversalsStart=1826060855593788, DrawStart=1826060871165172, SyncQueued=1826060873681865, SyncStart=1826060873895634, IssueDrawCommandsStart=1826060876239326, SwapBuffers=1826061088240634,\r\nFrameCompleted=1826061091827403, DequeueBufferDuration=3112000, QueueBufferDuration=248000,\r\n[   +1 ms] W/Looper  (31488): Slow Looper main: doFrame is 623ms late because of 1 msg, msg 1 took 639ms (late=1ms h=android.view.Choreographer$FrameHandler c=android.view.Choreographer$FrameDisplayEventReceiver)\r\n[  +57 ms] Updating files.\r\n[        ] DevFS: Sync finished\r\n[   +1 ms] Syncing files to device Redmi Note 8 Pro... (completed in 89ms)\r\n[        ] Synced 0.0MB.\r\n[   +1 ms] <- accept\r\n[  +30 ms] Connected to _flutterView/0x6f71f0c820.\r\n[   +2 ms] Flutter run key commands.\r\n[   +1 ms] r Hot reload. \r\n[   +1 ms] R Hot restart.\r\n[        ] h Repeat this help message.\r\n[        ] d Detach (terminate \"flutter run\" but leave application running).\r\n[        ] c Clear the screen\r\n[        ] q Quit (terminate the application on the device).\r\n[        ]  Running with sound null safety \r\n[        ] An Observatory debugger and profiler on Redmi Note 8 Pro is available at: http://127.0.0.1:61275/aHs7bxSCInQ=/\r\n[ +859 ms] The Flutter DevTools debugger and profiler on Redmi Note 8 Pro is available at: http://127.0.0.1:9102?uri=http%3A%2F%2F127.0.0.1%3A61275%2FaHs7bxSCInQ%3D%2F\r\n[+5233 ms] I/le.text_painte(31488): ProcessProfilingInfo new_methods=617 is saved saved_to_disk=1 resolve_classes_delay=8000\r\n[+106250 ms] D/Surface (31488): Surface::disconnect(this=0x6f5da0e000,api=1)\r\n[   +2 ms] D/Surface (31488): Surface::disconnect(this=0x6f5da0e000,api=-1)\r\n[ +235 ms] D/Surface (31488): Surface::disconnect(this=0x6f5da0d000,api=1)\r\n[  +20 ms] V/PhoneWindow(31488): DecorView setVisiblity: visibility = 4, Parent = android.view.ViewRootImpl@3538a2b, this = DecorView@6ed1e88[MainActivity]\r\n```\r\n\r\n<!--\r\n     Run `flutter analyze` and attach any output of that command below.\r\n     If there are any analysis errors, try resolving them before filing this issue.\r\n-->\r\n\r\n```\r\nAnalyzing text_painter...\r\nNo issues found! (ran in 2.4s)\r\n```\r\n\r\n<!-- Finally, paste the output of running `flutter doctor -v` here. -->\r\n\r\n```\r\n[\u221a] Flutter (Channel stable, 2.2.1, on Microsoft Windows [Version 10.0.19042.1110], locale en-US)\r\n    \u2022 Flutter version 2.2.1 at C:\\flutter\r\n    \u2022 Framework revision 02c026b03c (8 weeks ago), 2021-05-27 12:24:44 -0700\r\n    \u2022 Engine revision 0fdb562ac8\r\n    \u2022 Dart version 2.13.1\r\n\r\n[\u221a] Android toolchain - develop for Android devices (Android SDK version 30.0.2)\r\n    \u2022 Android SDK at C:\\Users\\LENOVO\\AppData\\Local\\Android\\sdk\r\n    \u2022 Platform android-30, build-tools 30.0.2\r\n    \u2022 Java binary at: C:\\Program Files\\Java\\jdk-11.0.11\\bin\\java\r\n    \u2022 Java version Java(TM) SE Runtime Environment 18.9 (build 11.0.11+9-LTS-194)\r\n    \u2022 All Android licenses accepted.\r\n\r\n[\u221a] Chrome - develop for the web\r\n    \u2022 Chrome at C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe\r\n\r\n[!] Android Studio (not installed)\r\n    \u2022 Android Studio not found; download from https://developer.android.com/studio/index.html\r\n      (or visit https://flutter.dev/docs/get-started/install/windows#android-setup for detailed instructions).\r\n\r\n[\u221a] IntelliJ IDEA Community Edition (version 2020.3)\r\n    \u2022 IntelliJ at D:\\IntelliJ IDEA Community Edition 2020.3.2\r\n    \u2022 Flutter plugin can be installed from:\r\n       https://plugins.jetbrains.com/plugin/9212-flutter\r\n    \u2022 Dart plugin can be installed from:\r\n       https://plugins.jetbrains.com/plugin/6351-dart\r\n\r\n[\u221a] VS Code (version 1.58.2)\r\n    \u2022 VS Code at C:\\Users\\LENOVO\\AppData\\Local\\Programs\\Microsoft VS Code\r\n    \u2022 Flutter extension version 3.24.0\r\n\r\n[\u221a] Connected device (3 available)\r\n    \u2022 Redmi Note 8 Pro (mobile) \u2022 z9q48ln7wsdambss \u2022 android-arm64  \u2022 Android 9 (API 28)\r\n    \u2022 Chrome (web)              \u2022 chrome           \u2022 web-javascript \u2022 Google Chrome 91.0.4472.124\r\n    \u2022 Edge (web)                \u2022 edge             \u2022 web-javascript \u2022 Microsoft Edge 91.0.864.70\r\n```\r\n\r\n</details>\r\n",
+    "reactions": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "comment_summary": "Confirmed reproducible on stable and master by a triager (video provided); trailing spaces do not push text or break lines as expected when `textAlign` is `TextAlign.center` or `TextAlign.right`. An initial comment wrongly suggested the behavior was correct; subsequent comments and a video confirmed it is not. A bot comment noted a missing priority label. No root cause was identified in the comments and no fix or PR was proposed; issue is stalled.",
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 103705,
+    "title": "letterSpacing in TextField with monospace font is only applied to right side of the first character until a second character is entered, then letterSpacing is applied correctly to both sides",
+    "url": "https://github.com/flutter/flutter/issues/103705",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "engine",
+      "a: typography",
+      "has reproducible steps",
+      "P2",
+      "found in release: 3.0",
+      "found in release: 3.1",
+      "team-engine",
+      "triaged-engine"
+    ],
+    "assignees": [],
+    "ownership": "team-engine",
+    "created_at": "2022-05-13T14:29:24Z",
+    "updated_at": "2023-07-08T00:28:42Z",
+    "body": "<!-- Thank you for using Flutter!\r\n\r\n     If you are looking for support, please check out our documentation\r\n     or consider asking a question on Stack Overflow:\r\n      * https://flutter.dev/\r\n      * https://api.flutter.dev/\r\n      * https://stackoverflow.com/questions/tagged/flutter?sort=frequent\r\n\r\n     If you have found a bug or if our documentation doesn't have an answer\r\n     to what you're looking for, then fill out the template below. Please read\r\n     our guide to filing a bug first: https://flutter.dev/docs/resources/bug-reports\r\n-->\r\n\r\n## Steps to Reproduce\r\n\r\n<!-- Please include full steps to reproduce so that we can reproduce the problem. -->\r\n\r\n1. Run the sample app here: https://github.com/acoutts/flutter_text_bug/blob/main/lib/main.dart\r\n2. Enter some characters in the text field\r\n\r\n**Expected results:** <!-- what did you want to see? -->\r\nThe letter spacing should be applied to all characters equally no matter the length of the input text.\r\n\r\n\r\n**Actual results:** <!-- what did you see? -->\r\nWhen only one character is entered, the letterSpacing is only added to the right of the character.\r\nWhen a second character is entered, then the letter spacing is correctly applied to both sides of the first character.\r\n\r\nVideo demonstration:\r\nhttps://giphy.com/gifs/blxgQ70RIoVvJybyW0\r\n\r\nWhile the video demonstrates the behavior on iOS, I tested on an Android device and confirmed the same behavior there.\r\n\r\n<details>\r\n<summary>Code sample</summary>\r\n\r\n<!--\r\n      Please create a minimal reproducible sample that shows the problem\r\n      and attach it below between the lines with the backticks.\r\n\r\n      To create it you can use `flutter create bug` command and update the `main.dart` file.\r\n\r\n      Alternatively, you can use https://dartpad.dev/\r\n      which is capable of creating and running small Flutter apps.\r\n\r\n      Without this we will unlikely be able to progress on the issue, and because of that\r\n      we regretfully will have to close it.\r\n-->\r\n\r\n```dart\r\n           TextField(\r\n              style: TextStyle(\r\n                fontFamily: 'NotoMono-Regular',\r\n                fontSize: MediaQuery.of(context).size.width * 0.086,\r\n                letterSpacing: MediaQuery.of(context).size.width * 0.082,\r\n              ),\r\n            )\r\n```\r\n\r\n</details>\r\n\r\n<details>\r\n  <summary>Logs</summary>\r\n\r\n<!--\r\n      Run your application with `flutter run --verbose` and attach all the\r\n      log output below between the lines with the backticks. If there is an\r\n      exception, please see if the error message includes enough information\r\n      to explain how to solve the issue.\r\n-->\r\n\r\n```\r\n```\r\n\r\n<!--\r\n     Run `flutter analyze` and attach any output of that command below.\r\n     If there are any analysis errors, try resolving them before filing this issue.\r\n-->\r\n\r\n```\r\n```\r\n\r\n<!-- Finally, paste the output of running `flutter doctor -v` here. -->\r\n\r\n```\r\n[\u2713] Flutter (Channel stable, 3.0.0, on macOS 12.3.1 21E258 darwin-arm, locale en-US)\r\n    \u2022 Flutter version 3.0.0 at /Users/andrew.coutts/Projects/flutter\r\n    \u2022 Upstream repository git@github.com:flutter/flutter.git\r\n    \u2022 Framework revision ee4e09cce0 (4 days ago), 2022-05-09 16:45:18 -0700\r\n    \u2022 Engine revision d1b9a6938a\r\n    \u2022 Dart version 2.17.0\r\n    \u2022 DevTools version 2.12.2\r\n\r\n[\u2713] Android toolchain - develop for Android devices (Android SDK version 32.1.0-rc1)\r\n    \u2022 Android SDK at /Users/andrew.coutts/Library/Android/sdk\r\n    \u2022 Platform android-32, build-tools 32.1.0-rc1\r\n    \u2022 ANDROID_HOME = /Users/andrew.coutts/Library/Android/sdk\r\n    \u2022 Java binary at: /Applications/Android Studio.app/Contents/jre/Contents/Home/bin/java\r\n    \u2022 Java version OpenJDK Runtime Environment (build 11.0.11+0-b60-7772763)\r\n    \u2022 All Android licenses accepted.\r\n\r\n[\u2713] Xcode - develop for iOS and macOS (Xcode 13.3.1)\r\n    \u2022 Xcode at /Applications/Xcode.app/Contents/Developer\r\n    \u2022 CocoaPods version 1.11.3\r\n\r\n[\u2713] Chrome - develop for the web\r\n    \u2022 Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome\r\n\r\n[\u2713] Android Studio (version 2021.1)\r\n    \u2022 Android Studio at /Applications/Android Studio.app/Contents\r\n    \u2022 Flutter plugin can be installed from:\r\n      \ud83d\udd28 https://plugins.jetbrains.com/plugin/9212-flutter\r\n    \u2022 Dart plugin can be installed from:\r\n      \ud83d\udd28 https://plugins.jetbrains.com/plugin/6351-dart\r\n    \u2022 Java version OpenJDK Runtime Environment (build 11.0.11+0-b60-7772763)\r\n\r\n[\u2713] VS Code (version 1.68.0-insider)\r\n    \u2022 VS Code at /Applications/Visual Studio Code - Insiders.app/Contents\r\n    \u2022 Flutter extension version 3.40.0\r\n\r\n[\u2713] Connected device (4 available)\r\n    \u2022 macOS (desktop)    \u2022 macos                     \u2022 darwin-arm64   \u2022 macOS 12.3.1 21E258 darwin-arm\r\n    \u2022 Chrome (web)       \u2022 chrome                    \u2022 web-javascript \u2022 Google Chrome 100.0.4896.127\r\n\r\n[\u2713] HTTP Host Availability\r\n    \u2022 All required HTTP hosts are available\r\n\r\n\u2022 No issues found!\r\n\r\n```\r\n\r\n</details>\r\n\r\n\r\n<!--\r\n      Consider also attaching screenshots and/or videos to better\r\n      illustrate the issue.\r\n\r\n      You can upload them directly on GitHub.\r\n      Beware that video file size is limited to 10MB.\r\n-->",
+    "reactions": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "comment_summary": "Comments confirmed the bug reproduces on both stable and master across Android and iOS. A fix was submitted to Skia (https://skia-review.googlesource.com/c/skia/+/541978) and subsequently merged. One commenter reported the issue was still present in Flutter 3.3 beta but then confirmed it was fixed, leaving the issue open pending stable promotion.",
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 133930,
+    "title": "No good way to get line metrics for `Text`/`TextField` based widgets.",
+    "url": "https://github.com/flutter/flutter/issues/133930",
+    "state": "open",
+    "labels": [
+      "framework",
+      "a: typography",
+      "has reproducible steps",
+      "P2",
+      "found in release: 3.13",
+      "found in release: 3.14",
+      "team-text-input",
+      "triaged-text-input"
+    ],
+    "assignees": [],
+    "ownership": "team-text-input",
+    "created_at": "2023-09-03T04:58:57Z",
+    "updated_at": "2024-08-23T18:34:13Z",
+    "body": "### Is there an existing issue for this?\n\n- [X] I have searched the [existing issues](https://github.com/flutter/flutter/issues)\n- [X] I have read the [guide to filing a bug](https://flutter.dev/docs/resources/bug-reports)\n\n### Steps to reproduce\n\n1. Create the TextField whose size fills the screen.\r\n2. Get the line counts from TextPainter.\r\n```dart\r\n  void updateDisplayedLineCount() {\r\n    final text = _controller.text;\r\n    final textPainter = TextPainter(\r\n      text: TextSpan(text: text),\r\n      textDirection: TextDirection.ltr,\r\n      maxLines: null,\r\n    );\r\n\r\n    textPainter.layout(maxWidth: MediaQuery.of(context).size.width);\r\n\r\n    setState(() {\r\n      displayedLineCount = textPainter.computeLineMetrics().length;\r\n    });\r\n  }\r\n```\n\n### Expected results\n\nI expected to equal the display line count and the value of ```computeLineMetrics returned```.\n\n### Actual results\n\nActual, The value of ```computeLineMetrics returned``` is wrong to the display line count.\r\n![image](https://github.com/flutter/flutter/assets/56541594/6c693a16-ebf5-4ddc-afd1-056b20315d3f)\r\n![image](https://github.com/flutter/flutter/assets/56541594/292b61fc-5982-464f-ae40-59405ed18ab8)\r\n\r\nI think this issue similar to [the issue](https://github.com/flutter/flutter/issues/132198), but my issue occurred only 1 byte characters.\r\n\n\n### Code sample\n\n<details><summary>Code sample</summary>\r\n\r\n```dart\r\nimport 'package:flutter/material.dart';\r\n\r\nclass LineCountTextField extends StatefulWidget {\r\n  @override\r\n  _LineCountTextFieldState createState() => _LineCountTextFieldState();\r\n}\r\n\r\nclass _LineCountTextFieldState extends State<LineCountTextField> {\r\n  TextEditingController _controller = TextEditingController();\r\n  int displayedLineCount = 1;\r\n\r\n  @override\r\n  void initState() {\r\n    super.initState();\r\n    _controller.addListener(updateDisplayedLineCount);\r\n  }\r\n\r\n  void updateDisplayedLineCount() {\r\n    final text = _controller.text;\r\n    final textPainter = TextPainter(\r\n      text: TextSpan(text: text),\r\n      textDirection: TextDirection.ltr,\r\n      maxLines: null,\r\n    );\r\n\r\n    textPainter.layout(maxWidth: MediaQuery.of(context).size.width);\r\n\r\n    setState(() {\r\n      displayedLineCount = textPainter.computeLineMetrics().length;\r\n    });\r\n  }\r\n\r\n  @override\r\n  Widget build(BuildContext context) {\r\n    return Column(\r\n      children: [\r\n        TextField(\r\n          controller: _controller,\r\n          maxLines: null,\r\n        ),\r\n        Text('Displayed Line Count: $displayedLineCount'),\r\n      ],\r\n    );\r\n  }\r\n}\r\n\r\nvoid main() {\r\n  runApp(MaterialApp(\r\n    home: Scaffold(\r\n      appBar: AppBar(title: Text('Line Count TextField Example')),\r\n      body: LineCountTextField(),\r\n    ),\r\n  ));\r\n}\r\n\r\n```\r\n\r\n</details>\r\n\n\n### Screenshots or Video\n\n<details>\r\n<summary>Screenshots / Video demonstration</summary>\r\n\r\n![flutter_issue](https://github.com/flutter/flutter/assets/56541594/97b5c3ff-0492-4793-95cc-07219a1888b6)\r\n\r\n\r\n</details>\r\n\n\n### Logs\n\n<details><summary>Logs</summary>\r\n\r\n```console\r\n```\r\n[log.txt](https://github.com/flutter/flutter/files/12505203/log.txt)\r\n\r\n\r\n</details>\r\n\n\n### Flutter Doctor output\n\n<details><summary>Doctor output</summary>\r\n\r\n```console\r\n\r\nDoctor summary (to see all details, run flutter doctor -v):\r\n[\u221a] Flutter (Channel stable, 3.10.5, on Microsoft Windows [Version 10.0.22621.2134], locale ja-JP)\r\n[\u221a] Windows Version (Installed version of Windows is version 10 or higher)\r\n[\u221a] Android toolchain - develop for Android devices (Android SDK version 33.0.0)\r\n[\u221a] Chrome - develop for the web\r\n[\u221a] Visual Studio - develop for Windows (Visual Studio Community 2022 17.5.3)\r\n[\u221a] Android Studio (version 2021.2)\r\n[\u221a] VS Code (version 1.80.1)\r\n[\u221a] Connected device (5 available)\r\n[\u221a] Network resources\r\n\r\n\u2022 No issues found!\r\n```\r\n\r\n</details>\r\n",
+    "reactions": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "comment_summary": "Root cause identified: the user's `TextPainter` does not use the same `TextStyle` as the `TextField` (which applies material theme styles), causing layout width mismatches. A team member (@dnfield) initially proposed using `controller.buildTextSpan(context: context, withComposing: false)` as a fix but later confirmed it does not reliably carry the correct styles. The confirmed workaround is to manually replicate the exact `TextStyle` the `TextField` applies (e.g., resolving from the material theme). @LongCatIsLooong mentioned a planned framework-level API exposing immutable text layout metrics via a callback (e.g., `onTextLayoutChanged`) but noted a `TextEditingController` cannot be the right place since one controller can serve multiple fields with different styles. Currently stalled with no PR.",
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 174689,
+    "title": "App highlights / selects trailing whitespaces in a multi-line textfield.",
+    "url": "https://github.com/flutter/flutter/issues/174689",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "platform-android",
+      "platform-ios",
+      "a: desktop",
+      "has reproducible steps",
+      "P2",
+      "team-text-input",
+      "triaged-text-input",
+      "found in release: 3.35",
+      "found in release: 3.36"
+    ],
+    "assignees": [],
+    "ownership": "team-text-input",
+    "created_at": "2025-08-29T09:16:36Z",
+    "updated_at": "2025-09-18T20:04:31Z",
+    "body": "### Steps to reproduce\n\nWatch video demonstration.\n\n### Expected results\n\n.\n\n### Actual results\n\n .\n\n### Code sample\n\n<details open><summary>Code sample</summary>\n\n```dart\nimport 'package:flutter/material.dart';\n\nvoid main() {\n  runApp(const MyApp());\n}\n\nclass MyApp extends StatelessWidget {\n  const MyApp({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return MaterialApp(\n      title: 'Flutter Demo',\n      theme: ThemeData(\n        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),\n      ),\n      home: const MyHomePage(title: 'Flutter Demo Home Page'),\n    );\n  }\n}\n\nclass MyHomePage extends StatefulWidget {\n  const MyHomePage({super.key, required this.title});\n\n  final String title;\n\n  @override\n  State<MyHomePage> createState() => _MyHomePageState();\n}\n\nclass _MyHomePageState extends State<MyHomePage> {\n  int _counter = 0;\n\n  void _incrementCounter() {\n    setState(() {\n      _counter++;\n    });\n  }\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(\n        backgroundColor: Theme.of(context).colorScheme.inversePrimary,\n        title: Text(widget.title),\n      ),\n      body: Center(child: TextField(maxLines: null)),\n      floatingActionButton: FloatingActionButton(\n        onPressed: _incrementCounter,\n        tooltip: 'Increment',\n        child: const Icon(Icons.add),\n      ),\n    );\n  }\n}\n\n```\n\n</details>\n\n\n### Screenshots or Video\n\n<details open>\n<summary>Screenshots / Video demonstration</summary>\n\nhttps://github.com/user-attachments/assets/18e0b06e-03a7-4ffe-82af-e18f57306647\n\n</details>\n\n\n### Logs\n\n<details open><summary>Logs</summary>\n\n```console\n[Paste your logs here]\n```\n\n</details>\n\n\n### Flutter Doctor output\n\n<details open><summary>Doctor output</summary>\n\n```console\nFlutter 3.35.2 \u2022 channel stable \u2022 https://github.com/flutter/flutter.git\nFramework \u2022 revision 05db968908 (4 days ago) \u2022 2025-08-25 10:21:35 -0700\nEngine \u2022 hash abb725c9a5211af2a862b83f74b7eaf2652db083 (revision a8bfdfc394) (6 days ago) \u2022 2025-08-22 23:51:12.000Z\nTools \u2022 Dart 3.9.0 \u2022 DevTools 2.48.0\n```\n\n</details>\n",
+    "reactions": {
+      "total": 1,
+      "by_type": {
+        "EYES": 1
+      }
+    },
+    "comment_summary": "Root cause not identified. Confirmed on Android, iOS, and desktop when maxLines or minLines is set; does not occur on web. Native Android and iOS apps do not highlight trailing whitespace. Routed to @LongCatIsLooong.",
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 184240,
+    "title": "Vertical baseline alignment mismatch between Text and collapsed TextField when changing TextLeadingDistribution",
+    "url": "https://github.com/flutter/flutter/issues/184240",
+    "state": "open",
+    "labels": [
+      "framework",
+      "f: material design",
+      "has reproducible steps",
+      "team-text-input"
+    ],
+    "assignees": [
+      "LongCatIsLooong"
+    ],
+    "ownership": "team-text-input",
+    "created_at": "2026-03-27T09:11:06Z",
+    "updated_at": "2026-04-02T20:34:19Z",
+    "body": "### Steps to reproduce\n\nSimilar (but different) to https://github.com/flutter/flutter/issues/144502 \nAdd a row, with a text and textfield with the same font style, the textfield decoration should be `InputDecoration.collapsed()`\n\n### Expected results\n\nThe text and textfield should align vertically.  The base lines should align.\n\n### Actual results\n\nDepending on the leading distribution the TextField will either go high or go low.\n\n### Code sample\n\n<details open><summary>Code sample</summary>\n\n```dart\nimport 'package:flutter/material.dart';\n\nvoid main() {\n  runApp(const MainApp());\n}\n\nclass MainApp extends StatelessWidget {\n  const MainApp({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    const textStyleEven = TextStyle(\n      inherit: false,\n      fontSize: 180,\n      height: 1,\n      letterSpacing: 0,\n      textBaseline: TextBaseline.alphabetic,\n      leadingDistribution: TextLeadingDistribution.even,\n      color: Colors.black,\n    );\n    final textStyleProp = textStyleEven.copyWith(leadingDistribution: TextLeadingDistribution.proportional);\n    final text = 'X';\n    final width = 120.0;\n\n    return MaterialApp(\n      home: Scaffold(\n        body: Column(\n          mainAxisAlignment: MainAxisAlignment.center,\n          children: [\n            // EVEN leading distribution\n            Row(\n              children: [\n                SizedBox(\n                  width: width,\n                  child: Text(text, style: textStyleEven),\n                ),\n\n                // this one is fine\n                SizedBox(\n                  width: width,\n                  child: TextField(\n                    controller: TextEditingController(text: text),\n                    decoration: InputDecoration(\n                      hintText: '',\n                      contentPadding: EdgeInsets.zero,\n                      border: InputBorder.none,\n                    ),\n                    style: textStyleEven,\n                    strutStyle: StrutStyle(fontSize: textStyleEven.fontSize, height: textStyleEven.height),\n                    textAlignVertical: TextAlignVertical.center,\n                  ),\n                ),\n\n                // goes low\n                SizedBox(\n                  width: width,\n                  child: TextField(\n                    controller: TextEditingController(text: text),\n                    decoration: InputDecoration.collapsed(hintText: ''),\n                    style: textStyleEven,\n                    strutStyle: StrutStyle(fontSize: textStyleEven.fontSize, height: textStyleEven.height),\n                    textAlignVertical: TextAlignVertical.center,\n                  ),\n                ),\n              ],\n            ),\n            SizedBox(height: 100),\n\n            // PROPORTIONAL leading distribution\n            Row(\n              children: [\n                SizedBox(\n                  width: width,\n                  child: Text(text, style: textStyleProp),\n                ),\n\n                // Goes very high\n                SizedBox(\n                  width: width,\n                  child: TextField(\n                    controller: TextEditingController(text: text),\n                    decoration: InputDecoration(\n                      hintText: '',\n                      contentPadding: EdgeInsets.zero,\n                      border: InputBorder.none,\n                    ),\n                    style: textStyleProp,\n                    strutStyle: StrutStyle(fontSize: textStyleProp.fontSize, height: textStyleProp.height),\n                    textAlignVertical: TextAlignVertical.center,\n                  ),\n                ),\n\n                // goes a little high\n                SizedBox(\n                  width: width,\n                  child: TextField(\n                    controller: TextEditingController(text: text),\n                    decoration: InputDecoration.collapsed(hintText: ''),\n                    style: textStyleProp,\n                    strutStyle: StrutStyle(fontSize: textStyleProp.fontSize, height: textStyleProp.height),\n                    textAlignVertical: TextAlignVertical.center,\n                  ),\n                ),\n              ],\n            ),\n          ],\n        ),\n      ),\n    );\n  }\n}\n\n```\n\n</details>\n\n\n### Screenshots or Video\n\n<details open>\n<summary>Screenshots / Video demonstration</summary>\n\n<img width=\"410\" height=\"521\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/7754e4dc-24ba-4ee1-9ab6-de4347c6ddce\" />\n\n</details>\n\n\n### Logs\n\n<details open><summary>Logs</summary>\n\n```console\n[Paste your logs here]\n```\n\n</details>\n\n\n### Flutter Doctor output\n\n<details open><summary>Doctor output</summary>\n\n```console\n[\u221a] Flutter (Channel stable, 3.41.6, on Microsoft Windows [Version 10.0.26200.8037], locale en-GB) [501ms]\n    \u2022 Flutter version 3.41.6 on channel stable at C:\\sdks\\flutter\n    \u2022 Upstream repository https://github.com/flutter/flutter.git\n    \u2022 Framework revision db50e20168 (34 hours ago), 2026-03-25 16:21:00 -0700\n    \u2022 Engine revision 425cfb54d0\n    \u2022 Dart version 3.11.4\n    \u2022 DevTools version 2.54.2\n    \u2022 Feature flags: enable-web, enable-linux-desktop, enable-macos-desktop, enable-windows-desktop, enable-android, enable-ios, cli-animations, enable-native-assets, omit-legacy-version-file, enable-lldb-debugging, enable-uiscene-migration\n\n[\u221a] Windows Version (11 Pro 64-bit, 25H2, 2009) [2.9s]\n\n[\u221a] Android toolchain - develop for Android devices (Android SDK version 35.0.0) [3.1s]\n    \u2022 Android SDK at C:\\Users\\pchar\\AppData\\Local\\Android\\Sdk\n    \u2022 Emulator version 35.2.10.0 (build_id 12414864) (CL:N/A)\n    \u2022 Platform android-36, build-tools 35.0.0\n    \u2022 Java binary at: C:\\Program Files\\Android\\Android Studio\\jbr\\bin\\java\n      This is the JDK bundled with the latest Android Studio installation on this machine.\n      To manually set the JDK path, use: `flutter config --jdk-dir=\"path/to/jdk\"`.\n    \u2022 Java version OpenJDK Runtime Environment (build 21.0.3+-12282718-b509.11)\n    \u2022 All Android licenses accepted.\n\n[\u221a] Chrome - develop for the web [213ms]\n    \u2022 Chrome at C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe\n\n[\u221a] Visual Studio - develop Windows apps (Visual Studio Build Tools 2019 16.11.54) [212ms]\n    \u2022 Visual Studio at C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\BuildTools\n    \u2022 Visual Studio Build Tools 2019 version 16.11.37027.11\n    \u2022 Windows 10 SDK version 10.0.19041.0\n\n[\u221a] Connected device (3 available) [310ms]\n    \u2022 Windows (desktop) \u2022 windows \u2022 windows-x64    \u2022 Microsoft Windows [Version 10.0.26200.8037]\n    \u2022 Chrome (web)      \u2022 chrome  \u2022 web-javascript \u2022 Google Chrome 146.0.7680.165\n    \u2022 Edge (web)        \u2022 edge    \u2022 web-javascript \u2022 Microsoft Edge 145.0.3800.97\n\n[\u221a] Network resources [568ms]\n    \u2022 All expected network resources are available.\n\n\u2022 No issues found!\n```\n\n</details>\n",
+    "reactions": {
+      "total": 1,
+      "by_type": {
+        "HEART": 1
+      }
+    },
+    "comment_summary": "Comments are only triage routing: the issue was forwarded to the framework team and CC'd to @LongCatIsLooong. No root cause analysis or fix discussed.",
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 13468,
+    "title": "TextSelection.isDirectional is not respected, make it do something useful eg: for Mac",
+    "url": "https://github.com/flutter/flutter/issues/13468",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "framework",
+      "c: proposal",
+      "P2",
+      "team-text-input",
+      "triaged-text-input"
+    ],
+    "assignees": [],
+    "ownership": "team-text-input",
+    "created_at": "2017-12-09T00:37:35Z",
+    "updated_at": "2024-05-09T22:21:24Z",
+    "body": "It seems like it's not wired up anywhere. We should make it do something useful and test it or remove it.\r\n\r\nIt's current presence is confusing.",
+    "reactions": {
+      "total": 0,
+      "by_type": {}
+    },
+    "comment_summary": "Comments discuss that the behavior `isDirectional` is meant to control is currently handled by `DefaultTextEditingShortcuts`; the value could drive that logic instead of the platform.",
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 33858,
+    "title": "Unicode input should be indicated.",
+    "url": "https://github.com/flutter/flutter/issues/33858",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "c: new feature",
+      "framework",
+      "f: material design",
+      "platform-windows",
+      "platform-linux",
+      "a: desktop",
+      "P3",
+      "team-text-input",
+      "triaged-text-input"
+    ],
+    "assignees": [],
+    "ownership": "team-text-input",
+    "created_at": "2019-06-04T17:49:24Z",
+    "updated_at": "2024-12-13T00:20:03Z",
+    "body": "Ctrl+Shift+U (on certain operating systems) normally would bring up an underlined \"u\" in a text field to indicate it's awaiting a Unicode entry. This is not indicated on Flutter, despite it taking the input.\r\n\r\n![Flutter](https://i.imgur.com/5LGa38g.png)\r\n![Play Store, expected behavior.](https://i.imgur.com/JDQ2sZt.png)",
+    "reactions": {
+      "total": 0,
+      "by_type": {}
+    },
+    "comment_summary": "A commenter confirmed the Ctrl+Shift+U Unicode input indicator is observed on Linux but not on macOS; Windows behavior was assumed to be similar to Linux and the platform label was added accordingly.",
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 38503,
+    "title": "TextField doesn't appear within a direction:Axis.vertical Wrap",
+    "url": "https://github.com/flutter/flutter/issues/38503",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "framework",
+      "f: material design",
+      "has reproducible steps",
+      "P2",
+      "found in release: 3.3",
+      "found in release: 3.7",
+      "team-design",
+      "triaged-design"
+    ],
+    "assignees": [],
+    "ownership": "team-design",
+    "created_at": "2019-08-14T03:40:49Z",
+    "updated_at": "2024-12-11T15:45:43Z",
+    "body": "code:\r\n![image](https://user-images.githubusercontent.com/8746914/62993013-4bea8080-be88-11e9-84ea-93f3908b57bd.png)\r\nscreenshot:\r\n<img src=\"https://user-images.githubusercontent.com/8746914/62993022-5442bb80-be88-11e9-9b76-9d620f7147fa.png\" width =\"300\"> ",
+    "reactions": {
+      "total": 0,
+      "by_type": {}
+    },
+    "comment_summary": "Comments confirm the bug is specific to `direction: Axis.vertical` and does not occur with `Axis.horizontal`. Reproduced on stable and master; the exception is an assertion that `InputDecorator` cannot have an unbounded width, indicating `Wrap` does not provide a bounded width constraint in vertical axis mode. No fix or PR was proposed; issue is stalled.",
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 54998,
+    "title": "Directional navigation key binding defaults should be limited to those platforms that use it.",
+    "url": "https://github.com/flutter/flutter/issues/54998",
+    "state": "open",
+    "labels": [
+      "framework",
+      "platform-macos",
+      "a: desktop",
+      "a: devtools",
+      "P2",
+      "team-text-input",
+      "triaged-text-input"
+    ],
+    "assignees": [],
+    "ownership": "team-text-input",
+    "created_at": "2020-04-16T22:21:08Z",
+    "updated_at": "2024-07-22T18:12:38Z",
+    "body": "<!-- Thank you for using Flutter!\r\n\r\n     If you are looking for support, please check out our documentation\r\n     or consider asking a question on Stack Overflow:\r\n      * https://flutter.dev/\r\n      * https://api.flutter.dev/\r\n      * https://stackoverflow.com/questions/tagged/flutter?sort=frequent\r\n\r\n     If you have found a bug or if our documentation doesn't have an answer\r\n     to what you're looking for, then fill our the template below. Please read\r\n     our guide to filing a bug first: https://flutter.dev/docs/resources/bug-reports\r\n-->\r\n\r\nWhen running the fluter devtools on macos, I'm seeing strange key handling behavior. There are extra key actions that I don't see on flutter web. Some discussion of the issue, with screenshots, is at https://github.com/flutter/devtools/issues/1769. But essentially:\r\n\r\nI'm adding row selection and keyboard navigation to a custom widget TreeTable ([built here](https://github.com/flutter/devtools/blob/ae483b098ec65941f457bf545bdc9059f6537231/packages/devtools_app/lib/src/flutter/table.dart#L363)). I'm explicitly [handling the arrow up/down keys](https://github.com/flutter/devtools/blob/ae483b098ec65941f457bf545bdc9059f6537231/packages/devtools_app/lib/src/flutter/table.dart#L427) to move the selection and scroll the view. But on macos I see scrolling that is not caused by my handler, and also a kind of ghost selected row (see the screenshots in https://github.com/flutter/devtools/issues/1769) not caused by me (the color is different than the one I am using). Also, sometimes after clicking on a row the arrow keys will start cycling through the top-level tabs (Inspector, timeline) instead of the rows in the table.\r\n\r\nIn a nutshell there is some code handling the up/down arrow keys in a way that I don't understand, can't control, and can't predict. It also does not happen when I run via flutter web which leads me to believe it's a bug in the macos platform code.\r\n\r\nThe PR that introduced keyboard navigation is here: https://github.com/flutter/devtools/pull/1810\r\n\r\n## Steps to Reproduce\r\n$git clone git@github.com:flutter/devtools.git\r\n$cd devtools/packages/devtools_app\r\n$flutter run -d macos\r\n\r\n1. Enter the url of another running flutter app\r\n2. Click on the \"info\" tab\r\n3. Click \"performance\"\r\n4. Record performance data\r\n5. Click on the \"call tree\" tab\r\n6. Click inside the call tree table\r\n7. navigate up/down with the arrow keys.\r\n8. Compare with the behavior when running with `-d web`\r\n\r\n**Expected results:** <!-- what did you want to see? -->\r\nI expect the arrow up/down keys to cause the window to scroll only when the selection reaches the bottom or top of the viewport. I expect there to be only 1 selected row. I expect that pressing the arrow up/down keys should not escape the treetable and start cycling the top-level tabs of the viewport.\r\n\r\n**Actual results:** <!-- what did you see? -->\r\nSee the examples at https://github.com/flutter/devtools/issues/1769\r\n\r\n\r\n<details>\r\n  <summary>Logs</summary>\r\n\r\n<!--\r\n      Run your application with `flutter run --verbose` and attach all the\r\n      log output below between the lines with the backticks. If there is an\r\n      exception, please see if the error message includes enough information\r\n      to explain how to solve the issue.\r\n-->\r\n\r\n\r\n```\r\nI captured the logs, but they're really verbose (1600 lines). LMK if there is a better way to provide them besides pasting the whole thing into this issue.\r\n```\r\n\r\n<!--\r\n     Run `flutter analyze` and attach any output of that command below.\r\n     If there are any analysis errors, try resolving them before filing this issue.\r\n-->\r\n\r\n```\r\ngmoothart-macbookpro2:devtools_app gmoothart$ flutter analyze\r\nAnalyzing devtools_app...\r\n\r\nwarning \u2022 The include file ../../analysis_options.yaml in /Users/gmoothart/dev/devtools/packages/devtools_app/analysis_options.yaml cannot be found \u2022\r\n       analysis_options.yaml:1:11 \u2022 include_file_not_found\r\n   info \u2022 Prefer declaring const constructors on `@immutable` classes \u2022 bug/lib/main.dart:35:3 \u2022 prefer_const_constructors_in_immutables\r\n   info \u2022 Prefer const with constant constructors \u2022 bug/lib/main.dart:100:13 \u2022 prefer_const_constructors\r\n   info \u2022 Prefer const with constant constructors \u2022 bug/lib/main.dart:113:16 \u2022 prefer_const_constructors\r\n\r\n4 issues found. (ran in 20.1s)\r\n```\r\n\r\n<!-- Finally, paste the output of running `flutter doctor -v` here. -->\r\n\r\n```\r\ngmoothart-macbookpro2:devtools_app gmoothart$ flutter doctor -v\r\n[\u2713] Flutter (Channel master, v1.18.0-6.0.pre.51, on Mac OS X 10.15.3 19D76, locale en-US)\r\n    \u2022 Flutter version 1.18.0-6.0.pre.51 at /Users/gmoothart/dev/flutter\r\n    \u2022 Framework revision 20803507fd (3 minutes ago), 2020-04-16 14:36:42 -0700\r\n    \u2022 Engine revision deef2663ac\r\n    \u2022 Dart version 2.8.0 (build 2.8.0-dev.20.0 c9710e5059)\r\n\r\n[\u2717] Android toolchain - develop for Android devices\r\n    \u2717 Unable to locate Android SDK.\r\n      Install Android Studio from: https://developer.android.com/studio/index.html\r\n      On first launch it will assist you in installing the Android SDK components.\r\n      (or visit https://flutter.dev/docs/get-started/install/macos#android-setup for detailed instructions).\r\n      If the Android SDK has been installed to a custom location, set ANDROID_SDK_ROOT to that location.\r\n      You may also want to add it to your PATH environment variable.\r\n\r\n\r\n[\u2713] Xcode - develop for iOS and macOS (Xcode 11.4)\r\n    \u2022 Xcode at /Applications/Xcode.app/Contents/Developer\r\n    \u2022 Xcode 11.4, Build version 11E146\r\n    \u2022 CocoaPods version 1.9.1\r\n\r\n[\u2713] Chrome - develop for the web\r\n    \u2022 Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome\r\n\r\n[!] Android Studio (not installed)\r\n    \u2022 Android Studio not found; download from https://developer.android.com/studio/index.html\r\n      (or visit https://flutter.dev/docs/get-started/install/macos#android-setup for detailed instructions).\r\n\r\n[\u2713] IntelliJ IDEA Community Edition (version 2019.3.4)\r\n    \u2022 IntelliJ at /Applications/IntelliJ IDEA CE.app\r\n    \u2022 Flutter plugin version 44.0.3\r\n    \u2022 Dart plugin version 193.6911.31\r\n\r\n[\u2713] VS Code (version 1.43.2)\r\n    \u2022 VS Code at /Applications/Visual Studio Code.app/Contents\r\n    \u2022 Flutter extension version 3.4.1\r\n\r\n[\u2713] Connected device (3 available)\r\n    \u2022 macOS      \u2022 macOS      \u2022 darwin-x64     \u2022 Mac OS X 10.15.3 19D76\r\n    \u2022 Chrome     \u2022 chrome     \u2022 web-javascript \u2022 Google Chrome 80.0.3987.163\r\n    \u2022 Web Server \u2022 web-server \u2022 web-javascript \u2022 Flutter Tools\r\n\r\n! Doctor found issues in 2 categories.\r\n```\r\n\r\n</details>\r\n",
+    "reactions": {
+      "total": 0,
+      "by_type": {}
+    },
+    "comment_summary": "Root cause identified as the default directional focus key bindings in `app.dart` being enabled on macOS (and potentially Linux). The fix was to disable them at the top level and re-enable per-widget (e.g., ListView). Linux was noted to also use directional nav in some apps, Windows less so. Workarounds provided: wrap in `Shortcuts` with `Intent.doNothing`, or bind `DirectionalFocusIntent` to `DoNothingAction`. Status: partially addressed; the default bindings were intended to be removed but the issue remained open with stale labels.",
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 75572,
+    "title": "Let RenderEditable use LineMetrics instead of assuming every line has the same height",
+    "url": "https://github.com/flutter/flutter/issues/75572",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "framework",
+      "f: material design",
+      "P2",
+      "c: tech-debt",
+      "team-design",
+      "triaged-design"
+    ],
+    "assignees": [],
+    "ownership": "team-design",
+    "created_at": "2021-02-07T01:04:00Z",
+    "updated_at": "2026-03-05T21:03:04Z",
+    "body": "https://github.com/flutter/flutter/blob/02d441ea55b328133c266991f43b0a1148edb63f/packages/flutter/lib/src/rendering/editable.dart#L864-L873\r\n\r\nVertical key movements may skip a line if that line is way shorter than its adjacent lines.",
+    "reactions": {
+      "total": 0,
+      "by_type": {}
+    },
+    "comment_summary": "A commenter added a concrete example illustrating the expected caret behavior for up/down arrow key navigation across lines of varying length, where the caret should maintain its horizontal offset across lines rather than snapping to line end.",
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 87536,
+    "title": "BIDI text painting skipped tests.",
+    "url": "https://github.com/flutter/flutter/issues/87536",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "c: contributor-productivity",
+      "framework",
+      "a: internationalization",
+      "P2",
+      "c: tech-debt",
+      "team: skip-test",
+      "team-framework",
+      "triaged-framework"
+    ],
+    "assignees": [],
+    "ownership": "team-framework",
+    "created_at": "2021-08-03T00:41:06Z",
+    "updated_at": "2023-07-08T01:51:30Z",
+    "body": "As part of the latest [skip test audit](https://github.com/flutter/flutter/issues/86396), there are still several tests that are skipped in `text_painter_rtl_test.dart` that don't have a bug to track them. We can use this as a tracking bug for getting them turned back on or marked as intentional if that is the just behaviour we want.\r\n\r\nThe tests in question are:\r\n\r\nhttps://github.com/flutter/flutter/blob/40739568ab80988d8f2671bf6ec43539ce983771/packages/flutter/test/painting/text_painter_rtl_test.dart#L37\r\n\r\nhttps://github.com/flutter/flutter/blob/40739568ab80988d8f2671bf6ec43539ce983771/packages/flutter/test/painting/text_painter_rtl_test.dart#L169\r\n\r\nhttps://github.com/flutter/flutter/blob/40739568ab80988d8f2671bf6ec43539ce983771/packages/flutter/test/painting/text_painter_rtl_test.dart#L327\r\n\r\nhttps://github.com/flutter/flutter/blob/40739568ab80988d8f2671bf6ec43539ce983771/packages/flutter/test/painting/text_painter_rtl_test.dart#L360\r\n\r\nhttps://github.com/flutter/flutter/blob/40739568ab80988d8f2671bf6ec43539ce983771/packages/flutter/test/painting/text_painter_rtl_test.dart#L415\r\n\r\nhttps://github.com/flutter/flutter/blob/40739568ab80988d8f2671bf6ec43539ce983771/packages/flutter/test/painting/text_painter_rtl_test.dart#L481\r\n\r\nhttps://github.com/flutter/flutter/blob/40739568ab80988d8f2671bf6ec43539ce983771/packages/flutter/test/painting/text_painter_rtl_test.dart#L563\r\n\r\nhttps://github.com/flutter/flutter/blob/40739568ab80988d8f2671bf6ec43539ce983771/packages/flutter/test/painting/text_painter_rtl_test.dart#L608\r\n",
+    "reactions": {
+      "total": 0,
+      "by_type": {}
+    },
+    "comment_summary": null,
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 92507,
+    "title": "Document \"ghost run\" and its interaction with `Paragraph.getBoxesForRange`",
+    "url": "https://github.com/flutter/flutter/issues/92507",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "engine",
+      "d: api docs",
+      "a: typography",
+      "P2",
+      "team-engine",
+      "triaged-engine"
+    ],
+    "assignees": [],
+    "ownership": "team-engine",
+    "created_at": "2021-10-26T17:49:52Z",
+    "updated_at": "2023-08-04T20:31:40Z",
+    "body": "Current the only documentation I could find is a code comment: https://github.com/flutter/engine/blob/cc9f859004f88a84f6d42e234c8be0ecaf66c46f/third_party/txt/src/txt/paragraph_txt.cc#L742-L752\r\n\r\n>       // A \"ghost\" run is a run that does not impact the layout, breaking,\r\n>      // alignment, width, etc but is still \"visible\" through getRectsForRange.\r\n>      // For example, trailing whitespace on centered text can be scrolled\r\n>      // through with the caret but will not wrap the line.\r\n>      //\r\n>      // Here, we add an additional run for the whitespace, but dont\r\n>      // let it impact metrics. After layout of the whitespace run, we do not\r\n>      // add its width into the x-offset adjustment, effectively nullifying its\r\n>     // impact on the layout.\r\n\r\nwhich implies `getRectsForRange` can return text boxes that are outside of the paragraph's bounding box if called on a ghost run. It's likely a common assumption that text boxes is always within the paragraph's bounding box so that should be documented somewhere.\r\n",
+    "reactions": {
+      "total": 0,
+      "by_type": {}
+    },
+    "comment_summary": null,
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 99139,
+    "title": "[MacOS] Trailing whitespace in multiline TextField overflows and doesn't go to newline.",
+    "url": "https://github.com/flutter/flutter/issues/99139",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "framework",
+      "f: material design",
+      "a: desktop",
+      "has reproducible steps",
+      "P2",
+      "found in release: 2.10",
+      "found in release: 2.11",
+      "team-text-input",
+      "triaged-text-input"
+    ],
+    "assignees": [],
+    "ownership": "team-text-input",
+    "created_at": "2022-02-25T07:08:53Z",
+    "updated_at": "2024-06-20T22:22:11Z",
+    "body": "## Steps to Reproduce\r\n\r\n1. Use a multiline TextField.\r\n2. Input a lot of whitespace in the content tail.\r\n3. Whitespace is overflow and not switch to a newline (Tap Ctrl + A to select all).\r\n\r\n**Expected results:** Auto switch to a new line.\r\n\r\n**Actual results:** Whitespace is overflow.\r\n\r\n<details>\r\n<summary>Code sample</summary>\r\n\r\n```dart\r\nconst SizedBox(\r\n    width: 400,\r\n    height: 200,\r\n    child: TextField(\r\n      maxLines: null,\r\n      keyboardType: TextInputType.multiline,\r\n      decoration: InputDecoration(\r\n        border: InputBorder.none,\r\n        filled: true,\r\n        fillColor: Colors.pink\r\n      ),\r\n      expands: true,\r\n    ),\r\n  )\r\n```\r\n\r\n</details>\r\n\r\n<details>\r\n  <summary>Logs</summary>\r\n<!-- Finally, paste the output of running `flutter doctor -v` here. -->\r\n\r\n```\r\n[\u2713] Flutter (Channel stable, 2.8.1, on macOS 12.0.1 21A559 darwin-arm, locale\r\n    zh-Hans-CN)\r\n    \u2022 Flutter version 2.8.1 at /Volumes/AOSP/flutter\r\n    \u2022 Upstream repository https://github.com/flutter/flutter.git\r\n    \u2022 Framework revision 77d935af4d (2 months ago), 2021-12-16 08:37:33 -0800\r\n    \u2022 Engine revision 890a5fca2e\r\n    \u2022 Dart version 2.15.1\r\n\r\n[\u2713] Android toolchain - develop for Android devices (Android SDK version 32.0.0)\r\n    \u2022 Android SDK at /Users/jinguoyang/Library/Android/sdk\r\n    \u2022 Platform android-32, build-tools 32.0.0\r\n    \u2022 Java binary at: /Applications/Android\r\n      Studio.app/Contents/jre/Contents/Home/bin/java\r\n    \u2022 Java version OpenJDK Runtime Environment (build 11.0.10+0-b96-7249189)\r\n    \u2022 All Android licenses accepted.\r\n\r\n[\u2713] Xcode - develop for iOS and macOS (Xcode 13.2.1)\r\n    \u2022 Xcode at /Applications/Xcode.app/Contents/Developer\r\n    \u2022 CocoaPods version 1.11.2\r\n\r\n[\u2713] Chrome - develop for the web\r\n    \u2022 Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome\r\n\r\n[\u2713] Android Studio (version 2020.3)\r\n    \u2022 Android Studio at /Applications/Android Studio.app/Contents\r\n    \u2022 Flutter plugin can be installed from:\r\n      \ud83d\udd28 https://plugins.jetbrains.com/plugin/9212-flutter\r\n    \u2022 Dart plugin can be installed from:\r\n      \ud83d\udd28 https://plugins.jetbrains.com/plugin/6351-dart\r\n    \u2022 Java version OpenJDK Runtime Environment (build 11.0.10+0-b96-7249189)\r\n\r\n[\u2713] VS Code (version 1.64.2)\r\n    \u2022 VS Code at /Applications/Visual Studio Code.app/Contents\r\n    \u2022 Flutter extension version 3.34.0\r\n\r\n[\u2713] Connected device (3 available)\r\n    \u2022 macOS (desktop) \u2022 macos    \u2022 darwin-arm64   \u2022 macOS 12.0.1 21A559 darwin-arm\r\n    \u2022 Chrome (web)    \u2022 chrome   \u2022 web-javascript \u2022 Google Chrome 98.0.4758.109\r\n\r\n\u2022 No issues found!\r\n```\r\n\r\n</details>\r\n\r\nhttps://user-images.githubusercontent.com/15059084/155669905-5de481ac-716f-421e-987b-f1c705a036bc.mov\r\n\r\n\r\n",
+    "reactions": {
+      "total": 0,
+      "by_type": {}
+    },
+    "comment_summary": "Comments confirm this is distinct from mobile behavior: on macOS/desktop, trailing whitespace in a multiline TextField does not trigger line wrap, unlike Sublime Text or other native editors. On iOS/mobile, whitespace also does not wrap, but subsequent characters start on a new line. Selection extending horizontally outside the field when selecting text with trailing whitespace is noted as a separate bug. Attributed to Skia-level text layout behavior. No fix; stalled.",
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 110470,
+    "title": "  canvas.drawLine() does not paint correctly on Samsung Galaxy Note 20 Ultra",
+    "url": "https://github.com/flutter/flutter/issues/110470",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "e: device-specific",
+      "platform-android",
+      "framework",
+      "engine",
+      "f: material design",
+      "dependency: skia",
+      "c: rendering",
+      "P2",
+      "e: samsung",
+      "team-android",
+      "triaged-android",
+      "found in release: 3.19"
+    ],
+    "assignees": [],
+    "ownership": "team-android",
+    "created_at": "2022-08-29T11:47:14Z",
+    "updated_at": "2024-09-26T11:17:50Z",
+    "body": "## Steps to Reproduce\r\n\r\n1. Execute `flutter run` on the code sample using Samsung Galaxy S4 (GT-I9500)\r\n\r\n**Expected results:** <!-- what did you want to see? -->\r\n\r\n[Dartpad code](https://dartpad.dev/?id=a02554870741d78d26f0669b808ae5ab)\r\n\r\n<img src=\"https://user-images.githubusercontent.com/63793311/187190642-b49b630f-0076-402c-81df-1fadd8e85dac.jpg\" width=25% height=35%>\r\n\r\n**Actual results:**\r\n\r\n\r\n<img src=\"https://user-images.githubusercontent.com/63793311/187190898-b5ee1348-3450-4b72-a46e-8d573282a1d1.png\" width=25% height=30%>\r\n<details>\r\n<summary>Code sample</summary>\r\n\r\n\r\n```\r\nimport 'package:flutter/material.dart';\r\n\r\nvoid main() {\r\n  runApp(MyApp());\r\n}\r\n\r\nclass MyApp extends StatelessWidget {\r\n  const MyApp({Key key}) : super(key: key);\r\n\r\n  @override\r\n  Widget build(BuildContext context) {\r\n    return MaterialApp(debugShowCheckedModeBanner: false,\r\n      home: HomeScreen(),\r\n    );\r\n  }\r\n}\r\n\r\nclass HomeScreen extends StatelessWidget {\r\n  const HomeScreen({Key key}) : super(key: key);\r\n\r\n  @override\r\n  Widget build(BuildContext context) {\r\n    return Scaffold(\r\n      appBar: AppBar(title: Text('UnderlineInputBorder'),centerTitle: true,),\r\n      body: Container(\r\n        margin: EdgeInsets.all(20),\r\n        child: TextField(\r\n          decoration: InputDecoration(enabledBorder: UnderlineInputBorder()),\r\n        ),\r\n      ),\r\n      \r\n    );\r\n  }\r\n}\r\n\r\n```\r\n\r\n</details>\r\n\r\n<details>\r\n<summary>Flutter Doctor</summary>\r\n\r\n\r\n```\r\n[\u221a] Flutter (Channel stable, 3.0.5, on Microsoft Windows [Version 10.0.19044.1889], locale en-US)\r\n    \u2022 Flutter version 3.0.5 at C:\\src\\flutter\r\n    \u2022 Upstream repository https://github.com/flutter/flutter.git\r\n    \u2022 Framework revision f1875d570e (7 weeks ago), 2022-07-13 11:24:16 -0700\r\n    \u2022 Engine revision e85ea0e79c\r\n    \u2022 Dart version 2.17.6       \r\n    \u2022 DevTools version 2.12.2   \r\n\r\n[\u221a] Android toolchain - develop for Android devices (Android SDK version 33.0.0)\r\n    \u2022 Android SDK at C:\\Users\\****\\AppData\\Local\\Android\\Sdk\r\n    \u2022 Platform android-33, build-tools 33.0.0\r\n    \u2022 Java binary at: C:\\Program Files\\Android\\Android Studio1\\jre\\bin\\java     \r\n    \u2022 Java version OpenJDK Runtime Environment (build 11.0.13+0-b1751.21-8125866)\r\n    \u2022 All Android licenses accepted.\r\n\r\n[\u221a] Chrome - develop for the web\r\n    \u2022 Chrome at C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe\r\n\r\n[!] Visual Studio - develop for Windows (Visual Studio Community 2022 17.2.6)\r\n    \u2022 Visual Studio at C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\r\n    \u2022 Visual Studio Community 2022 version 17.2.32630.192\r\n    X Visual Studio is missing necessary components. Please re-run the Visual Studio installer for the \"Desktop development with\r\n      C++\" workload, and include these components:\r\n        MSVC v142 - VS 2019 C++ x64/x86 build tools\r\n         - If there are multiple build tool versions available, install the latest\r\n        C++ CMake tools for Windows\r\n        Windows 10 SDK\r\n\r\n[\u221a] Android Studio (version 2021.3)\r\n    \u2022 Android Studio at C:\\Program Files\\Android\\Android Studio1\r\n    \u2022 Flutter plugin can be installed from:\r\n       https://plugins.jetbrains.com/plugin/9212-flutter\r\n    \u2022 Dart plugin can be installed from:\r\n       https://plugins.jetbrains.com/plugin/6351-dart\r\n    \u2022 Java version OpenJDK Runtime Environment (build 11.0.13+0-b1751.21-8125866)\r\n\r\n[\u221a] VS Code (version 1.70.2)\r\n    \u2022 VS Code at C:\\Users\\*****\\AppData\\Local\\Programs\\Microsoft VS Code\r\n    \u2022 Flutter extension can be installed from:\r\n       https://marketplace.visualstudio.com/items?itemName=Dart-Code.flutter\r\n\r\n[\u221a] Connected device (5 available)\r\n    \u2022 GT I9500 (mobile) \u2022 4d009104ce6550bf                             \u2022 android-arm    \u2022 Android 5.0.1 (API 21)\r\n    \u2022 SM A536E (mobile) \u2022 adb-R5CT21L8F4N-l1CDkM._adb-tls-connect._tcp \u2022 android-arm64  \u2022 Android 12 (API 31)\r\n    \u2022 Windows (desktop) \u2022 windows                                      \u2022 windows-x64    \u2022 Microsoft Windows [Version\r\n      10.0.19044.1889]\r\n    \u2022 Chrome (web)      \u2022 chrome                                       \u2022 web-javascript \u2022 Google Chrome 104.0.5112.102\r\n    \u2022 Edge (web)        \u2022 edge                                         \u2022 web-javascript \u2022 Microsoft Edge 104.0.1293.70\r\n\r\n\r\n[\u221a] HTTP Host Availability\r\n    \u2022 All required HTTP hosts are available\r\n\r\n! Doctor found issues in 1 category.\r\n\r\n```\r\n\r\n</details>\r\n \r\n \r\nOther devices are painting as expected, however I got painting issue on this device (GT-I9500). A year ago I faced similar painting issue discussed here:  [BoxDecoration has bug when using both Border and BorderRadius](https://github.com/flutter/flutter/issues/86794)\r\n\r\nI tried to change **UnderlineInputBorder** to **OutlineInputBorder** and got expected results without any issues, because OutlineInputBorder uses  `canvas.drawPath()` to draw it. \r\nOn the other side, UnderlineInputBorder uses `canvas.drawLine() ` which is causing this issue.  \r\n\r\nIf I am not wrong **drawLine** calls native code called **Canvas_drawLine**",
+    "reactions": {
+      "total": 0,
+      "by_type": {}
+    },
+    "comment_summary": "Issue not reproduced on Samsung Tab A7 (Android 11/12) by triagers, but reporter confirms it persists on GT-I9500 (Android 5.0.1) through version 3.3.0. A related issue (#145872) on a different Samsung device was closed in favor of this one, so the issue remains open; the GT-I9500 is discontinued but the rendering defect via drawLine on older Samsung hardware is kept under investigation.",
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 113228,
+    "title": "Provide an API to detect if a TextPosition is located at a soft word wrap",
+    "url": "https://github.com/flutter/flutter/issues/113228",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "c: new feature",
+      "platform-ios",
+      "framework",
+      "c: proposal",
+      "P3",
+      "team-design",
+      "triaged-design"
+    ],
+    "assignees": [],
+    "ownership": "team-design",
+    "created_at": "2022-10-10T19:27:48Z",
+    "updated_at": "2024-03-06T21:15:03Z",
+    "body": "Currently it is not possible to detect if a TextPosition is located at a soft word wrap. We should provide an API, most likely through `RenderEditable` that gives this information. This is necessary to accomplish the use case below.\r\n\r\n## Use case\r\nOn iOS we want to be able to toggle the toolbar if we tap on the same `TextPosition` regardless of the `TextAffinity` when our tap is not at a soft word wrap. When our tap is at a soft word wrap we want to hide the toolbar if the `TextAffinity` has changed and toggle the toolbar if it hasn't.\r\n\r\n## Proposal\r\nProvide an API through `RenderEditable` that tells us if a given `TextPosition` is located at a word wrap.\r\n",
+    "reactions": {
+      "total": 0,
+      "by_type": {}
+    },
+    "comment_summary": null,
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 119684,
+    "title": "Extending to paragraph/or word boundary on MacOS should default to the `downstream` position when at a word wrap",
+    "url": "https://github.com/flutter/flutter/issues/119684",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "framework",
+      "platform-macos",
+      "P2",
+      "team-text-input",
+      "triaged-text-input"
+    ],
+    "assignees": [],
+    "ownership": "team-text-input",
+    "created_at": "2023-02-01T05:22:17Z",
+    "updated_at": "2024-06-06T22:06:38Z",
+    "body": "When using keyboard shortcuts on MacOS\r\n* shift + option + up/down to extend to the next/previous paragraph boundary\r\n* shift + option + left/right to extend to the next/previous word boundary\r\n\r\nAnd the caret is positioned at a word wrap initially, and the selection is extended, when returning to the original position (collapsing at the base when the selection inverts) the resulting selection should to default to the `downstream`  position.\r\n\r\nCurrent Behavior:\r\nThe selection inherits the `affinity` from `selection.base.affinity`.\r\n\r\nExpected Behavior:\r\nThe selection defaults to a `downstream` affinity.\r\n\r\nExpected|Actual\r\n---|---\r\n<video src=\"https://user-images.githubusercontent.com/948037/215957886-fbafa1e7-8b3a-4df4-8403-f88dc84e372d.mov\" />|<video src=\"https://user-images.githubusercontent.com/948037/215958318-7da3618b-2362-4791-97f9-7c3c19e97b33.mov\" />",
+    "reactions": {
+      "total": 0,
+      "by_type": {}
+    },
+    "comment_summary": "Comments point to PR #116549 discussion for context.",
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 139443,
+    "title": "[Windows] Incorrect character deletion in right-to-left texts",
+    "url": "https://github.com/flutter/flutter/issues/139443",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "framework",
+      "a: internationalization",
+      "platform-windows",
+      "has reproducible steps",
+      "P3",
+      "found in release: 3.16",
+      "found in release: 3.18",
+      "team-text-input",
+      "triaged-text-input"
+    ],
+    "assignees": [],
+    "ownership": "team-text-input",
+    "created_at": "2023-12-03T11:34:20Z",
+    "updated_at": "2025-08-21T21:50:21Z",
+    "body": "### Is there an existing issue for this?\r\n\r\n- [X] I have searched the [existing issues](https://github.com/flutter/flutter/issues)\r\n- [X] I have read the [guide to filing a bug](https://flutter.dev/docs/resources/bug-reports)\r\n\r\n### Steps to reproduce\r\n\r\nType rtl text to multiline textfield :\r\n(DO NOT COPY AND PASTE)\r\n\r\n\u0628\u0627\u0628\u0627 \u0622\u0628 \u062f\u0627\u062f\r\n\u0628\u0627 \u0645\u0647\u0631\u0628\u0627\u0646\u06cc\r\n4\u0637\u062a\u0627\u0646\u0627 \u062c\u0645\u0639\u0627 4\u0648\u0627\u062a\u0627 +\u06cc\u06a9\u0633\u0648\u06cc\u06cc\u062a 20\u0645\u062a\u0631\u06cc\r\n\u0628\u0646\u0628\u0627\u0628\u0627 40\u0633\u0627\u0644\u0647\r\n\r\n### Expected results\r\n\r\nThe letter to the right of the cursor should be deleted.\r\n(It should be noted that when I copy the text from above and paste it in the text field, everything works correctly.)\r\n\r\nhttps://github.com/flutter/flutter/assets/32570964/b3d09305-3b20-4388-b938-2ce451217a79\r\n\r\n\r\n\r\n### Actual results\r\n\r\nBut when I type the rtl text , the letter on the left side of the cursor is deleted.\r\n\r\nhttps://github.com/flutter/flutter/assets/32570964/31f9ee2d-3aeb-441a-8568-97dcf7fdefe7\r\n\r\n\r\n\r\n### Code sample\r\n\r\n<details><summary>Code sample</summary>\r\n\r\n```dart\r\nimport 'package:flutter/material.dart';\r\nimport 'package:flutter_localizations/flutter_localizations.dart';\r\n\r\nvoid main() {\r\n  runApp(const MyApp());\r\n}\r\n\r\nclass MyApp extends StatelessWidget {\r\n  const MyApp({Key? key}) : super(key: key);\r\n\r\n  @override\r\n  Widget build(BuildContext context) {\r\n    return MaterialApp(\r\n      title: 'Flutter Demo',\r\n      locale: const Locale(\"ar\"),\r\n      localizationsDelegates: const [\r\n        GlobalMaterialLocalizations.delegate,\r\n        GlobalWidgetsLocalizations.delegate,\r\n        GlobalCupertinoLocalizations.delegate,\r\n      ],\r\n      supportedLocales: const [Locale(\"ar\")],\r\n      theme: ThemeData(\r\n        primarySwatch: Colors.blue,\r\n      ),\r\n      home: const MyHomePage(title: 'Flutter Demo Home Page'),\r\n    );\r\n  }\r\n}\r\n\r\nclass MyHomePage extends StatefulWidget {\r\n  const MyHomePage({Key? key, required this.title}) : super(key: key);\r\n\r\n  final String title;\r\n\r\n  @override\r\n  State<MyHomePage> createState() => _MyHomePageState();\r\n}\r\n\r\nclass _MyHomePageState extends State<MyHomePage> {\r\n  @override\r\n  Widget build(BuildContext context) {\r\n    return Scaffold(\r\n      appBar: AppBar(\r\n        title: Text(widget.title),\r\n      ),\r\n      body: const Center(\r\n        child: Padding(\r\n          padding: EdgeInsets.all(16),\r\n          child: TextField(\r\n            maxLines: 1000,\r\n          ),\r\n        ),\r\n      ),\r\n    );\r\n  }\r\n}\r\n\r\n```\r\n\r\n</details>\r\n\r\n\r\n### Screenshots or Video\r\n\r\n<details>\r\n<summary>Screenshots / Video demonstration</summary>\r\n\r\nhttps://github.com/flutter/flutter/assets/32570964/d06fc103-aca5-4df4-8242-fdc400247346\r\n\r\n</details>\r\n\r\n\r\n### Logs\r\n\r\n<details><summary>Logs</summary>\r\n\r\n```console\r\n[Paste your logs here]\r\n```\r\n\r\n</details>\r\n\r\n\r\n### Flutter Doctor output\r\n\r\n<details><summary>Doctor output</summary>\r\n\r\n```console\r\n[\u221a] Flutter (Channel stable, 3.16.2, on Microsoft Windows [Version 10.0.19045.3636], locale en-US)\r\n    \u2022 Flutter version 3.16.2 on channel stable at C:\\Flutter\\SDK\r\n    \u2022 Upstream repository https://github.com/flutter/flutter.git\r\n    \u2022 Framework revision 9e1c857886 (3 days ago), 2023-11-30 11:51:18 -0600\r\n    \u2022 Engine revision cf7a9d0800\r\n    \u2022 Dart version 3.2.2\r\n    \u2022 DevTools version 2.28.3\r\n\r\n[\u221a] Windows Version (Installed version of Windows is version 10 or higher)\r\n\r\n[\u221a] Android toolchain - develop for Android devices (Android SDK version 34.0.0)\r\n    \u2022 Android SDK at C:\\Program Files\\Android\\Sdk\r\n    \u2022 Platform android-34, build-tools 34.0.0\r\n    \u2022 ANDROID_SDK_ROOT = C:\\Program Files\\Android\\Sdk\r\n    \u2022 Java binary at: C:\\Program Files\\Android\\Android Studio\\jbr\\bin\\java\r\n    \u2022 Java version OpenJDK Runtime Environment (build 17.0.6+0-b2043.56-10027231)\r\n    \u2022 All Android licenses accepted.\r\n\r\n[\u221a] Chrome - develop for the web\r\n    \u2022 Chrome at C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe\r\n\r\n[\u221a] Visual Studio - develop Windows apps (Visual Studio Community 2022 17.8.0)\r\n    \u2022 Visual Studio at C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\r\n    \u2022 Visual Studio Community 2022 version 17.8.34309.116\r\n    \u2022 Windows 10 SDK version 10.0.22621.0\r\n\r\n[\u221a] Android Studio (version 2022.3)\r\n    \u2022 Android Studio at C:\\Program Files\\Android\\Android Studio\r\n    \u2022 Flutter plugin can be installed from:\r\n       https://plugins.jetbrains.com/plugin/9212-flutter\r\n    \u2022 Dart plugin can be installed from:\r\n       https://plugins.jetbrains.com/plugin/6351-dart\r\n    \u2022 Java version OpenJDK Runtime Environment (build 17.0.6+0-b2043.56-10027231)\r\n\r\n[\u221a] VS Code, 64-bit edition (version 1.70.2)\r\n    \u2022 VS Code at C:\\Program Files\\Microsoft VS Code\r\n    \u2022 Flutter extension version 3.54.0\r\n\r\n[\u221a] Connected device (3 available)\r\n    \u2022 Windows (desktop) \u2022 windows \u2022 windows-x64    \u2022 Microsoft Windows [Version 10.0.19045.3636]\r\n    \u2022 Chrome (web)      \u2022 chrome  \u2022 web-javascript \u2022 Google Chrome 113.0.5672.93\r\n    \u2022 Edge (web)        \u2022 edge    \u2022 web-javascript \u2022 Microsoft Edge 119.0.2151.58\r\n\r\n[\u221a] Network resources\r\n    \u2022 All expected network resources are available.\r\n\r\n\u2022 No issues found!\r\n```\r\n\r\n</details>\r\n",
+    "reactions": {
+      "total": 0,
+      "by_type": {}
+    },
+    "comment_summary": "Comments confirmed reproduction on Windows with RTL (Persian/Farsi) multiline text that was manually typed (not pasted); pasting the same text works correctly. The root cause was identified as a caret placement issue: when text contains CRLF-style line endings from manual typing, the cursor offset reported by the framework is incorrect for RTL text in multiline mode on Windows. A commenter linked this to issue #140739 and suspected a connection to CRLF handling. Another commenter noted the bug also manifests with custom fonts on Android (wrong caret position and incorrect word selection). A user shared a workaround that manually inserts `\\r\\n` instead of `\\n` on Enter. The assignee (LongCatIsLooong) was removed after no status updates.",
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 144759,
+    "title": "Arrow key navigation gets stuck at the end of RTL text using Samsung Keyboard",
+    "url": "https://github.com/flutter/flutter/issues/144759",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "framework",
+      "a: internationalization",
+      "has reproducible steps",
+      "P2",
+      "found in release: 3.19",
+      "team-text-input",
+      "triaged-text-input",
+      "found in release: 3.21"
+    ],
+    "assignees": [],
+    "ownership": "team-text-input",
+    "created_at": "2024-03-07T08:33:22Z",
+    "updated_at": "2024-03-07T23:00:00Z",
+    "body": "```dart\r\nconst text = '\u06cc';\r\nfinal controller = TextEditingController(text: text * 10)..selection = TextSelection.collapsed(offset: 10); // Selection is placed at the logical end of the text.\r\n\r\nTextField(textDirection: TextDirection.rtl, controller: controller, autofocus: true),\r\n```\r\n## Steps to reproduce\r\n1. wait for the text field autofocus\r\n2. switch to the Samsung keyboard\r\n3. press <kbd>\u2190</kbd> to move the cursor to the start of the text (since flutter currently uses logical order for arrow key navigation).\r\n\r\n## Expected behavior:\r\nthe cursor moves to the right\r\n\r\n## Actual behavior:\r\nthe cursor does not move.",
+    "reactions": {
+      "total": 0,
+      "by_type": {}
+    },
+    "comment_summary": "Root cause identified: Samsung keyboard ignores the left-arrow key when the cursor is already at the visual left end of RTL text, because Flutter uses logical order for arrow key navigation while Samsung keyboard uses visual order. Gboard is not affected. On native, arrow key navigation moves in visual order which Flutter does not currently support; a commenter notes this is a long-standing architectural gap.",
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 155919,
+    "title": "Error where possible null is being asserted in rendering paragraph",
+    "url": "https://github.com/flutter/flutter/issues/155919",
+    "state": "open",
+    "labels": [
+      "framework",
+      "a: error message",
+      "P2",
+      "team-text-input",
+      "triaged-text-input"
+    ],
+    "assignees": [],
+    "ownership": "team-text-input",
+    "created_at": "2024-09-30T08:33:00Z",
+    "updated_at": "2024-10-23T05:47:45Z",
+    "body": "### Steps to reproduce\r\n\r\nSpam asynchronous redraws of a Text element on macOS by resizing the window\r\n\r\n### Expected results\r\n\r\nNo Error\r\n\r\n### Actual results\r\n\r\n```\r\nRenderParagraph.text (/opt/homebrew/Caskroom/flutter/3.24.3/flutter/packages/flutter/lib/src/rendering/paragraph.dart:348)\r\nRenderParagraph.debugDescribeChildren (/opt/homebrew/Caskroom/flutter/3.24.3/flutter/packages/flutter/lib/src/rendering/paragraph.dart:1278)\r\nDiagnosticableTreeNode.getChildren (/opt/homebrew/Caskroom/flutter/3.24.3/flutter/packages/flutter/lib/src/foundation/diagnostics.dart:2882)\r\nDiagnosticsNode.toJsonMap.<anonymous closure> (/opt/homebrew/Caskroom/flutter/3.24.3/flutter/packages/flutter/lib/src/foundation/diagnostics.dart:1611)\r\nDiagnosticsNode.toJsonMap (/opt/homebrew/Caskroom/flutter/3.24.3/flutter/packages/flutter/lib/src/foundation/diagnostics.dart:1652)\r\nDiagnosticsNode.toJsonList.<anonymous closure> (/opt/homebrew/Caskroom/flutter/3.24.3/flutter/packages/flutter/lib/src/foundation/diagnostics.dart:1677)\r\nMappedListIterable.elementAt (/opt/homebrew/Caskroom/flutter/3.24.3/flutter/bin/cache/pkg/sky_engine/lib/internal/iterable.dart:425)\r\nListIterator.moveNext (/opt/homebrew/Caskroom/flutter/3.24.3/flutter/bin/cache/pkg/sky_engine/lib/internal/iterable.dart:354)\r\nnew _GrowableList._ofEfficientLengthIterable (/opt/homebrew/Caskroom/flutter/3.24.3/flutter/bin/cache/pkg/sky_engine/lib/_internal/vm/lib/growable_array.dart:189)\r\nnew _GrowableList.of (/opt/homebrew/Caskroom/flutter/3.24.3/flutter/bin/cache/pkg/sky_engine/lib/_internal/vm/lib/growable_array.dart:150)\r\nnew List.of (/opt/homebrew/Caskroom/flutter/3.24.3/flutter/bin/cache/pkg/sky_engine/lib/_internal/vm/lib/array_patch.dart:39)\r\nListIterable.toList (/opt/homebrew/Caskroom/flutter/3.24.3/flutter/bin/cache/pkg/sky_engine/lib/internal/iterable.dart:224)\r\nDiagnosticsNode.toJsonList (/opt/homebrew/Caskroom/flutter/3.24.3/flutter/packages/flutter/lib/src/foundation/diagnostics.dart:1678)\r\nDiagnosticsNode.toJsonMap.<anonymous closure> (/opt/homebrew/Caskroom/flutter/3.24.3/flutter/packages/flutter/lib/src/foundation/diagnostics.dart:1645)\r\nDiagnosticsNode.toJsonMap (/opt/homebrew/Caskroom/flutter/3.24.3/flutter/packages/flutter/lib/src/foundation/diagnostics.dart:1652)\r\nDiagnosticsNode.toJsonList.<anonymous closure> (/opt/homebrew/Caskroom/flutter/3.24.3/flutter/packages/flutter/lib/src/foundation/diagnostics.dart:1677)\r\nMappedListIterable.elementAt (/opt/homebrew/Caskroom/flutter/3.24.3/flutter/bin/cache/pkg/sky_engine/lib/internal/iterable.dart:425)\r\nListIterator.moveNext (/opt/homebrew/Caskroom/flutter/3.24.3/flutter/bin/cache/pkg/sky_engine/lib/internal/iterable.dart:354)\r\nnew _GrowableList._ofEfficientLengthIterable (/opt/homebrew/Caskroom/flutter/3.24.3/flutter/bin/cache/pkg/sky_engine/lib/_internal/vm/lib/growable_array.dart:189)\r\nnew _GrowableList.of (/opt/homebrew/Caskroom/flutter/3.24.3/flutter/bin/cache/pkg/sky_engine/lib/_internal/vm/lib/growable_array.dart:150)\r\nnew List.of (/opt/homebrew/Caskroom/flutter/3.24.3/flutter/bin/cache/pkg/sky_engine/lib/_internal/vm/lib/array_patch.dart:39)\r\nListIterable.toList (/opt/homebrew/Caskroom/flutter/3.24.3/flutter/bin/cache/pkg/sky_engine/lib/internal/iterable.dart:224)\r\nDiagnosticsNode.toJsonList (/opt/homebrew/Caskroom/flutter/3.24.3/flutter/packages/flutter/lib/src/foundation/diagnostics.dart:1678)\r\nDiagnosticsNode.toJsonMap.<anonymous closure> (/opt/homebrew/Caskroom/flutter/3.24.3/flutter/packages/flutter/lib/src/foundation/diagnostics.dart:1639)\r\nDiagnosticsNode.toJsonMap (/opt/homebrew/Caskroom/flutter/3.24.3/flutter/packages/flutter/lib/src/foundation/diagnostics.dart:1652)\r\nWidgetInspectorService._nodeToJson (/opt/homebrew/Caskroom/flutter/3.24.3/flutter/packages/flutter/lib/src/widgets/widget_inspector.dart:1735)\r\nWidgetInspectorService._reportStructuredError (/opt/homebrew/Caskroom/flutter/3.24.3/flutter/packages/flutter/lib/src/widgets/widget_inspector.dart:997)\r\n<asynchronous gap> (Unknown Source:0)\r\n```\r\n\r\n### Code sample\r\n\r\nThis is happening on a \"Text\" widget that is just `Text(\"string\")`\r\n\r\n### Screenshots or Video\r\n\r\nN/A\r\n\r\n### Logs\r\n\r\nN/A\r\n\r\n### Flutter Doctor output\r\n\r\n```\r\nDoctor summary (to see all details, run flutter doctor -v):\r\n[\u2713] Flutter (Channel stable, 3.24.3, on macOS 15.0 24A335 darwin-arm64, locale en-NZ)\r\n[!] Android toolchain - develop for Android devices (Android SDK version 33.0.1)\r\n    \u2717 cmdline-tools component is missing\r\n      Run `path/to/sdkmanager --install \"cmdline-tools;latest\"`\r\n      See https://developer.android.com/studio/command-line for more details.\r\n    \u2717 Android license status unknown.\r\n      Run `flutter doctor --android-licenses` to accept the SDK licenses.\r\n      See https://flutter.dev/to/macos-android-setup for more details.\r\n[\u2713] Xcode - develop for iOS and macOS (Xcode 16.0)\r\n[\u2713] Chrome - develop for the web\r\n[\u2713] Android Studio (version 2022.3)\r\n[\u2713] VS Code (version 1.93.1)\r\n[\u2713] Connected device (5 available)\r\n[\u2713] Network resources\r\n\r\n! Doctor found issues in 1 category.\r\n```",
+    "reactions": {
+      "total": 0,
+      "by_type": {}
+    },
+    "comment_summary": "Reporter was unable to produce a minimal reproducer but identified the trigger: when a Row child with Expanded wrapping a Text widget has its BoxConstraints width collapse to 0, the null assertion fires. The workaround is to wrap both Row children in Expanded. A related PR #155920 was filed but the issue was noted as still needing a fix.",
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 165204,
+    "title": "Unicode characters not being rendered correctly in goldens test",
+    "url": "https://github.com/flutter/flutter/issues/165204",
+    "state": "open",
+    "labels": [
+      "a: tests",
+      "a: text input",
+      "framework",
+      "has reproducible steps",
+      "P3",
+      "team-text-input",
+      "triaged-text-input",
+      "found in release: 3.29",
+      "found in release: 3.31"
+    ],
+    "assignees": [],
+    "ownership": "team-text-input",
+    "created_at": "2025-03-14T16:19:49Z",
+    "updated_at": "2025-03-27T20:40:53Z",
+    "body": "### Steps to reproduce\n\nWhen writing a simple goldens test using unicode character \\u25CF, it does not render correctly\n\n\n\n### Expected results\n\nThe character \u25cf displays correctly\n\n### Actual results\n\n![Image](https://github.com/user-attachments/assets/5ed0c550-8437-48ce-9082-e6f39eba9bf8)\n\n### Code sample\n\n<details open><summary>Code sample</summary>\n\n```dart\nimport 'package:flutter/material.dart';\nimport 'package:flutter_test/flutter_test.dart';\n\nclass UnicodeCharTestPage extends StatelessWidget {\n  const UnicodeCharTestPage({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      body: Column(\n        children: [\n          TextFormField(\n            initialValue: 'abcde',\n            obscureText: true,\n            obscuringCharacter: '\\u25CF',\n          ),\n        ],\n      ),\n    );\n  }\n}\n\nvoid main() {\n  testWidgets('Verify look', (tester) async {\n    await tester.pumpWidget(\n      const MaterialApp(\n        home: UnicodeCharTestPage(),\n      ),\n    );\n    await loadAppFonts();\n    await expectLater(\n      find.byType(MaterialApp),\n      matchesGoldenFile('unicode_char_test.png'),\n    );\n  });\n}\n```\n\n</details>\n\n\n### Flutter Doctor output\n\n<details open><summary>Doctor output</summary>\n\n```\n[\u2713] Flutter (Channel stable, 3.24.5, on macOS 15.3.1 24D70 darwin-arm64, locale en-GB)\n    \u2022 Flutter version 3.24.5 on channel stable at /Users/ade/dev/flutter\n    \u2022 Upstream repository https://github.com/flutter/flutter.git\n    \u2022 Framework revision dec2ee5c1f (4 months ago), 2024-11-13 11:13:06 -0800\n    \u2022 Engine revision a18df97ca5\n    \u2022 Dart version 3.5.4\n    \u2022 DevTools version 2.37.3\n\n[\u2713] Android toolchain - develop for Android devices (Android SDK version 34.0.0)\n    \u2022 Android SDK at /Users/ade/Library/Android/sdk\n    \u2022 Platform android-34, build-tools 34.0.0\n    \u2022 Java binary at: /Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home/bin/java\n    \u2022 Java version OpenJDK Runtime Environment Homebrew (build 17.0.14+0)\n    \u2022 All Android licenses accepted.\n\n[\u2713] Xcode - develop for iOS and macOS (Xcode 16.2)\n    \u2022 Xcode at /Applications/Xcode.app/Contents/Developer\n    \u2022 Build 16C5032a\n    \u2022 CocoaPods version 1.16.2\n\n[\u2713] Chrome - develop for the web\n    \u2022 Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome\n\n[\u2713] Android Studio (version 2024.2)\n    \u2022 Android Studio at /Applications/Android Studio.app/Contents\n    \u2022 Flutter plugin can be installed from:\n      \ud83d\udd28 https://plugins.jetbrains.com/plugin/9212-flutter\n    \u2022 Dart plugin can be installed from:\n      \ud83d\udd28 https://plugins.jetbrains.com/plugin/6351-dart\n    \u2022 Java version OpenJDK Runtime Environment (build 21.0.3+-79915917-b509.11)\n\n[\u2713] VS Code (version 1.98.0)\n    \u2022 VS Code at /Applications/Visual Studio Code.app/Contents\n    \u2022 Flutter extension version 3.106.0\n\n[\u2713] Connected device (5 available)\n    \u2022 iPhone 16 (mobile)              \u2022 D979BD18-FBD0-452B-8DF4-D6799F29F533 \u2022 ios            \u2022 com.apple.CoreSimulator.SimRuntime.iOS-18-2 (simulator)\n    \u2022 macOS (desktop)                 \u2022 macos                                \u2022 darwin-arm64   \u2022 macOS 15.3.1 24D70 darwin-arm64\n    \u2022 Mac Designed for iPad (desktop) \u2022 mac-designed-for-ipad                \u2022 darwin         \u2022 macOS 15.3.1 24D70 darwin-arm64\n    \u2022 Chrome (web)                    \u2022 chrome                               \u2022 web-javascript \u2022 Google Chrome 134.0.6998.89\n    ! Error: Browsing on the local area network for Will\u2019s Phone. Ensure the device is unlocked and attached with a cable or associated with the same local area network as this Mac.\n      The device must be opted into Developer Mode to connect wirelessly. (code -27)\n\n[\u2713] Network resources\n    \u2022 All expected network resources are available.\n\n\u2022 No issues found!\n\n```\n\n</details>\n",
+    "reactions": {
+      "total": 0,
+      "by_type": {}
+    },
+    "comment_summary": "Comments confirm the issue reproduces only in golden tests, not at runtime: the Ahem test font (used by default in matchesGoldenFile) does not include the U+25CF bullet character, rendering it as a tofu box. A commenter suggests switching fonts or using loadAppFonts() properly. Status: open, P3.",
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 167466,
+    "title": "Ellipsis not working properly when a text overflows via constrained height instead of max lines",
+    "url": "https://github.com/flutter/flutter/issues/167466",
+    "state": "open",
+    "labels": [
+      "framework",
+      "a: typography",
+      "c: rendering",
+      "has reproducible steps",
+      "P2",
+      "team-text-input",
+      "triaged-text-input",
+      "found in release: 3.29",
+      "found in release: 3.32"
+    ],
+    "assignees": [],
+    "ownership": "team-text-input",
+    "created_at": "2025-04-21T07:28:45Z",
+    "updated_at": "2025-12-21T23:02:43Z",
+    "body": "### Steps to reproduce\n\n1. Create a new Flutter project\n2. Paste the code sample into `main.dart`\n3. Run on any platform\n\n### Expected results\n\nEllipsis should show up at the end of the text if the text is cut off by its parent's constrained height, even if `maxLines` is null or a large value.\n\n### Actual results\n\nEllipsis shows up when `maxLines` is null, but then it trims the text into one line. Ellipsis does not show at all if `maxLines` is greater than what could normally fit in the constrained size.\n\n### Code sample\n\n<details open><summary>Code sample</summary>\n\n```dart\nimport 'package:flutter/material.dart';\n\nvoid main() => runApp(const App());\n\nclass App extends StatelessWidget {\n  const App({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return MaterialApp(\n      home: ExamplePage(),\n    );\n  }\n}\n\nclass ExamplePage extends StatelessWidget {\n  const ExamplePage({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    final text =\n        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';\n\n    return Scaffold(\n      appBar: AppBar(title: Text('Example')),\n      body: Center(\n        child: Column(\n          spacing: 16,\n          mainAxisAlignment: MainAxisAlignment.center,\n          children: [\n            Text('Max lines: null'),\n            Container(\n              width: 200,\n              height: 200,\n              color: Colors.blue,\n              child: Text(\n                text,\n                overflow: TextOverflow.ellipsis,\n                maxLines: null,\n              ),\n            ),\n            Text('Max lines: 100'),\n            Container(\n              width: 200,\n              height: 200,\n              color: Colors.blue,\n              child: Text(\n                text,\n                overflow: TextOverflow.ellipsis,\n                maxLines: 100,\n              ),\n            ),\n          ],\n        ),\n      ),\n    );\n  }\n}\n```\n\n</details>\n\n\n### Screenshots or Video\n\n<details open>\n<summary>Screenshots / Video demonstration</summary>\n\n![Image](https://github.com/user-attachments/assets/11ee3f6d-7e54-49de-a894-5b6d18cc797a)\n\n</details>\n\n\n### Logs\n\n<details open><summary>Logs</summary>\n\n```console\n[Paste your logs here]\n```\n\n</details>\n\n\n### Flutter Doctor output\n\n<details open><summary>Doctor output</summary>\n\n```console\n[\u2713] Flutter (Channel stable, 3.29.3, on macOS 15.4 24E248 darwin-arm64, locale en-TR) [1,225ms]\n    \u2022 Flutter version 3.29.3 on channel stable at /Users/rasitayaz/Library/flutter\n    \u2022 Upstream repository https://github.com/flutter/flutter.git\n    \u2022 Framework revision ea121f8859 (10 days ago), 2025-04-11 19:10:07 +0000\n    \u2022 Engine revision cf56914b32\n    \u2022 Dart version 3.7.2\n    \u2022 DevTools version 2.42.3\n\n[\u2713] Android toolchain - develop for Android devices (Android SDK version 34.0.0) [2.9s]\n    \u2022 Android SDK at /Users/rasitayaz/Library/Android/sdk\n    \u2022 Platform android-35, build-tools 34.0.0\n    \u2022 Java binary at: /Applications/Android Studio.app/Contents/jbr/Contents/Home/bin/java\n      This is the JDK bundled with the latest Android Studio installation on this machine.\n      To manually set the JDK path, use: `flutter config --jdk-dir=\"path/to/jdk\"`.\n    \u2022 Java version OpenJDK Runtime Environment (build 21.0.5+-13047016-b750.29)\n    \u2022 All Android licenses accepted.\n\n[\u2713] Xcode - develop for iOS and macOS (Xcode 16.3) [1,023ms]\n    \u2022 Xcode at /Applications/Xcode.app/Contents/Developer\n    \u2022 Build 16E140\n    \u2022 CocoaPods version 1.16.2\n\n[\u2713] Chrome - develop for the web [11ms]\n    \u2022 Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome\n\n[\u2713] Android Studio (version 2024.3) [11ms]\n    \u2022 Android Studio at /Applications/Android Studio.app/Contents\n    \u2022 Flutter plugin can be installed from:\n      \ud83d\udd28 https://plugins.jetbrains.com/plugin/9212-flutter\n    \u2022 Dart plugin can be installed from:\n      \ud83d\udd28 https://plugins.jetbrains.com/plugin/6351-dart\n    \u2022 Java version OpenJDK Runtime Environment (build 21.0.5+-13047016-b750.29)\n\n[\u2713] VS Code (version 1.99.2) [9ms]\n    \u2022 VS Code at /Applications/Visual Studio Code.app/Contents\n    \u2022 Flutter extension version 3.108.0\n\n[\u2713] Connected device (4 available) [6.1s]\n    \u2022 iPhone 16 Pro (mobile)          \u2022 43146F92-4E65-4649-AE11-FE784D7ADBF8 \u2022 ios            \u2022 com.apple.CoreSimulator.SimRuntime.iOS-18-4\n      (simulator)\n    \u2022 macOS (desktop)                 \u2022 macos                                \u2022 darwin-arm64   \u2022 macOS 15.4 24E248 darwin-arm64\n    \u2022 Mac Designed for iPad (desktop) \u2022 mac-designed-for-ipad                \u2022 darwin         \u2022 macOS 15.4 24E248 darwin-arm64\n    \u2022 Chrome (web)                    \u2022 chrome                               \u2022 web-javascript \u2022 Google Chrome 134.0.6998.167\n\n[\u2713] Network resources [975ms]\n    \u2022 All expected network resources are available.\n\n\u2022 No issues found!\n```\n\n</details>\n",
+    "reactions": {
+      "total": 0,
+      "by_type": {}
+    },
+    "comment_summary": "Comments confirm the bug is reproducible on stable 3.29 and master 3.32 on all platforms \u2014 ellipsis is not shown when text is clipped by a constrained parent height rather than by `maxLines`. One commenter noted it may be working as intended but acknowledged it is hard to work around. A workaround using `LayoutBuilder` and `TextPainter` to compute the number of visible lines dynamically was provided; no framework fix or PR is linked.",
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 177408,
+    "title": "The framework should provide a mechanism to change the paragraph spacing of text",
+    "url": "https://github.com/flutter/flutter/issues/177408",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "c: new feature",
+      "a: accessibility",
+      "P3",
+      "team-text-input",
+      "triaged-text-input"
+    ],
+    "assignees": [],
+    "ownership": "team-text-input",
+    "created_at": "2025-10-22T19:51:51Z",
+    "updated_at": "2026-01-06T20:39:06Z",
+    "body": "## Issue\nThere is no mechanism to change the paragraph spacing of text in the framework.\n\n## Proposal\n`TextStyle` should add a `paragraphSpacing` member, similar to `letterSpacing` and `wordSpacing`, that allows for changing the additional space between paragraphs.\n\nIn the code below:\n```dart\nText('Hello world\\nGoodbye world', style: TextStyle(paragraphSpacing: 2.0))\n```\n\n`TextStyle(paragraphSpacing: 2.0)` , would add 2 pixels of space between the paragraphs separated by the line terminator `\\n`.\n\n## Use case\nAccessibility would benefit greatly from this feature, as certain specifications such as [WCAG](https://www.w3.org/TR/WCAG21/#visual-presentation) on the web have certain requirements regarding the paragraph spacing of text.",
+    "reactions": {
+      "total": 0,
+      "by_type": {}
+    },
+    "comment_summary": null,
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 177953,
+    "title": "The framework should apply `paragraphSpacingOverride` to its text",
+    "url": "https://github.com/flutter/flutter/issues/177953",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "c: new feature",
+      "a: accessibility",
+      "platform-web",
+      "P3",
+      "team-text-input",
+      "triaged-text-input"
+    ],
+    "assignees": [],
+    "ownership": "team-text-input",
+    "created_at": "2025-11-03T23:16:36Z",
+    "updated_at": "2026-01-02T18:18:13Z",
+    "body": "## Issue\nAs of https://github.com/flutter/flutter/pull/172915, `paragraphSpacingOverride` has been made available through `MediaQuery.maybeOfParagraphSpacingOverride`, and `MediaQueryData.paragraphSpacingOverride`. This is an API added to support accessibility use-cases related to text spacing, such as matching WCAG specifications on the web. The framework at this time does not utilize this value, but makes it accessible to developers to use in their own applications.\n\n## Proposal\nThe framework should apply the `paragraphSpacingOverride` to its own text and components, so the framework can be compliant with specifications like WCAG out of the box. When applying `paragraphSpacingOverride` to our framework components we should consider scenarios where we should not apply it, for example in buttons, headers, navigations destinations, and likely other UI components.",
+    "reactions": {
+      "total": 0,
+      "by_type": {}
+    },
+    "comment_summary": null,
+    "category": "Internationalization, BiDi, and text layout"
+  },
+  {
+    "number": 183571,
+    "title": "iOS: NSJSONSerialization crash when deleting SMP characters",
+    "url": "https://github.com/flutter/flutter/issues/183571",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "platform-ios",
+      "P1",
+      "team-text-input",
+      "triaged-text-input"
+    ],
+    "assignees": [
+      "LongCatIsLooong"
+    ],
+    "ownership": "team-text-input",
+    "created_at": "2026-03-12T06:23:21Z",
+    "updated_at": "2026-03-19T22:11:45Z",
+    "body": "**Describe the bug**\nWhen deleting Supplementary Multilingual Plane (SMP) characters on iOS, the text input system leaves orphaned UTF-16 surrogates in the NSString. This causes NSJSONSerialization to fail with \"failed to convert to UTF8\" error and crash the app.\n\n**Steps to reproduce**\n1. Create a Flutter app with a TextField or text input widget\n2. On an iOS device, paste this string: **\u1d3f\u1b44\ud835\udc79ahul Rajput**\n3. Delete it character by character until only 1-2 characters remain\n4. App crashes with: \"Invalid JSON message, encoding failed: (null)\"\n\n**Expected behavior**\nText input should handle surrogate pairs correctly without crashing\n\n**Actual behavior**\nNSJSONSerialization rejects the string because it contains lone (unpaired) surrogates from incomplete SMP character encoding\n\n**Proposed Solution**\nBefore JSON serialization, validate and sanitize UTF-16 surrogates:\n- Drop lone/orphaned surrogates\n- Keep valid surrogate pairs\n- Preserve all BMP characters\n- Remap text-editing cursor indices\n\n**Code Fix**\nThe fix has been implemented in the Engine layer (FlutterCodecs.mm):\n- Added `sanitizeJSONObject()` function to recursively clean JSON object trees\n- Added helper functions for surrogate detection and index remapping\n- Special handling for text-editing state dicts\n\nCommit: `5ffdf6f689e18fe0f6b3045f0b07453d4a0c3266`\nBranch: `fix/ios-surrogate-utf16-crash`\n\n**Platform**\n- iOS 12.0+\n\n**Related Issues**\nGitHub Issue #142327",
+    "reactions": {
+      "total": 0,
+      "by_type": {}
+    },
+    "comment_summary": "Reproduced on both latest stable and master on iOS. A contributor implemented a fix in the engine (`FlutterCodecs.mm`) on a fork and submitted to Gerrit mirrors; a team member redirected them to submit a PR against the monorepo at `engine/src/flutter/shell/platform/darwin/common/framework/Source/FlutterCodecs.mm`. A pre-triage note suggests it may be a bug in `UITextInput.deleteBackward` rather than a duplicate of #179727. Status: P1, has a proposed fix pending a properly submitted PR.",
+    "category": "Internationalization, BiDi, and text layout"
+  }
+]

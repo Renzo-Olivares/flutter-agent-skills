@@ -113,11 +113,12 @@ level regression test. Output per category is a single markdown file in
 | ✅ | Hardware keyboard, key events, and shortcuts | 99 | 2 | 70% | 3 clusters (PKC-1, NKI-1, WKR-1) |
 | ✅ | Text selection behavior and gestures | 28 | 0 | 71% | Hypothesis miss — see report's retrospective section |
 | ✅ | Scrolling containers and ensureVisible with text fields | 24 | 2 | 71% | Best write-test rate so far (8.3%) |
-| ⏳ | (27 remaining categories) | 839 | — | — | See `category_profiles.md` |
+| ✅ | Internationalization, BiDi, and text layout | 44 | 6 | 34% | 1 cluster (RTL-SEL-1), 17 feature requests |
+| ⏳ | (26 remaining categories) | 795 | — | — | See `category_profiles.md` |
 
-**Totals so far:** 4 / 31 categories complete, 255 / 1,122 issues processed
-(23%), 7 regression tests authored (5 fail-as-expected confirming real
-bugs, 1 pass-green-exercises-bug-path likely-stale, 1 test-error harness
+**Totals so far:** 5 / 31 categories complete, 299 / 1,122 issues processed
+(26%), 13 regression tests authored (8 fail-as-expected confirming real
+bugs, 2 pass-green-exercises-bug-path likely-stale, 3 test-error harness
 gap).
 
 ### How to resume
