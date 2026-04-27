@@ -1,0 +1,2095 @@
+### #84317 - Share code between RenderParagraph and RenderEditable
+URL: https://github.com/flutter/flutter/issues/84317
+Created: 2021-06-10T03:37:23Z Updated: 2023-07-08T01:50:26Z
+Reactions: {'total': 1, 'by_type': {'THUMBS_UP': 1}}
+Labels: ['a: text input', 'framework', 'a: typography', 'P2', 'c: tech-debt', 'team-framework', 'triaged-framework']
+Ownership: team-framework
+Summary: None
+Body snippet: In https://github.com/flutter/flutter/pull/83537, we realized that a lot of code is shared between RenderParagraph and RenderEditable, especially for WidgetSpan support.
+
+As we consider adding WidgetSpan support for SelectableText as well (https://github.com/flutter/flutter/issues/38474), this leads us to prefer code reuse rather than three extremely similar codebases to maintain.
+
+We may be able to restructure it to inherit, or potentially a mixin, though I am still unclear how sharable the code actually is....
+Raw Comments Count: 0
+================================================================================
+
+### #86668 - TextField doesn't handle trailing space as characters if textAlign is TextAlign.right/TextAlign.center
+URL: https://github.com/flutter/flutter/issues/86668
+Created: 2021-07-19T18:04:12Z Updated: 2024-09-26T22:13:56Z
+Reactions: {'total': 1, 'by_type': {'THUMBS_UP': 1}}
+Labels: ['a: text input', 'framework', 'f: material design', 'has reproducible steps', 'P2', 'found in release: 2.2', 'found in release: 2.4', 'team-text-input', 'triaged-text-input']
+Ownership: team-text-input
+Summary: Confirmed reproducible on stable and master by a triager (video provided); trailing spaces do not push text or break lines as expected when `textAlign` is `TextAlign.center` or `TextAlign.right`. An initial comment wrongly suggested the behavior was correct; subsequent comments and a video confirmed it is not. A bot comment noted a missing priority label. No root cause was identified in the comments and no fix or PR was proposed; issue is stalled.
+Body snippet: ## Steps to Reproduce
+
+1. Run `flutter create bug`.
+2. Update main.dart as follows: ... 
+```import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'TextField trailing space',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: MyHomePage(title: 'Flutter Demo Home Page'),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  MyHomePage({Key? key, required this.title}) : super(key: key);
+  final String title;
+
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  var textAlign = TextAlign.center;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignme...
+Raw Comments Count: 6
+  Comment: Hi @tranvietha2809,
+
+I could see this working correctly Since we have aligned the text to center adding any text after the space the whole thing will be center aligned. Are you not seeing the similar behaviour?
+
+https://user-images.githubusercontent.com/31410839/126288259-d64f672f-1675-4d00-9d38-f4dfa40f6126.mov
+
+<details>
+<summary>flutter doctor -v</summary>
+
+```
+[✓] Flutter (Channel stable, 2.2.3, on macOS 11.4 20F71 darwin-arm, locale en-GB)
+    • Flutter version 2.2.3 at /Users/mahesh/Documents/flutter
+    • Framework revision f4abaa0735 (2 weeks ago), 2021-07-01 12:46:11 -0700
+    • Engine revision 241c87ad80
+    • Dart version 2.13.4
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 30.0.3)
+    • Android SDK at /Users/mahesh/Library/Android/sdk
+    • Platform android-30, build-tools 30.0.3
+    • ANDROID_HOME = /Users/mahesh/Library/Android/sdk
+    • Java binary at: /Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/bin/java
+    • Java version OpenJDK Runtime Environment (build 11.0.8+10-b944.6916264)
+    • All Android licenses accepted.
+
+[✓] Xcode - develop for iOS and macOS
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • Xcode 12.4, Build version 12D4e
+    • CocoaPods version 1.10.1
+
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] Android Studio (version 4.2)
+    • Android Studio at /Applications/Android Studio.app/Contents
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 11.0.8+10-b944.6916264)
+
+[✓] IntelliJ IDEA Community Edition (version 2021.1.2)
+    • IntelliJ at /Applications/IntelliJ IDEA CE.app
+    • Flutter plugin version 57.0.5
+    • Dart plugin version 211.7233
+
+[✓] VS Code (version 1.58.0)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.24.0
+
+[✓] Connected device (2 available)
+    • macOS (desktop) • macos  • darwin-arm64   • macOS 11.4 20F71 darwin-arm
+    • Chrome (web)    • chrome • web-javascript • Google Chrome 91.0.4472.114
+
+• No issues found!
+```
+
+```
+[✓] Flutter (Channel master, 2.4.0-5.0.pre.87, on macOS 11.4 20F71 darwin-arm, locale en-GB)
+    • Flutter version 2.4.0-5.0.pre.87 at /Users/mahesh/Documents/flutter_master
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision e084e9d946 (2 days ago), 2021-07-17 12:00:21 -0700
+    • Engine revision 14a9e9a50e
+    • Dart version 2.14.0 (build 2.14.0-321.0.dev)
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 30.0.3)
+    • Android SDK at /Users/mahesh/Library/Android/sdk
+    • Platform android-30, build-tools 30.0.3
+    • ANDROID_HOME = /Users/mahesh/Library/Android/sdk
+    • Java binary at: /Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/bin/java
+    • Java version OpenJDK Runtime Environment (build 11.0.8+10-b944.6916264)
+    • All Android licenses accepted.
+
+[✓] Xcode - develop for iOS and macOS
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • Xcode 12.4, Build version 12D4e
+    • CocoaPods version 1.10.1
+
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] Android Studio (version 4.2)
+    • Android Studio at /Applications/Android Studio.app/Contents
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 11.0.8+10-b944.6916264)
+
+[✓] IntelliJ IDEA Community Edition (version 2021.1.2)
+    • IntelliJ at /Applications/IntelliJ IDEA CE.app
+    • Flutter plugin version 57.0.5
+    • Dart plugin version 211.7233
+
+[✓] VS Code (version 1.58.0)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.24.0
+
+[✓] Connected device (3 available)
+    • iPhone 12 Pro Max (mobile) • 6A434744-B348-4FB3-AB10-131292174456 • ios            • com.apple.CoreSimulator.SimRuntime.iOS-14-4
+      (simulator)
+    • macOS (desktop)            • macos                                • darwin-arm64   • macOS 11.4 20F71 darwin-arm
+    • Chrome (web)               • chrome                               • web-javascript • Google Chrome 91.0.4472.114
+
+• No issues found!
+```
+</details>
+
+Thank you.
+  ---
+  Comment: Hello @maheshmnj.
+
+I am seeing similar response to you. But why isn't the trailing spaces be treated as normal characters? Such as line break behaviors, pushing the text to their correct alignment, etc...
+  ---
+  Comment: Hi @tranvietha2809, Theres a similar issue https://github.com/flutter/flutter/issues/40648 open which reports this case. You may follow up there for further updates. I am going to close this issue as a duplicate if you disagree feel free to comment and I will reopen it.
+
+Thank you. 
+  ---
+  Comment: Apologies, Reopening this issue as this isn't a duplicate
+  ---
+  Comment: The issue is reproducible on the latest stable and the master channel, The alignment of the text doesn't remain in center when the spaces are added at the end, But if the spaces are added in between the text, the whole text is correctly aligned in the center as we type.
+
+
+<details>
+<summary>Output</summary>
+
+https://user-images.githubusercontent.com/31410839/126324212-2cfb5a4d-afbc-48ad-b55a-fc829dd90882.mov
+</details>
+
+<details>
+<summary>flutter doctor -v</summary>
+
+```
+[✓] Flutter (Channel stable, 2.2.3, on macOS 11.4 20F71 darwin-arm, locale en-GB)
+    • Flutter version 2.2.3 at /Users/mahesh/Documents/flutter
+    • Framework revision f4abaa0735 (3 weeks ago), 2021-07-01 12:46:11 -0700
+    • Engine revision 241c87ad80
+    • Dart version 2.13.4
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 30.0.3)
+    • Android SDK at /Users/mahesh/Library/Android/sdk
+    • Platform android-30, build-tools 30.0.3
+    • ANDROID_HOME = /Users/mahesh/Library/Android/sdk
+    • Java binary at: /Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/bin/java
+    • Java version OpenJDK Runtime Environment (build 11.0.8+10-b944.6916264)
+    • All Android licenses accepted.
+
+[✓] Xcode - develop for iOS and macOS
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • Xcode 12.4, Build version 12D4e
+    • CocoaPods version 1.10.1
+
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] Android Studio (version 4.2)
+    • Android Studio at /Applications/Android Studio.app/Contents
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 11.0.8+10-b944.6916264)
+
+[✓] IntelliJ IDEA Community Edition (version 2021.1.2)
+    • IntelliJ at /Applications/IntelliJ IDEA CE.app
+    • Flutter plugin version 57.0.5
+    • Dart plugin version 211.7233
+
+[✓] VS Code (version 1.58.0)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.24.0
+
+[✓] Connected device (3 available)
+    • iPhone 12 Pro Max (mobile) • 6A434744-B348-4FB3-AB10-131292174456 • ios            •
+      com.apple.CoreSimulator.SimRuntime.iOS-14-4 (simulator)
+    • macOS (desktop)            • macos                                • darwin-arm64   • macOS
+      11.4 20F71 darwin-arm
+    • Chrome (web)               • chrome                               • web-javascript • Google
+      Chrome 91.0.4472.164
+
+• No issues found!
+```
+
+```
+[✓] Flutter (Channel master, 2.4.0-5.0.pre.87, on macOS 11.4 20F71 darwin-arm, locale en-GB)
+    • Flutter version 2.4.0-5.0.pre.87 at /Users/mahesh/Documents/flutter_master
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision e084e9d946 (2 days ago), 2021-07-17 12:00:21 -0700
+    • Engine revision 14a9e9a50e
+    • Dart version 2.14.0 (build 2.14.0-321.0.dev)
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 30.0.3)
+    • Android SDK at /Users/mahesh/Library/Android/sdk
+    • Platform android-30, build-tools 30.0.3
+    • ANDROID_HOME = /Users/mahesh/Library/Android/sdk
+    • Java binary at: /Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/bin/java
+    • Java version OpenJDK Runtime Environment (build 11.0.8+10-b944.6916264)
+    • All Android licenses accepted.
+
+[✓] Xcode - develop for iOS and macOS
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • Xcode 12.4, Build version 12D4e
+    • CocoaPods version 1.10.1
+
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] Android Studio (version 4.2)
+    • Android Studio at /Applications/Android Studio.app/Contents
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 11.0.8+10-b944.6916264)
+
+[✓] IntelliJ IDEA Community Edition (version 2021.1.2)
+    • IntelliJ at /Applications/IntelliJ IDEA CE.app
+    • Flutter plugin version 57.0.5
+    • Dart plugin version 211.7233
+
+[✓] VS Code (version 1.58.0)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.24.0
+
+[✓] Connected device (3 available)
+    • iPhone 12 Pro Max (mobile) • 6A434744-B348-4FB3-AB10-131292174456 • ios            • com.apple.CoreSimulator.SimRuntime.iOS-14-4
+      (simulator)
+    • macOS (desktop)            • macos                                • darwin-arm64   • macOS 11.4 20F71 darwin-arm
+    • Chrome (web)               • chrome                               • web-javascript • Google Chrome 91.0.4472.114
+
+• No issues found!
+```
+</details>
+
+  ---
+  Comment: This issue is missing a priority label. Please set a priority label when adding the `triaged-design` label.
+  ---
+================================================================================
+
+### #103705 - letterSpacing in TextField with monospace font is only applied to right side of the first character until a second character is entered, then letterSpacing is applied correctly to both sides
+URL: https://github.com/flutter/flutter/issues/103705
+Created: 2022-05-13T14:29:24Z Updated: 2023-07-08T00:28:42Z
+Reactions: {'total': 1, 'by_type': {'THUMBS_UP': 1}}
+Labels: ['a: text input', 'engine', 'a: typography', 'has reproducible steps', 'P2', 'found in release: 3.0', 'found in release: 3.1', 'team-engine', 'triaged-engine']
+Ownership: team-engine
+Summary: Comments confirmed the bug reproduces on both stable and master across Android and iOS. A fix was submitted to Skia (https://skia-review.googlesource.com/c/skia/+/541978) and subsequently merged. One commenter reported the issue was still present in Flutter 3.3 beta but then confirmed it was fixed, leaving the issue open pending stable promotion.
+Body snippet: <!-- Thank you for using Flutter!
+
+     If you are looking for support, please check out our documentation
+     or consider asking a question on Stack Overflow:
+      * https://flutter.dev/
+      * https://api.flutter.dev/
+      * https://stackoverflow.com/questions/tagged/flutter?sort=frequent
+
+     If you have found a bug or if our documentation doesn't have an answer
+     to what you're looking for, then fill out the template below. Please read
+     our guide to filing a bug first: https://flutter.dev/docs/resources/bug-reports
+-->
+
+## Steps to Reproduce
+
+<!-- Please include full steps to reproduce so that we can reproduce the problem. -->
+
+1. Run the sample app here: https://github.com/acoutts/flutter_text_bug/blob/main/lib/main.dart
+2. Enter some characters in the text field
+
+**Expected results:** <!-- what did you want to see? -->
+The letter spacing should be applied to all characters equally no matter the length of the input text.
+
+
+**Actual results:** <!...
+Raw Comments Count: 7
+  Comment: Hello. Thanks for filing the issue. This issue is reproducible on latest `stable` and `master` channels with provided sample code.
+
+<details>
+<summary>Demo</summary>
+
+| Flutter | Web | Android Native | 
+| --------------- | --------------- | --------------- |
+<video src="https://user-images.githubusercontent.com/104349824/168530091-96d0c78f-3e64-4bd1-8264-3dd0f285957c.mov"/> | <video src="https://user-images.githubusercontent.com/104349824/168530485-3c906cf2-ed0b-4cb2-841f-ea98dbc4f995.mov"/> | <video src="https://user-images.githubusercontent.com/104349824/168530231-1f72e07e-d86c-459e-87d9-e9ea0c21a202.mov"/>
+
+</details>
+
+<details>
+<summary>flutter doctor -v</summary>
+
+```bash
+[✓] Flutter (Channel stable, 3.0.0, on macOS 12.2.1 21D62 darwin-x64, locale en-VN)
+    • Flutter version 3.0.0 at /Users/huynq/Documents/GitHub/flutter
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision ee4e09cce0 (2 days ago), 2022-05-09 16:45:18 -0700
+    • Engine revision d1b9a6938a
+    • Dart version 2.17.0
+    • DevTools version 2.12.2
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 31.0.0)
+    • Android SDK at /Users/huynq/Library/Android/sdk
+    • Platform android-31, build-tools 31.0.0
+    • ANDROID_HOME = /Users/huynq/Library/Android/sdk
+    • Java binary at: /Applications/Android Studio.app/Contents/jre/Contents/Home/bin/java
+    • Java version OpenJDK Runtime Environment (build 11.0.12+0-b1504.28-7817840)
+    • All Android licenses accepted.
+
+[✓] Xcode - develop for iOS and macOS (Xcode 13.2.1)
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • CocoaPods version 1.11.3
+
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] Android Studio (version 2021.2)
+    • Android Studio at /Applications/Android Studio.app/Contents
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 11.0.12+0-b1504.28-7817840)
+
+[✓] Android Studio (version 4.1)
+    • Android Studio at /Users/huynq/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-0/201.7042882/Android Studio.app/Contents
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 1.8.0_242-release-1644-b3-6915495)
+
+[✓] Android Studio
+    • Android Studio at /Users/huynq/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-1/203.7185775/Android Studio Preview.app/Contents
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 11.0.8+10-b944.6842174)
+
+[✓] IntelliJ IDEA Community Edition (version 2020.3.3)
+    • IntelliJ at /Applications/IntelliJ IDEA CE.app
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+
+[✓] VS Code (version 1.67.0)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.40.0
+
+[✓] Connected device (3 available)
+    • iPhone 13 (mobile) • 5F5D609C-3B0B-4C48-872C-961928157361 • ios            • com.apple.CoreSimulator.SimRuntime.iOS-15-2 (simulator)
+    • macOS (desktop)    • macos                                • darwin-x64     • macOS 12.2.1 21D62 darwin-x64
+    • Chrome (web)       • chrome                               • web-javascript • Google Chrome 101.0.4951.54
+
+[✓] HTTP Host Availability
+    • All required HTTP hosts are available
+
+• No issues found!
+```
+
+```bash
+[✓] Flutter (Channel master, 3.1.0-0.0.pre.727, on macOS 12.2.1 21D62 darwin-x64, locale en-VN)
+    • Flutter version 3.1.0-0.0.pre.727 at /Users/huynq/Documents/GitHub/flutter_master
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision 36f9a186bf (9 hours ago), 2022-05-15 14:34:06 -0400
+    • Engine revision 1b064fd1a3
+    • Dart version 2.18.0 (build 2.18.0-116.0.dev)
+    • DevTools version 2.13.1
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 31.0.0)
+    • Android SDK at /Users/huynq/Library/Android/sdk
+    • Platform android-32, build-tools 31.0.0
+    • ANDROID_HOME = /Users/huynq/Library/Android/sdk
+    • Java binary at: /Applications/Android Studio.app/Contents/jre/Contents/Home/bin/java
+    • Java version OpenJDK Runtime Environment (build 11.0.12+0-b1504.28-7817840)
+    • All Android licenses accepted.
+
+[✓] Xcode - develop for iOS and macOS (Xcode 13.2.1)
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • CocoaPods version 1.11.3
+
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] Android Studio (version 2021.2)
+    • Android Studio at /Applications/Android Studio.app/Contents
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 11.0.12+0-b1504.28-7817840)
+
+[✓] Android Studio (version 4.1)
+    • Android Studio at /Users/huynq/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-0/201.7042882/Android Studio.app/Contents
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 1.8.0_242-release-1644-b3-6915495)
+
+[!] Android Studio
+    • Android Studio at /Users/huynq/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-1/203.7185775/Android Studio Preview.app/Contents
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+    ✗ Unable to find bundled Java version.
+    • Try updating or re-installing Android Studio.
+
+[✓] IntelliJ IDEA Community Edition (version 2020.3.3)
+    • IntelliJ at /Applications/IntelliJ IDEA CE.app
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+
+[✓] VS Code (version 1.67.1)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.40.0
+
+[✓] Connected device (3 available)
+    • iPhone 13 (mobile) • 5F5D609C-3B0B-4C48-872C-961928157361 • ios            • com.apple.CoreSimulator.SimRuntime.iOS-15-2 (simulator)
+    • macOS (desktop)    • macos                                • darwin-x64     • macOS 12.2.1 21D62 darwin-x64
+    • Chrome (web)       • chrome                               • web-javascript • Google Chrome 101.0.4951.64
+
+[✓] HTTP Host Availability
+    • All required HTTP hosts are available
+
+! Doctor found issues in 1 category.
+```
+</details>
+  ---
+  Comment: What is supposed to be the behavior here? Is Flutters behavior different from native iOS, Android, Mac, or Chrome?
+  ---
+  Comment: It seems to be a regression as it didn’t happen in past versions of flutter. 
+
+The expected behavior is if I specify letter spacing, it should be applied equally to all characters no matter the input length.
+
+As demonstrated above, the letter spacing is initially only applied to the right side of the first character if the input length is 1. Only once a second character is added does the letter spacing then get added to the left side of the first character.
+  ---
+  Comment: Submitted a fix to Skia: https://skia-review.googlesource.com/c/skia/+/541978
+  ---
+  Comment: I see that one is merged now - when can we expect it to be available in flutter?
+  ---
+  Comment: Sadly it’s still happening even in the latest beta (3.3). 
+  ---
+  Comment: Correction - it is now fixed! Great news 🙌 
+Should we leave this open until it makes it to stable?
+  ---
+================================================================================
+
+### #133930 - No good way to get line metrics for `Text`/`TextField` based widgets.
+URL: https://github.com/flutter/flutter/issues/133930
+Created: 2023-09-03T04:58:57Z Updated: 2024-08-23T18:34:13Z
+Reactions: {'total': 1, 'by_type': {'THUMBS_UP': 1}}
+Labels: ['framework', 'a: typography', 'has reproducible steps', 'P2', 'found in release: 3.13', 'found in release: 3.14', 'team-text-input', 'triaged-text-input']
+Ownership: team-text-input
+Summary: Root cause identified: the user's `TextPainter` does not use the same `TextStyle` as the `TextField` (which applies material theme styles), causing layout width mismatches. A team member (@dnfield) initially proposed using `controller.buildTextSpan(context: context, withComposing: false)` as a fix but later confirmed it does not reliably carry the correct styles. The confirmed workaround is to manually replicate the exact `TextStyle` the `TextField` applies (e.g., resolving from the material theme). @LongCatIsLooong mentioned a planned framework-level API exposing immutable text layout metrics via a callback (e.g., `onTextLayoutChanged`) but noted a `TextEditingController` cannot be the right place since one controller can serve multiple fields with different styles. Currently stalled with no PR.
+Body snippet: ### Is there an existing issue for this?
+
+- [X] I have searched the [existing issues](https://github.com/flutter/flutter/issues)
+- [X] I have read the [guide to filing a bug](https://flutter.dev/docs/resources/bug-reports)
+
+### Steps to reproduce
+
+1. Create the TextField whose size fills the screen.
+2. Get the line counts from TextPainter.
+```dart
+  void updateDisplayedLineCount() {
+    final text = _controller.text;
+    final textPainter = TextPainter(
+      text: TextSpan(text: text),
+      textDirection: TextDirection.ltr,
+      maxLines: null,
+    );
+
+    textPainter.layout(maxWidth: MediaQuery.of(context).size.width);
+
+    setState(() {
+      displayedLineCount = textPainter.computeLineMetrics().length;
+    });
+  }
+```
+
+### Expected results
+
+I expected to equal the display line count and the value of ```computeLineMetrics returned```.
+
+### Actual results
+
+Actual, The value of ```computeLineMetrics returned``` is wrong to the display line count.
+![image](https://g...
+Raw Comments Count: 22
+  Comment: Reproducible using the code sample provided above. 
+
+<details>
+<summary>flutter doctor -v</summary>
+
+```
+[!] Flutter (Channel stable, 3.13.2, on macOS 13.4.1 22F770820d darwin-arm64, locale en-GB)
+    • Flutter version 3.13.2 on channel stable at /Users/nexus/dev/sdks/flutter
+    ! Warning: `flutter` on your path resolves to /Users/nexus/dev/sdks/flutters/bin/flutter, which is not inside your current Flutter SDK checkout at /Users/nexus/dev/sdks/flutter. Consider adding /Users/nexus/dev/sdks/flutter/bin to the front of your path.
+    ! Warning: `dart` on your path resolves to /Users/nexus/dev/sdks/flutters/bin/dart, which is not inside your current Flutter SDK checkout at /Users/nexus/dev/sdks/flutter. Consider adding /Users/nexus/dev/sdks/flutter/bin to the front of your path.
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision ff5b5b5fa6 (11 days ago), 2023-08-24 08:12:28 -0500
+    • Engine revision b20183e040
+    • Dart version 3.1.0
+    • DevTools version 2.25.0
+    • If those were intentional, you can disregard the above warnings; however it is recommended to use "git" directly to perform update checks and upgrades.
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 33.0.1)
+    • Android SDK at /Users/nexus/Library/Android/sdk
+    • Platform android-33, build-tools 33.0.1
+    • Java binary at: /Users/nexus/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-0/223.8836.35.2231.10406996/Android Studio.app/Contents/jbr/Contents/Home/bin/java
+    • Java version OpenJDK Runtime Environment (build 17.0.6+0-17.0.6b829.9-10027231)
+    • All Android licenses accepted.
+
+[✓] Xcode - develop for iOS and macOS (Xcode 14.3)
+    • Xcode at /Applications/Xcode-14.3.0.app/Contents/Developer
+    • Build 14E222b
+    • CocoaPods version 1.12.1
+
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] Android Studio (version 2022.3)
+    • Android Studio at /Users/nexus/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-0/223.8836.35.2231.10406996/Android Studio.app/Contents
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 17.0.6+0-17.0.6b829.9-10027231)
+
+[✓] IntelliJ IDEA Ultimate Edition (version 2023.2.1)
+    • IntelliJ at /Users/nexus/Applications/JetBrains Toolbox/IntelliJ IDEA Ultimate.app
+    • Flutter plugin version 75.1.4
+    • Dart plugin version 232.9559.10
+
+[✓] IntelliJ IDEA Ultimate Edition (version 2023.2)
+    • IntelliJ at /Users/nexus/Library/Application Support/JetBrains/Toolbox/apps/IDEA-U/ch-0/232.8660.185/IntelliJ IDEA.app
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+
+[✓] IntelliJ IDEA Ultimate Edition (version 2023.2.1)
+    • IntelliJ at /Users/nexus/Library/Application Support/JetBrains/Toolbox/apps/IDEA-U/ch-0/232.9559.62/IntelliJ IDEA.app
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+
+[✓] VS Code (version 1.81.1)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.70.0
+
+[✓] Connected device (3 available)
+    • Pixel 7 (mobile) • 28291FDH2001SA • android-arm64  • Android 13 (API 33)
+    • macOS (desktop)  • macos          • darwin-arm64   • macOS 13.4.1 22F770820d darwin-arm64
+    • Chrome (web)     • chrome         • web-javascript • Google Chrome 116.0.5845.140
+
+[✓] Network resources
+    • All expected network resources are available.
+
+! Doctor found issues in 1 category.
+```
+
+```
+[✓] Flutter (Channel master, 3.14.0-14.0.pre.93, on macOS 13.4.1 22F770820d darwin-arm64, locale en-GB)
+    • Flutter version 3.14.0-14.0.pre.93 on channel master at /Users/nexus/dev/sdks/flutters
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision ef9befc9da (13 hours ago), 2023-09-03 11:23:20 -0700
+    • Engine revision fbc6f4a540
+    • Dart version 3.2.0 (build 3.2.0-131.0.dev)
+    • DevTools version 2.27.0
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 33.0.1)
+    • Android SDK at /Users/nexus/Library/Android/sdk
+    • Platform android-33, build-tools 33.0.1
+    • Java binary at: /Users/nexus/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-0/223.8836.35.2231.10406996/Android Studio.app/Contents/jbr/Contents/Home/bin/java
+    • Java version OpenJDK Runtime Environment (build 17.0.6+0-17.0.6b829.9-10027231)
+    • All Android licenses accepted.
+
+[✓] Xcode - develop for iOS and macOS (Xcode 14.3)
+    • Xcode at /Applications/Xcode-14.3.0.app/Contents/Developer
+    • Build 14E222b
+    • CocoaPods version 1.12.1
+
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] Android Studio (version 2022.3)
+    • Android Studio at /Users/nexus/Library/Application Support/JetBrains/Toolbox/apps/AndroidStudio/ch-0/223.8836.35.2231.10406996/Android Studio.app/Contents
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 17.0.6+0-17.0.6b829.9-10027231)
+
+[✓] IntelliJ IDEA Ultimate Edition (version 2023.2)
+    • IntelliJ at /Users/nexus/Library/Application Support/JetBrains/Toolbox/apps/IDEA-U/ch-0/232.8660.185/IntelliJ IDEA.app
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+
+[✓] IntelliJ IDEA Ultimate Edition (version 2023.2.1)
+    • IntelliJ at /Users/nexus/Library/Application Support/JetBrains/Toolbox/apps/IDEA-U/ch-0/232.9559.62/IntelliJ IDEA.app
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+
+[✓] VS Code (version 1.81.1)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.70.0
+
+[✓] Connected device (4 available)
+    • Pixel 7 (mobile) • 28291FDH2001SA            • android-arm64  • Android 13 (API 33)
+    • Nexus (mobile)   • 00008020-001875E83A38002E • ios            • iOS 16.6 20G75
+    • macOS (desktop)  • macos                     • darwin-arm64   • macOS 13.4.1 22F770820d darwin-arm64
+    • Chrome (web)     • chrome                    • web-javascript • Google Chrome 116.0.5845.140
+
+[✓] Network resources
+    • All expected network resources are available.
+
+• No issues found!
+
+```
+</details>
+  ---
+  Comment: @danagbemava-nc 
+Sorry, I provid it again.
+
+<details><summary>flutter doctor -v</summary>
+
+```bash
+[√] Flutter (Channel stable, 3.10.5, on Microsoft Windows [Version 10.0.22621.2134], locale ja-JP)
+    • Flutter version 3.10.5 on channel stable at C:\Program Files\flutter
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision 796c8ef792 (3 months ago), 2023-06-13 15:51:02 -0700
+    • Engine revision 45f6e00911
+    • Dart version 3.0.5
+    • DevTools version 2.23.1
+
+[√] Windows Version (Installed version of Windows is version 10 or higher)
+
+[√] Android toolchain - develop for Android devices (Android SDK version 33.0.0)
+    • Android SDK at C:\Users\R.NOTO\AppData\Local\Android\sdk
+    • Platform android-34, build-tools 33.0.0
+    • Java binary at: C:\Program Files\Android\Android Studio\jre\bin\java
+    • Java version OpenJDK Runtime Environment (build 11.0.12+7-b1504.28-7817840)
+    • All Android licenses accepted.
+
+[√] Chrome - develop for the web
+    • Chrome at C:\Program Files\Google\Chrome\Application\chrome.exe
+
+[√] Visual Studio - develop for Windows (Visual Studio Community 2022 17.5.3)
+    • Visual Studio at C:\Program Files\Microsoft Visual Studio\2022\Community
+    • Visual Studio Community 2022 version 17.5.33516.290
+    • Windows 10 SDK version 10.0.22621.0
+
+[√] Android Studio (version 2021.2)
+    • Android Studio at C:\Program Files\Android\Android Studio
+    • Flutter plugin can be installed from:
+       https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+       https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 11.0.12+7-b1504.28-7817840)
+
+[√] VS Code (version 1.80.1)
+    • VS Code at C:\Users\R.NOTO\AppData\Local\Programs\Microsoft VS Code
+    • Flutter extension version 3.70.0
+
+[√] Connected device (5 available)
+    • SC 52B (mobile)              • R5CR41E1GZB   • android-arm64  • Android 13 (API 33)
+    • sdk gphone64 x86 64 (mobile) • emulator-5554 • android-x64    • Android 12 (API 31) (emulator)
+    • Windows (desktop)            • windows       • windows-x64    • Microsoft Windows [Version 10.0.22621.2134]
+    • Chrome (web)                 • chrome        • web-javascript • Google Chrome 116.0.5845.111
+    • Edge (web)                   • edge          • web-javascript • Microsoft Edge 116.0.1938.62
+
+[√] Network resources
+    • All expected network resources are available.
+
+• No issues found!
+```
+</details>
+  ---
+  Comment: It looks like the `LineMetrics.width` is just wrong.
+
+I think that `LineMetrics.width` is measuring the width of the characters correctly but not including spacing between them
+
+If this is a regression, it may be related to the 'floating point hack' that got removed for text, which @LongCatIsLooong might know about.
+
+If it's not a regression, then we seem to just be missing the character spacing in the line length widths. If I specify `Arial` and use fontSize `14`, I get the same character widths as from Chrome using the following JS:
+
+```
+var d1 = document.createElement("div");
+d1.id = "test3";
+d1.innerHTML = "test";
+d1.style = "width: fit-content; padding: 0px; margin: 0px; font-family: Arial, sans-serif; font-size: 14px";
+document.documentElement.appendChild(d1);
+
+var d2 = document.createElement("div");
+d2.id = "test3";
+document.documentElement.appendChild(d2);
+
+d2.innerHTML = "";
+var N = 100;
+for (var i = 32; i < 127; i++) {
+  var s = String.fromCharCode(i).replace(" ","&nbsp;");
+  d1.innerHTML = s.repeat(N);
+  var width = d1.getBoundingClientRect().width;
+  d2.innerHTML += `"${s}": ${width/N},<br>`;
+}
+```
+
+e.g. `a` has a width of `7.7861328125` in both Chrome and Flutter desktop. But each subsequent `a` is a multiple of that number, which would only work if there was no character spacing. /cc @rusino
+  ---
+  Comment: I modified the sample code like so:
+
+```dart
+  void updateDisplayedLineCount() {
+    final text = _controller.text;
+    final textPainter = TextPainter(
+      text: TextSpan(text: text, style: const TextStyle(fontFamily: 'Arial', fontSize: 14)),
+      textDirection: TextDirection.ltr,
+      maxLines: null,
+    );
+
+    textPainter.layout(maxWidth: MediaQuery.of(context).size.width);
+
+    setState(() {
+      final metrics = textPainter.computeLineMetrics();
+      print(metrics);
+      displayedLineCount = metrics.length;
+    });
+  }
+```
+  ---
+  Comment: ```dart
+    final textPainter = TextPainter(
+      text: TextSpan(text: text),
+      textDirection: TextDirection.ltr,
+      maxLines: null,
+    );
+
+    textPainter.layout(maxWidth: MediaQuery.of(context).size.width);
+```
+is probably not a reliable way to measure the text layout of a `TextField`. `TextField`s apply additional styles (from themes for example since it's a material widget) that may change the text layout drastically. For example the above text painter will use a font size of 14 by default but the material default is probably larger (and iirc it even depends on the locale). 
+
+  ---
+  Comment: > ```dart
+>     final textPainter = TextPainter(
+>       text: TextSpan(text: text),
+>       textDirection: TextDirection.ltr,
+>       maxLines: null,
+>     );
+> 
+>     textPainter.layout(maxWidth: MediaQuery.of(context).size.width);
+> ```
+> 
+> is probably not a reliable way to measure the text layout of a `TextField`. `TextField`s apply additional styles (from themes for example since it's a material widget) that may change the text layout drastically. For example the above text painter will use a font size of 14 by default but the material default is probably larger (and iirc it even depends on the locale).
+
+Even if you manually set the text size to 14 and specify a static font we have issues. The paragraph width and the line width are not matching the actual painting width, so the line metrics are coming out wrong.
+  ---
+  Comment: Here's a simple dart:ui sample:
+
+```dart
+import 'dart:ui';
+
+void main() {
+  final builder = ParagraphBuilder(ParagraphStyle());
+  builder.pushStyle(TextStyle(fontFamily: 'Arial', fontSize: 14));
+  builder.addText('aa');
+  final paragraph = builder.build();
+  paragraph.layout(const ParagraphConstraints(width: 300));
+  print(paragraph.longestLine);
+  print(paragraph.minIntrinsicWidth);
+  print(paragraph.maxIntrinsicWidth);
+  print(paragraph.width);
+  print(paragraph.computeLineMetrics().first.width);
+}
+```
+
+The longestLine, max/min intrinsic widths, and line metrics widths are all `15.572265625` on my desktop system. But that's not right - that's "just" the width of the two `a` characters and won't actually match the painted width of these glyphs when you include the letter spacing.
+  ---
+  Comment: Letterspacing isn't specified in the example so it defaults to 0,  I'm not sure what the problem is with that output? Is the text actually getting clipped when painted on canvas?
+
+ I added letterspacing to a similar example and here's the line metrics and glyph metrics: 
+```dart
+  const text = 'aa';
+  final painter = TextPainter(
+    text: const TextSpan(text: text, style: TextStyle(fontSize: 10, letterSpacing: 11)),
+    textDirection: TextDirection.ltr,
+  );
+  painter.layout(maxWidth: 40);
+  print(painter.computeLineMetrics());
+```
+line metrics:
+
+> [LineMetrics(hardBreak: true, ascent: 9.27734375, descent: 2.44140625, unscaledAscent: 9.27734375, height: 12.0, width: 32.87890625, left: 5.5, baseline: 9.55859375, lineNumber: 0)]
+
+glyph layout boxes:
+
+> [Rect.fromLTRB(5.5, 0.3, 21.9, 12.0), (Rect.fromLTRB(21.9, 0.3, 38.4, 12.0)]
+  ---
+  Comment: > Here's a simple dart:ui sample:
+> 
+> ```dart
+> import 'dart:ui';
+> 
+> void main() {
+>   final builder = ParagraphBuilder(ParagraphStyle());
+>   builder.pushStyle(TextStyle(fontFamily: 'Arial', fontSize: 14));
+>   builder.addText('aa');
+>   final paragraph = builder.build();
+>   paragraph.layout(const ParagraphConstraints(width: 300));
+>   print(paragraph.longestLine);
+>   print(paragraph.minIntrinsicWidth);
+>   print(paragraph.maxIntrinsicWidth);
+>   print(paragraph.width);
+>   print(paragraph.computeLineMetrics().first.width);
+> }
+> ```
+> 
+> The longestLine, max/min intrinsic widths, and line metrics widths are all `15.572265625` on my desktop system. But that's not right - that's "just" the width of the two `a` characters and won't actually match the painted width of these glyphs when you include the letter spacing.
+
+Actually, this is the right value (assuming no explicit letter spacing was set). There is no "extra" space between letters. Whatever spacing you see on the screen goes into the glyphs.
+  ---
+  Comment: Argh. The `TextPainter` is not using the same styles as the text field. I was wrong.
+
+Updating the sample code like this works for me:
+
+```dart
+  void updateDisplayedLineCount() {
+    final span = _controller.buildTextSpan(context: context, withComposing: false);
+    final textPainter = TextPainter(
+      text: span,
+      textDirection: TextDirection.ltr,
+      maxLines: null,
+    );
+
+    textPainter.layout(maxWidth: MediaQuery.of(context).size.width);
+
+    setState(() {
+      displayedLineCount = textPainter.computeLineMetrics().length;
+    });
+  }
+```
+
+The span object will have the relevant style information.
+  ---
+  Comment: Thanks you @dnfield .
+But I couldn't count lines...
+<img width="368" alt="image" src="https://github.com/flutter/flutter/assets/56541594/a483fbb1-c467-4917-b5d8-46e9d3cfd3f3">
+
+If you are possible, please all of your code.
+I want to try your code on my environment.
+
+<details><summary>My Code</summary>
+
+```dart
+import 'package:flutter/material.dart';
+
+class LineCountTextField extends StatefulWidget {
+  @override
+  _LineCountTextFieldState createState() => _LineCountTextFieldState();
+}
+
+class _LineCountTextFieldState extends State<LineCountTextField> {
+  TextEditingController _controller = TextEditingController();
+  int displayedLineCount = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(updateDisplayedLineCount);
+  }
+
+  void updateDisplayedLineCount() {
+    final span =
+        _controller.buildTextSpan(context: context, withComposing: false);
+    final textPainter = TextPainter(
+      text: span,
+      textDirection: TextDirection.ltr,
+      maxLines: null,
+    );
+
+    textPainter.layout(maxWidth: MediaQuery.of(context).size.width);
+
+    setState(() {
+      displayedLineCount = textPainter.computeLineMetrics().length;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        TextField(
+          controller: _controller,
+          maxLines: null,
+        ),
+        Text('Displayed Line Count: $displayedLineCount'),
+      ],
+    );
+  }
+}
+
+void main() {
+  runApp(MaterialApp(
+    home: Scaffold(
+      appBar: AppBar(title: Text('Line Count TextField Example')),
+      body: LineCountTextField(),
+    ),
+  ));
+}
+```
+</details>
+  ---
+  Comment: I could have sworn I was getting different results on this before and now it's back to misbehaving. Reopening while I look at it again.
+  ---
+  Comment: Argh, this method is not actually getting the style from the text the way I thought it was.
+  ---
+  Comment: Ok.
+
+The framework does not appear to have a way to tell you the `TextStyle` used in a `TextField`.
+
+I think it would be ideal if the `TextEditingController` had some way to access this. Perhaps some method parallel to `buildTextSpan` that did not take a `TextStyle` argument but instead used the text style of the widget it's controlling.
+
+/cc @justinmc @LongCatIsLooong who probably have good ideas about this.
+  ---
+  Comment: (My original confusion probably related to prints I added to the framework that looked right - I can confirm that if you use the same exact text style in both places things work out).
+
+  ---
+  Comment: The `triaged-engine` label is irrelevant if there is no `team-engine` label or `fyi-engine` label.
+  ---
+  Comment: I'm currently trying to expose more text layout metrics, the end goal is to expose an immutable interface for querying the current text layout, and allowing developers to listen for text layout changes. I'm planning to add that to the text related render objects but since there doesn't seem to be an easy way to get the render objects from `Text` or `EditableText` I guess adding a callback to these widgets would be the easiest way to expose them? E.g., `Text.onTextLayoutChanged(TextLayout newLayout)`, `EditableText.onTextLayoutChanged(TextLayout newLayout, Offset newOffset)`. But the catch is that it's not allowed to call `setState` synchronously in these callbacks.
+
+A `TextEditingController` can be assigned to multiple text fields that use different paragraph styles and have completely different text layout so it's probably not the best place to do that.
+  ---
+  Comment: 
+> A `TextEditingController` can be assigned to multiple text fields that use different paragraph styles and have completely different text layout so it's probably not the best place to do that.
+
+What happens to the value of a TextEditingController in this case?
+
+Or is it that `TextEditingValue`s can have multiple styles associated with them?
+  ---
+  Comment: 2 `TextField`s can share the same `TextEditingController`. These 2 `TextField`s will share the same editing states (text, selection, composing region), but the `TextStyle`s and `ParagraphStyle` used to render the text can be different since the `Theme` and the widget configurations they apply may be different.
+  ---
+  Comment: I can get the lines from the `Text` widget by following [this](https://stackoverflow.com/a/78341140/17798537). But this solution does not work for `TextField`. I think it will work if we know the default `style` of the `TextField` when we set it to null. At this moment we need to use the same style to make it work.
+It will be better if the `Text` and `TextField` widgets have the `.onTextLineChange` function.
+  ---
+  Comment: this is what worked for me:
+
+check my answer in [stackoverflow](https://stackoverflow.com/a/78423399/21846356)
+
+I made it with InputDecoration.collapse()
+
+
+
+
+    // the textStyle of the TextField
+    final textStyle = TextStyle();
+
+    final ThemeData theme = Theme.of(context);
+    // change the actual textStyle size that TextField is doing before calling EditableText
+    final style = (theme.useMaterial3 ? theme.textTheme.bodyLarge! : theme.textTheme.titleMedium!).merge(textStyle);
+    final tp = TextPainter(
+      text: TextSpan(
+        text: textEditingController.text,
+        style: style,
+      ),
+      textDirection: textDirection,
+      maxLines: maxLines,
+    );
+    // _kCaretGap can be found in editable.dart file
+    const caretGap = 1;
+    // default of TextField constructor
+    const cursorWidth = 2;
+    tp.layout(
+      // the change that RenderEditable do on layout
+      maxWidth: context.size!.width - caretGap - cursorWidth,
+    );
+    final lines = tp.computeLineMetrics().length;
+
+
+  ---
+  Comment: @dnfield is that any helpful? https://github.com/flutter/flutter/issues/151952#issuecomment-2306329585
+  ---
+================================================================================
+
+### #174689 - App highlights / selects trailing whitespaces in a multi-line textfield.
+URL: https://github.com/flutter/flutter/issues/174689
+Created: 2025-08-29T09:16:36Z Updated: 2025-09-18T20:04:31Z
+Reactions: {'total': 1, 'by_type': {'EYES': 1}}
+Labels: ['a: text input', 'platform-android', 'platform-ios', 'a: desktop', 'has reproducible steps', 'P2', 'team-text-input', 'triaged-text-input', 'found in release: 3.35', 'found in release: 3.36']
+Ownership: team-text-input
+Summary: Root cause not identified. Confirmed on Android, iOS, and desktop when maxLines or minLines is set; does not occur on web. Native Android and iOS apps do not highlight trailing whitespace. Routed to @LongCatIsLooong.
+Body snippet: ### Steps to reproduce
+
+Watch video demonstration.
+
+### Expected results
+
+.
+
+### Actual results
+
+ .
+
+### Code sample
+
+<details open><summary>Code sample</summary>
+
+```dart
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      ),
+      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key, required this.title});
+
+  final String title;
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  int _counter = 0;
+
+  void _incrementCounter() {
+    setState(() {
+      _counter++;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) ...
+Raw Comments Count: 2
+  Comment: I was able to replicate the reported behavior. The issue is, for multiline textfield, selecting the text in first line also highlights the trailing whitespace in accordance to next line's length, as shown below:
+
+<img width="295" height="97" alt="Image" src="https://github.com/user-attachments/assets/be4d454e-0a55-4593-9a8f-443389fa46e5" />
+
+While if we try to select the next line's text if length of it is less than first line, it doesn't highlight the trailing whitespace:
+
+<img width="286" height="77" alt="Image" src="https://github.com/user-attachments/assets/a1918dd4-8592-47b5-9e3e-26ba7447ac70" />
+
+Above behavior occurs Android, iOS and desktop if we pass a value to `maxLines` or also adding `minLines`, but not in web, wherein, it doesn't highlight the trailing whitespace of first line:
+
+<img width="114" height="116" alt="Image" src="https://github.com/user-attachments/assets/46801dbb-21f6-413e-8204-d118215ccf74" />
+
+I checked the native behavior on Android and iOS using Samsung / Notes app and there, it doesn't highlight the whitespace:
+
+<img width="281" height="187" alt="Image" src="https://github.com/user-attachments/assets/a28de4fb-45c8-432a-996e-581e6b747dcc" />
+
+I tried to find if this is an existing issue filed already but couldn't find an obvious / similar issue or if I missed to find it if already present.
+
+Based on my findings above, keeping the issue open for team's tracking.
+
+```
+stable: 3.35.2
+master : 3.36.0-1.0.pre-305
+```
+  ---
+  Comment: cc @LongCatIsLooong 
+  ---
+================================================================================
+
+### #184240 - Vertical baseline alignment mismatch between Text and collapsed TextField when changing TextLeadingDistribution
+URL: https://github.com/flutter/flutter/issues/184240
+Created: 2026-03-27T09:11:06Z Updated: 2026-04-02T20:34:19Z
+Reactions: {'total': 1, 'by_type': {'HEART': 1}}
+Labels: ['framework', 'f: material design', 'has reproducible steps', 'team-text-input']
+Ownership: team-text-input
+Summary: Comments are only triage routing: the issue was forwarded to the framework team and CC'd to @LongCatIsLooong. No root cause analysis or fix discussed.
+Body snippet: ### Steps to reproduce
+
+Similar (but different) to https://github.com/flutter/flutter/issues/144502 
+Add a row, with a text and textfield with the same font style, the textfield decoration should be `InputDecoration.collapsed()`
+
+### Expected results
+
+The text and textfield should align vertically.  The base lines should align.
+
+### Actual results
+
+Depending on the leading distribution the TextField will either go high or go low.
+
+### Code sample
+
+<details open><summary>Code sample</summary>
+
+```dart
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MainApp());
+}
+
+class MainApp extends StatelessWidget {
+  const MainApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    const textStyleEven = TextStyle(
+      inherit: false,
+      fontSize: 180,
+      height: 1,
+      letterSpacing: 0,
+      textBaseline: TextBaseline.alphabetic,
+      leadingDistribution: TextLeadingDistribution.even,
+      color: Colors.black,
+    );
+    final textStyleProp = text...
+Raw Comments Count: 2
+  Comment: Hi @paul-charlton .
+
+Thanks for the clear report and the reproducible code sample! 
+I am routing this to the framework team to evaluate.
+  ---
+  Comment: cc @LongCatIsLooong 
+  ---
+================================================================================
+
+### #13468 - TextSelection.isDirectional is not respected, make it do something useful eg: for Mac
+URL: https://github.com/flutter/flutter/issues/13468
+Created: 2017-12-09T00:37:35Z Updated: 2024-05-09T22:21:24Z
+Reactions: {'total': 0, 'by_type': {}}
+Labels: ['a: text input', 'framework', 'c: proposal', 'P2', 'team-text-input', 'triaged-text-input']
+Ownership: team-text-input
+Summary: Comments discuss that the behavior `isDirectional` is meant to control is currently handled by `DefaultTextEditingShortcuts`; the value could drive that logic instead of the platform.
+Body snippet: It seems like it's not wired up anywhere. We should make it do something useful and test it or remove it.
+
+It's current presence is confusing....
+Raw Comments Count: 3
+  Comment: We should make it do something, yes. Or at least test that it's set correctly. It's necessary for some platforms (e.g. Mac text selections; not sure about iOS).
+  ---
+  Comment: There im'ts any example where it is used in the code that i could find, considering this as proposal to make use of `TextSelection.isDirectional`
+  ---
+  Comment: Currently this logic is handled by our text shortcut code (DefaultTextEditingShortcuts), so this kind of behavior should be correct on all platforms, but yeah I guess this value is not wired up. Maybe we could make the behavior depend on this value instead of just the platform if it's useful? Otherwise remove it if there's no value in wiring that up...
+  ---
+================================================================================
+
+### #33858 - Unicode input should be indicated.
+URL: https://github.com/flutter/flutter/issues/33858
+Created: 2019-06-04T17:49:24Z Updated: 2024-12-13T00:20:03Z
+Reactions: {'total': 0, 'by_type': {}}
+Labels: ['a: text input', 'c: new feature', 'framework', 'f: material design', 'platform-windows', 'platform-linux', 'a: desktop', 'P3', 'team-text-input', 'triaged-text-input']
+Ownership: team-text-input
+Summary: A commenter confirmed the Ctrl+Shift+U Unicode input indicator is observed on Linux but not on macOS; Windows behavior was assumed to be similar to Linux and the platform label was added accordingly.
+Body snippet: Ctrl+Shift+U (on certain operating systems) normally would bring up an underlined "u" in a text field to indicate it's awaiting a Unicode entry. This is not indicated on Flutter, despite it taking the input.
+
+![Flutter](https://i.imgur.com/5LGa38g.png)
+![Play Store, expected behavior.](https://i.imgur.com/JDQ2sZt.png)...
+Raw Comments Count: 2
+  Comment: Is this something that I should be able to do on a Mac? I don't get anything like that with ctrl- or cmd- shift-u. I will try this on Linux in a bit.
+  ---
+  Comment: I do see this happen on Linux. Not sure about Windows but I'll assume it does and add the label.
+  ---
+================================================================================
+
+### #38503 - TextField doesn't appear within a direction:Axis.vertical Wrap
+URL: https://github.com/flutter/flutter/issues/38503
+Created: 2019-08-14T03:40:49Z Updated: 2024-12-11T15:45:43Z
+Reactions: {'total': 0, 'by_type': {}}
+Labels: ['a: text input', 'framework', 'f: material design', 'has reproducible steps', 'P2', 'found in release: 3.3', 'found in release: 3.7', 'team-design', 'triaged-design']
+Ownership: team-design
+Summary: Comments confirm the bug is specific to `direction: Axis.vertical` and does not occur with `Axis.horizontal`. Reproduced on stable and master; the exception is an assertion that `InputDecorator` cannot have an unbounded width, indicating `Wrap` does not provide a bounded width constraint in vertical axis mode. No fix or PR was proposed; issue is stalled.
+Body snippet: code:
+![image](https://user-images.githubusercontent.com/8746914/62993013-4bea8080-be88-11e9-84ea-93f3908b57bd.png)
+screenshot:
+<img src="https://user-images.githubusercontent.com/8746914/62993022-5442bb80-be88-11e9-9b76-9d620f7147fa.png" width ="300"> ...
+Raw Comments Count: 3
+  Comment: Issue still exist when using `direction: Axis.vertical` but no issue when using `direction: Axis.horizontal`
+
+### Code Sample
+```dart
+import 'package:flutter/material.dart';
+
+void main() => runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Material App',
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Material App Bar'),
+        ),
+        body: Center(
+          child: Wrap(
+            direction: Axis.vertical,
+            children: <Widget>[
+              TextField(controller: TextEditingController(text: "123"))
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+```
+
+<details>
+<summary>flutter doctor -v</summary>
+
+```
+[✓] Flutter (Channel dev, v1.18.0-6.0.pre, on Mac OS X 10.15.4 19E287, locale
+    en-GB)
+    • Flutter version 1.18.0-6.0.pre at /Users/taha/Code/flutter_dev
+    • Framework revision 84c84fb249 (3 days ago), 2020-04-20 21:35:01 -0400
+    • Engine revision 2bde4f0ae4
+    • Dart version 2.9.0 (build 2.9.0-1.0.dev a12c36dd97)
+ 
+[✓] Android toolchain - develop for Android devices (Android SDK version 29.0.3)
+    • Android SDK at /Users/taha/Code/sdk
+    • Platform android-29, build-tools 29.0.3
+    • ANDROID_HOME = /Users/taha/Code/sdk
+    • Java binary at: /Applications/Android
+      Studio.app/Contents/jre/jdk/Contents/Home/bin/java
+    • Java version OpenJDK Runtime Environment (build
+      1.8.0_212-release-1586-b4-5784211)
+    • All Android licenses accepted.
+[✓] Xcode - develop for iOS and macOS (Xcode 11.4.1)
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • Xcode 11.4.1, Build version 11E503a
+    • CocoaPods version 1.9.1
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+[✓] Android Studio (version 3.6)
+    • Android Studio at /Applications/Android Studio.app/Contents
+    • Flutter plugin version 45.1.1
+    • Dart plugin version 192.7761
+    • Java version OpenJDK Runtime Environment (build
+      1.8.0_212-release-1586-b4-5784211)
+[✓] VS Code (version 1.44.2)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.9.1
+[✓] Connected device (4 available)
+    • Android SDK built for x86 • emulator-5554 • android-x86    • Android 10
+      (API 29) (emulator)
+    • macOS                     • macOS         • darwin-x64     • Mac OS X
+      10.15.4 19E287
+    • Chrome                    • chrome        • web-javascript • Google Chrome
+      81.0.4044.122
+    • Web Server                • web-server    • web-javascript • Flutter Tools
+• No issues found!
+```
+
+</details>
+
+<details>
+<summary>logs</summary>
+
+```
+D/ViewRootImpl@5032b7f[MainActivity]( 3680): stopped(false) old=true
+D/SurfaceView( 3680): windowStopped(false) true io.flutter.embedding.android.FlutterSurfaceView{eb15395 V.E...... ........ 0,0-1080,2301} of ViewRootImpl@5032b7f[MainActivity]
+D/ViewRootImpl@5032b7f[MainActivity]( 3680): stopped(false) old=false
+D/SurfaceView( 3680): onWindowVisibilityChanged(0) true io.flutter.embedding.android.FlutterSurfaceView{eb15395 V.E...... ........ 0,0-1080,2301} of ViewRootImpl@5032b7f[MainActivity]
+W/libEGL  ( 3680): EGLNativeWindowType 0x7aa241d4d0 disconnect failed
+D/ViewRootImpl@5032b7f[MainActivity]( 3680): Relayout returned: old=(0,0,1080,2340) new=(0,0,1080,2340) req=(1080,2340)0 dur=9 res=0x40001 s={true 526639210496} ch=true
+D/ViewRootImpl@5032b7f[MainActivity]( 3680): RELAYOUT_RES_KEEP_ALIVE_SURFACE on 40001
+D/OpenGLRenderer( 3680): createReliableSurface : 0x7aa241d4c0, 0x7a9e24a000
+D/mali_winsys( 3680): EGLint new_window_surface(egl_winsys_display *, void *, EGLSurface, EGLConfig, egl_winsys_surface **, EGLBoolean) returns 0x3000
+D/SurfaceView( 3680): surfaceCreated 1 #8 io.flutter.embedding.android.FlutterSurfaceView{eb15395 V.E...... ........ 0,0-1080,2301}
+D/mali_winsys( 3680): EGLint new_window_surface(egl_winsys_display *, void *, EGLSurface, EGLConfig, egl_winsys_surface **, EGLBoolean) returns 0x3000
+D/SurfaceView( 3680): surfaceChanged (1080,2301) 1 #8 io.flutter.embedding.android.FlutterSurfaceView{eb15395 V.E...... ........ 0,0-1080,2301}
+D/ViewRootImpl@5032b7f[MainActivity]( 3680): MSG_RESIZED_REPORT: frame=(0,0,1080,2340) ci=(0,83,0,39) vi=(0,83,0,39) or=1
+D/ViewRootImpl@5032b7f[MainActivity]( 3680): MSG_WINDOW_FOCUS_CHANGED 1 1
+D/InputMethodManager( 3680): prepareNavigationBarInfo() DecorView@46fb023[MainActivity]
+D/InputMethodManager( 3680): getNavigationBarColor() -855310
+D/InputMethodManager( 3680): prepareNavigationBarInfo() DecorView@46fb023[MainActivity]
+D/InputMethodManager( 3680): getNavigationBarColor() -855310
+V/InputMethodManager( 3680): Starting input: tba=com.example.dev_flutter ic=null mNaviBarColor -855310 mIsGetNaviBarColorSuccess true , NavVisible : true , NavTrans : false
+D/InputMethodManager( 3680): startInputInner - Id : 0
+I/InputMethodManager( 3680): startInputInner - mService.startInputOrWindowGainedFocus
+D/InputTransport( 3680): Input channel destroyed: 'ClientS', fd=83
+Restarted application in 1,298ms.
+I/flutter ( 3680): ══╡ EXCEPTION CAUGHT BY RENDERING LIBRARY ╞═════════════════════════════════════════════════════════
+I/flutter ( 3680): The following assertion was thrown during performLayout():
+I/flutter ( 3680): An InputDecorator, which is typically created by a TextField, cannot have an unbounded width.
+I/flutter ( 3680): This happens when the parent widget does not provide a finite width constraint. For example, if the
+I/flutter ( 3680): InputDecorator is contained by a Row, then its width must be constrained. An Expanded widget or a
+I/flutter ( 3680): SizedBox can be used to constrain the width of the InputDecorator or the TextField that contains it.
+I/flutter ( 3680): 'package:flutter/src/material/input_decorator.dart':
+I/flutter ( 3680): Failed assertion: line 948 pos 7: 'layoutConstraints.maxWidth < double.infinity'
+I/flutter ( 3680):
+I/flutter ( 3680): Either the assertion indicates an error in the framework itself, or we should provide substantially
+I/flutter ( 3680): more information in this error message to help you determine and fix the underlying cause.
+I/flutter ( 3680): In either case, please report this assertion by filing a bug on GitHub:
+I/flutter ( 3680):   https://github.com/flutter/flutter/issues/new?template=BUG.md
+I/flutter ( 3680):
+I/flutter ( 3680): The relevant error-causing widget was:
+^[[38;5;248mI/flutter ( 3680):   TextField^[[39;49m
+I/flutter ( 3680):
+I/flutter ( 3680): When the exception was thrown, this was the stack:
+^[[38;5;244mI/flutter ( 3680): #2      _RenderDecoration._layout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #3      _RenderDecoration.performLayout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #4      RenderObject.layout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #5      RenderProxyBoxMixin.performLayout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #6      RenderObject.layout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #7      RenderProxyBoxMixin.performLayout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #8      RenderObject.layout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #9      RenderProxyBoxMixin.performLayout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #10     RenderObject.layout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #11     RenderProxyBoxMixin.performLayout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #12     RenderObject.layout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #13     RenderWrap.performLayout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #14     RenderObject.layout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #15     RenderPositionedBox.performLayout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #16     RenderObject.layout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #17     MultiChildLayoutDelegate.layoutChild^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #18     _ScaffoldLayout.performLayout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #19     MultiChildLayoutDelegate._callPerformLayout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #20     RenderCustomMultiChildLayoutBox.performLayout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #21     RenderObject.layout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #22     RenderProxyBoxMixin.performLayout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #23     RenderObject.layout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #24     RenderProxyBoxMixin.performLayout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #25     _RenderCustomClip.performLayout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #26     RenderObject.layout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #27     RenderProxyBoxMixin.performLayout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #28     RenderObject.layout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #29     RenderProxyBoxMixin.performLayout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #30     RenderObject.layout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #31     RenderProxyBoxMixin.performLayout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #32     RenderObject.layout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #33     RenderProxyBoxMixin.performLayout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #34     RenderObject.layout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #35     RenderProxyBoxMixin.performLayout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #36     RenderObject.layout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #37     RenderProxyBoxMixin.performLayout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #38     RenderObject.layout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #39     RenderProxyBoxMixin.performLayout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #40     RenderObject.layout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #41     RenderProxyBoxMixin.performLayout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #42     RenderOffstage.performLayout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #43     RenderObject.layout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #44     _RenderTheatre.performLayout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #45     RenderObject.layout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #46     RenderProxyBoxMixin.performLayout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #47     RenderObject.layout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #48     RenderProxyBoxMixin.performLayout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #49     RenderObject.layout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #50     RenderProxyBoxMixin.performLayout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #51     RenderObject.layout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #52     RenderProxyBoxMixin.performLayout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #53     RenderObject.layout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #54     RenderProxyBoxMixin.performLayout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #55     RenderObject.layout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #56     RenderProxyBoxMixin.performLayout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #57     RenderObject.layout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #58     RenderView.performLayout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #59     RenderObject._layoutWithoutResize^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #60     PipelineOwner.flushLayout^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #61     RendererBinding.drawFrame^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #62     WidgetsBinding.drawFrame^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #63     RendererBinding._handlePersistentFrameCallback^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #64     SchedulerBinding._invokeFrameCallback^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #65     SchedulerBinding.handleDrawFrame^[[39;49m
+^[[38;5;244mI/flutter ( 3680): #66     SchedulerBinding.scheduleWarmUpFrame.<anonymous closure>^[[39;49m
+I/flutter ( 3680): (elided 13 frames from class _AssertionError, class _RawReceivePortImpl, class _Timer, dart:async, and dart:async-patch)
+I/flutter ( 3680):
+I/flutter ( 3680): The following RenderObject was being processed when the exception was fired: _RenderDecoration#0a74d relayoutBoundary=up7 NEEDS-LAYOUT NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE:
+I/flutter ( 3680):   creator: _Decorator ← InputDecorator ← AnimatedBuilder ← _PointerListener ← Listener ←
+I/flutter ( 3680):     RawGestureDetector ← TextSelectionGestureDetector ← Semantics ← AnimatedBuilder ← _RawMouseRegion
+I/flutter ( 3680):     ← MouseRegion ← IgnorePointer ← ⋯
+I/flutter ( 3680):   parentData: <none> (can use size)
+I/flutter ( 3680):   constraints: BoxConstraints(0.0<=w<=Infinity, 0.0<=h<=789.0)
+I/flutter ( 3680):   size: MISSING
+I/flutter ( 3680): This RenderObject had the following descendants (showing up to depth 5):
+I/flutter ( 3680):     input: RenderRepaintBoundary#24d9a NEEDS-LAYOUT NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE
+I/flutter ( 3680):       child: RenderRepaintBoundary#502a8 NEEDS-LAYOUT NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE
+I/flutter ( 3680):         child: RenderCustomPaint#85f33 NEEDS-LAYOUT NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE
+I/flutter ( 3680):           child: RenderRepaintBoundary#0b759 NEEDS-LAYOUT NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE
+I/flutter ( 3680):             child: RenderPointerListener#51018 NEEDS-LAYOUT NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE
+I/flutter ( 3680):     helperError: RenderConstrainedBox#d0133 NEEDS-LAYOUT NEEDS-PAINT
+I/flutter ( 3680):     container: RenderCustomPaint#dc932 NEEDS-LAYOUT NEEDS-PAINT
+I/flutter ( 3680): ════════════════════════════════════════════════════════════════════════════════════════════════════
+I/flutter ( 3680): Another exception was thrown: RenderBox was not laid out: _RenderDecoration#0a74d relayoutBoundary=up7 NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE
+I/flutter ( 3680): Another exception was thrown: RenderBox was not laid out: RenderPointerListener#838a5 relayoutBoundary=up6 NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE
+I/flutter ( 3680): Another exception was thrown: RenderBox was not laid out: RenderSemanticsAnnotations#5a6ab relayoutBoundary=up5 NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE
+I/flutter ( 3680): Another exception was thrown: RenderBox was not laid out: RenderMouseRegion#0ae40 relayoutBoundary=up4 NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE
+I/flutter ( 3680): Another exception was thrown: RenderBox was not laid out: RenderIgnorePointer#42c92 relayoutBoundary=up3 NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE
+I/flutter ( 3680): Another exception was thrown: 'package:flutter/src/rendering/shifted_box.dart': Failed assertion: line 322 pos 12: 'child.hasSize': is not true.
+I/flutter ( 3680): Another exception was thrown: RenderBox was not laid out: RenderRepaintBoundary#24d9a NEEDS-LAYOUT NEEDS-PAINT
+D/InputMethodManager( 3680): prepareNavigationBarInfo() DecorView@46fb023[MainActivity]
+D/InputMethodManager( 3680): getNavigationBarColor() -855310
+V/InputMethodManager( 3680): Starting input: tba=com.example.dev_flutter ic=null mNaviBarColor -855310 mIsGetNaviBarColorSuccess true , NavVisible : true , NavTrans : false
+D/InputMethodManager( 3680): startInputInner - Id : 0
+I/InputMethodManager( 3680): startInputInner - mService.startInputOrWindowGainedFocus
+D/InputTransport( 3680): Input channel destroyed: 'ClientS', fd=102
+D/ViewRootImpl@5032b7f[MainActivity]( 3680): stopped(true) old=false
+D/SurfaceView( 3680): windowStopped(true) false io.flutter.embedding.android.FlutterSurfaceView{eb15395 V.E...... ........ 0,0-1080,2301} of ViewRootImpl@5032b7f[MainActivity]
+D/SurfaceView( 3680): surfaceDestroyed callback.size 1 #1 io.flutter.embedding.android.FlutterSurfaceView{eb15395 V.E...... ........ 0,0-1080,2301}
+W/libEGL  ( 3680): EGLNativeWindowType 0x7a9e24c010 disconnect failed
+D/SurfaceView( 3680): remove() io.flutter.embedding.android.FlutterSurfaceView{eb15395 V.E...... ........ 0,0-1080,2301} Surface(name=SurfaceView - com.example.dev_flutter/com.example.dev_flutter.MainActivity@eb15395@8)/@0x78b544f
+D/ViewRootImpl@5032b7f[MainActivity]( 3680): MSG_WINDOW_FOCUS_CHANGED 0 1
+D/InputMethodManager( 3680): prepareNavigationBarInfo() DecorView@46fb023[MainActivity]
+D/InputMethodManager( 3680): getNavigationBarColor() -855310
+
+```
+
+</details>
+
+  ---
+  Comment: <details> 
+<summary>logs</summary> 
+
+```bash
+Launching lib/main.dart on RMX2001 in debug mode...
+ lib/main.dart
+✓ Built build/app/outputs/flutter-apk/app-debug.apk.
+Connecting to VM Service at ws://127.0.0.1:54199/opwnWrHtT7g=/ws
+I/GED     ( 5068): ged_boost_gpu_freq, level 100, eOrigin 2, final_idx 27, oppidx_max 27, oppidx_min 0
+
+^[[38;5;248m════════ Exception caught by rendering library ═════════════════════════════════^[[39;49m
+^[[38;5;244mThe following assertion was thrown during performLayout():^[[39;49m
+An InputDecorator, which is typically created by a TextField, cannot have an unbounded width.
+This happens when the parent widget does not provide a finite width constraint. For example, if the InputDecorator is contained by a Row, then its width must be constrained. An Expanded widget or a SizedBox can be used to constrain the width of the InputDecorator or the TextField that contains it.
+'package:flutter/src/material/input_decorator.dart':
+Failed assertion: line 955 pos 7: 'layoutConstraints.maxWidth < double.infinity'
+
+
+^[[38;5;248mEither the assertion indicates an error in the framework itself, or we should provide substantially more information in this error message to help you determine and fix the underlying cause.
+In either case, please report this assertion by filing a bug on GitHub:
+  https://github.com/flutter/flutter/issues/new?template=BUG.md
+^[[39;49m
+
+^[[38;5;244mThe relevant error-causing widget was^[[39;49m
+^[[38;5;248mTextField^[[39;49m
+ lib/main.dart
+^[[38;5;244mWhen the exception was thrown, this was the stack^[[39;49m
+^[[38;5;244m#2      _RenderDecoration._layout^[[39;49m
+ package:flutter/…/material/input_decorator.dart
+^[[38;5;244m#3      _RenderDecoration.performLayout^[[39;49m
+ package:flutter/…/material/input_decorator.dart
+^[[38;5;244m#4      RenderObject.layout^[[39;49m
+ package:flutter/…/rendering/object.dart
+^[[38;5;244m#5      RenderProxyBoxMixin.performLayout^[[39;49m
+ package:flutter/…/rendering/proxy_box.dart
+^[[38;5;244m#6      RenderObject.layout^[[39;49m
+ package:flutter/…/rendering/object.dart
+^[[38;5;244m...^[[39;49m
+^[[38;5;244mThe following RenderObject was being processed when the exception was fired: _RenderDecoration#5e52a relayoutBoundary=up7 NEEDS-LAYOUT NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE^[[39;49m
+^[[38;5;244mRenderObject: _RenderDecoration#5e52a relayoutBoundary=up7 NEEDS-LAYOUT NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE^[[39;49m
+    ^[[38;5;244mparentData: <none> (can use size)^[[39;49m
+    ^[[38;5;244mconstraints: BoxConstraints(0.0<=w<=Infinity, 0.0<=h<=705.7)^[[39;49m
+    ^[[38;5;244msize: MISSING^[[39;49m
+    ^[[38;5;244minput: RenderRepaintBoundary#cbb79 NEEDS-LAYOUT NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE^[[39;49m
+        ^[[38;5;244mneeds compositing^[[39;49m
+        ^[[38;5;244mparentData: offset=Offset(0.0, 0.0)^[[39;49m
+        ^[[38;5;244mconstraints: MISSING^[[39;49m
+        ^[[38;5;244msize: MISSING^[[39;49m
+        ^[[38;5;244musefulness ratio: no metrics collected yet (never painted)^[[39;49m
+        ^[[38;5;244mchild: RenderMouseRegion#5e105 NEEDS-LAYOUT NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE^[[39;49m
+            ^[[38;5;244mparentData: <none>^[[39;49m
+            ^[[38;5;244mconstraints: MISSING^[[39;49m
+            ^[[38;5;244msize: MISSING^[[39;49m
+            ^[[38;5;244mlisteners: <none>^[[39;49m
+            ^[[38;5;244mchild: RenderRepaintBoundary#e9249 NEEDS-LAYOUT NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE^[[39;49m
+                ^[[38;5;244mneeds compositing^[[39;49m
+                ^[[38;5;244mparentData: <none>^[[39;49m
+                ^[[38;5;244mconstraints: MISSING^[[39;49m
+                ^[[38;5;244msize: MISSING^[[39;49m
+                ^[[38;5;244musefulness ratio: no metrics collected yet (never painted)^[[39;49m
+                ^[[38;5;244mchild: RenderCustomPaint#649bf NEEDS-LAYOUT NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE^[[39;49m
+                    ^[[38;5;244mparentData: <none>^[[39;49m
+                    ^[[38;5;244mconstraints: MISSING^[[39;49m
+                    ^[[38;5;244msize: MISSING^[[39;49m
+    ^[[38;5;244mhelperError: RenderConstrainedBox#a9998 NEEDS-LAYOUT NEEDS-PAINT^[[39;49m
+        ^[[38;5;244mparentData: offset=Offset(0.0, 0.0)^[[39;49m
+        ^[[38;5;244mconstraints: MISSING^[[39;49m
+        ^[[38;5;244msize: MISSING^[[39;49m
+        ^[[38;5;244madditionalConstraints: BoxConstraints(unconstrained)^[[39;49m
+    ^[[38;5;244mcontainer: RenderCustomPaint#60ff9 NEEDS-LAYOUT NEEDS-PAINT^[[39;49m
+        ^[[38;5;244mparentData: offset=Offset(0.0, 0.0)^[[39;49m
+        ^[[38;5;244mconstraints: MISSING^[[39;49m
+        ^[[38;5;244msize: MISSING^[[39;49m
+^[[38;5;248m════════════════════════════════════════════════════════════════════════════════^[[39;49m
+
+^[[38;5;248m════════ Exception caught by rendering library ═════════════════════════════════^[[39;49m
+RenderBox was not laid out: _RenderDecoration#5e52a relayoutBoundary=up7 NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE
+'package:flutter/src/rendering/box.dart':
+Failed assertion: line 1785 pos 12: 'hasSize'
+
+^[[38;5;244mThe relevant error-causing widget was^[[39;49m
+^[[38;5;248mTextField^[[39;49m
+ lib/main.dart
+^[[38;5;248m════════════════════════════════════════════════════════════════════════════════^[[39;49m
+
+^[[38;5;248m════════ Exception caught by rendering library ═════════════════════════════════^[[39;49m
+RenderBox was not laid out: RenderPointerListener#0a599 relayoutBoundary=up6 NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE
+'package:flutter/src/rendering/box.dart':
+Failed assertion: line 1785 pos 12: 'hasSize'
+
+^[[38;5;244mThe relevant error-causing widget was^[[39;49m
+^[[38;5;248mTextField^[[39;49m
+ lib/main.dart
+^[[38;5;248m════════════════════════════════════════════════════════════════════════════════^[[39;49m
+
+^[[38;5;248m════════ Exception caught by rendering library ═════════════════════════════════^[[39;49m
+RenderBox was not laid out: RenderSemanticsAnnotations#7d7e5 relayoutBoundary=up5 NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE
+'package:flutter/src/rendering/box.dart':
+Failed assertion: line 1785 pos 12: 'hasSize'
+
+^[[38;5;244mThe relevant error-causing widget was^[[39;49m
+^[[38;5;248mTextField^[[39;49m
+ lib/main.dart
+^[[38;5;248m════════════════════════════════════════════════════════════════════════════════^[[39;49m
+
+^[[38;5;248m════════ Exception caught by rendering library ═════════════════════════════════^[[39;49m
+RenderBox was not laid out: RenderIgnorePointer#2d60e relayoutBoundary=up4 NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE
+'package:flutter/src/rendering/box.dart':
+Failed assertion: line 1785 pos 12: 'hasSize'
+
+^[[38;5;244mThe relevant error-causing widget was^[[39;49m
+^[[38;5;248mTextField^[[39;49m
+ lib/main.dart
+^[[38;5;248m════════════════════════════════════════════════════════════════════════════════^[[39;49m
+
+^[[38;5;248m════════ Exception caught by rendering library ═════════════════════════════════^[[39;49m
+RenderBox was not laid out: RenderMouseRegion#3197d relayoutBoundary=up3 NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE
+'package:flutter/src/rendering/box.dart':
+Failed assertion: line 1785 pos 12: 'hasSize'
+
+^[[38;5;244mThe relevant error-causing widget was^[[39;49m
+^[[38;5;248mWrap^[[39;49m
+ lib/main.dart
+^[[38;5;248m════════════════════════════════════════════════════════════════════════════════^[[39;49m
+
+^[[38;5;248m════════ Exception caught by rendering library ═════════════════════════════════^[[39;49m
+'package:flutter/src/rendering/shifted_box.dart': Failed assertion: line 322 pos 12: 'child!.hasSize': is not true.
+^[[38;5;244mThe relevant error-causing widget was^[[39;49m
+^[[38;5;248mCenter^[[39;49m
+ lib/main.dart
+^[[38;5;248m════════════════════════════════════════════════════════════════════════════════^[[39;49m
+
+^[[38;5;248m════════ Exception caught by rendering library ═════════════════════════════════^[[39;49m
+RenderBox was not laid out: RenderRepaintBoundary#cbb79 NEEDS-LAYOUT NEEDS-PAINT
+'package:flutter/src/rendering/box.dart':
+Failed assertion: line 1785 pos 12: 'hasSize'
+
+^[[38;5;244mThe relevant error-causing widget was^[[39;49m
+^[[38;5;248mTextField^[[39;49m
+ lib/main.dart
+^[[38;5;248m════════════════════════════════════════════════════════════════════════════════^[[39;49m
+
+```
+
+</details>
+
+<details>
+<summary>flutter doctor -v</summary>
+
+```bash
+[✓] Flutter (Channel stable, 1.22.5, on macOS 11.1 20C69 darwin-x64, locale en-GB)
+    • Flutter version 1.22.5 at /Users/tahatesser/Code/flutter_stable
+    • Framework revision 7891006299 (3 weeks ago), 2020-12-10 11:54:40 -0800
+    • Engine revision ae90085a84
+    • Dart version 2.10.4
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 30.0.3)
+    • Android SDK at /Volumes/Extreme/sdk
+    • Platform android-30, build-tools 30.0.3
+    • ANDROID_HOME = /Volumes/Extreme/sdk
+    • Java binary at: /Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/bin/java
+    • Java version OpenJDK Runtime Environment (build 1.8.0_242-release-1644-b3-6915495)
+    • All Android licenses accepted.
+
+[✓] Xcode - develop for iOS and macOS (Xcode 12.3)
+    • Xcode at /Volumes/Extreme/Xcode.app/Contents/Developer
+    • Xcode 12.3, Build version 12C33
+    • CocoaPods version 1.10.0
+
+[!] Android Studio (version 4.1)
+    • Android Studio at /Applications/Android Studio.app/Contents
+    ✗ Flutter plugin not installed; this adds Flutter specific functionality.
+    ✗ Dart plugin not installed; this adds Dart specific functionality.
+    • Java version OpenJDK Runtime Environment (build 1.8.0_242-release-1644-b3-6915495)
+
+[✓] VS Code (version 1.52.1)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.18.0
+
+[✓] Connected device (2 available)
+    • Taha’s iPad (mobile) • 00008020-000255113EE8402E            • ios • iOS 14.3
+    • iPhone 12 (mobile)   • 12D8FF8E-2815-436E-9951-B8A6A42E4ACF • ios • com.apple.CoreSimulator.SimRuntime.iOS-14-3 (simulator)
+
+! Doctor found issues in 1 category.
+```
+```bash
+[✓] Flutter (Channel master, 1.26.0-2.0.pre.145, on macOS 11.1 20C69 darwin-x64, locale en-GB)
+    • Flutter version 1.26.0-2.0.pre.145 at /Users/tahatesser/Code/flutter_master
+    • Framework revision 38fe7e2b1c (9 hours ago), 2020-12-28 21:39:03 -0500
+    • Engine revision 892034dc6a
+    • Dart version 2.12.0 (build 2.12.0-179.0.dev)
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 30.0.3)
+    • Android SDK at /Volumes/Extreme/sdk
+    • Platform android-30, build-tools 30.0.3
+    • ANDROID_HOME = /Volumes/Extreme/sdk
+    • Java binary at: /Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/bin/java
+    • Java version OpenJDK Runtime Environment (build 1.8.0_242-release-1644-b3-6915495)
+    • All Android licenses accepted.
+
+[✓] Xcode - develop for iOS and macOS (Xcode 12.3)
+    • Xcode at /Volumes/Extreme/Xcode.app/Contents/Developer
+    • Xcode 12.3, Build version 12C33
+    • CocoaPods version 1.10.0
+
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] Android Studio (version 4.1)
+    • Android Studio at /Applications/Android Studio.app/Contents
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 1.8.0_242-release-1644-b3-6915495)
+
+[✓] VS Code (version 1.52.1)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.18.0
+
+[✓] Connected device (4 available)
+    • Taha’s iPad (mobile) • 00008020-000255113EE8402E            • ios            • iOS 14.3
+    • iPhone 12 (mobile)   • 12D8FF8E-2815-436E-9951-B8A6A42E4ACF • ios            • com.apple.CoreSimulator.SimRuntime.iOS-14-3 (simulator)
+    • macOS (desktop)      • macos                                • darwin-x64     • macOS 11.1 20C69 darwin-x64
+    • Chrome (web)         • chrome                               • web-javascript • Google Chrome 87.0.4280.88
+
+• No issues found!
+```
+
+</details>
+
+  ---
+  Comment: The issue is reproducible on stable and the master  channel with the above [code sample](https://github.com/flutter/flutter/issues/38503#issuecomment-608419835)
+
+<details>
+<summary>logs</summary>
+
+```
+Restarted application in 325ms.
+══╡ EXCEPTION CAUGHT BY RENDERING LIBRARY ╞═════════════════════════════════════════════════════════
+The following assertion was thrown during performLayout():
+An InputDecorator, which is typically created by a TextField, cannot have an unbounded width.
+This happens when the parent widget does not provide a finite width constraint. For example, if the
+InputDecorator is contained by a Row, then its width must be constrained. An Expanded widget or a
+SizedBox can be used to constrain the width of the InputDecorator or the TextField that contains it.
+'package:flutter/src/material/input_decorator.dart':
+Failed assertion: line 950 pos 7: 'layoutConstraints.maxWidth < double.infinity'
+
+Either the assertion indicates an error in the framework itself, or we should provide substantially
+more information in this error message to help you determine and fix the underlying cause.
+In either case, please report this assertion by filing a bug on GitHub:
+  https://github.com/flutter/flutter/issues/new?template=2_bug.md
+
+The relevant error-causing widget was:
+  TextField TextField:file:///Users/mahesh/Desktop/flutter_issue/lib/main.dart:18:15
+
+When the exception was thrown, this was the stack:
+#2      _RenderDecoration._layout (package:flutter/src/material/input_decorator.dart:950:7)
+#3      _RenderDecoration.performLayout (package:flutter/src/material/input_decorator.dart:1333:44)
+#4      RenderObject.layout (package:flutter/src/rendering/object.dart:2189:7)
+#5      RenderBox.layout (package:flutter/src/rendering/box.dart:2430:11)
+#6      RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:120:14)
+#7      RenderObject.layout (package:flutter/src/rendering/object.dart:2189:7)
+#8      RenderBox.layout (package:flutter/src/rendering/box.dart:2430:11)
+#9      RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:120:14)
+#10     RenderObject.layout (package:flutter/src/rendering/object.dart:2189:7)
+#11     RenderBox.layout (package:flutter/src/rendering/box.dart:2430:11)
+#12     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:120:14)
+#13     RenderObject.layout (package:flutter/src/rendering/object.dart:2189:7)
+#14     RenderBox.layout (package:flutter/src/rendering/box.dart:2430:11)
+#15     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:120:14)
+#16     RenderObject.layout (package:flutter/src/rendering/object.dart:2189:7)
+#17     RenderBox.layout (package:flutter/src/rendering/box.dart:2430:11)
+#18     RenderTapRegion.layout (package:flutter/src/widgets/tap_region.dart:519:11)
+#19     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:120:14)
+#20     RenderObject.layout (package:flutter/src/rendering/object.dart:2189:7)
+#21     RenderBox.layout (package:flutter/src/rendering/box.dart:2430:11)
+#22     RenderWrap.performLayout (package:flutter/src/rendering/wrap.dart:624:13)
+#23     RenderObject.layout (package:flutter/src/rendering/object.dart:2189:7)
+#24     RenderBox.layout (package:flutter/src/rendering/box.dart:2430:11)
+#25     RenderPositionedBox.performLayout (package:flutter/src/rendering/shifted_box.dart:442:14)
+#26     RenderObject.layout (package:flutter/src/rendering/object.dart:2189:7)
+#27     RenderBox.layout (package:flutter/src/rendering/box.dart:2430:11)
+#28     MultiChildLayoutDelegate.layoutChild (package:flutter/src/rendering/custom_layout.dart:171:12)
+#29     _ScaffoldLayout.performLayout (package:flutter/src/material/scaffold.dart:1080:7)
+#30     MultiChildLayoutDelegate._callPerformLayout (package:flutter/src/rendering/custom_layout.dart:240:7)
+#31     RenderCustomMultiChildLayoutBox.performLayout (package:flutter/src/rendering/custom_layout.dart:410:14)
+#32     RenderObject.layout (package:flutter/src/rendering/object.dart:2189:7)
+#33     RenderBox.layout (package:flutter/src/rendering/box.dart:2430:11)
+#34     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:120:14)
+#35     RenderObject.layout (package:flutter/src/rendering/object.dart:2189:7)
+#36     RenderBox.layout (package:flutter/src/rendering/box.dart:2430:11)
+#37     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:120:14)
+#38     _RenderCustomClip.performLayout (package:flutter/src/rendering/proxy_box.dart:1467:11)
+#39     RenderObject.layout (package:flutter/src/rendering/object.dart:2189:7)
+#40     RenderBox.layout (package:flutter/src/rendering/box.dart:2430:11)
+#41     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:120:14)
+#42     RenderObject.layout (package:flutter/src/rendering/object.dart:2189:7)
+#43     RenderBox.layout (package:flutter/src/rendering/box.dart:2430:11)
+#44     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:120:14)
+#45     RenderObject.layout (package:flutter/src/rendering/object.dart:2189:7)
+#46     RenderBox.layout (package:flutter/src/rendering/box.dart:2430:11)
+#47     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:120:14)
+#48     RenderObject.layout (package:flutter/src/rendering/object.dart:2189:7)
+#49     RenderBox.layout (package:flutter/src/rendering/box.dart:2430:11)
+#50     ChildLayoutHelper.layoutChild (package:flutter/src/rendering/layout_helper.dart:56:11)
+#51     RenderStack._computeSize (package:flutter/src/rendering/stack.dart:595:43)
+#52     RenderStack.performLayout (package:flutter/src/rendering/stack.dart:622:12)
+#53     RenderObject.layout (package:flutter/src/rendering/object.dart:2189:7)
+#54     RenderBox.layout (package:flutter/src/rendering/box.dart:2430:11)
+#55     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:120:14)
+#56     RenderObject.layout (package:flutter/src/rendering/object.dart:2189:7)
+#57     RenderBox.layout (package:flutter/src/rendering/box.dart:2430:11)
+#58     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:120:14)
+#59     RenderObject.layout (package:flutter/src/rendering/object.dart:2189:7)
+#60     RenderBox.layout (package:flutter/src/rendering/box.dart:2430:11)
+#61     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:120:14)
+#62     RenderObject.layout (package:flutter/src/rendering/object.dart:2189:7)
+#63     RenderBox.layout (package:flutter/src/rendering/box.dart:2430:11)
+#64     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:120:14)
+#65     RenderObject.layout (package:flutter/src/rendering/object.dart:2189:7)
+#66     RenderBox.layout (package:flutter/src/rendering/box.dart:2430:11)
+#67     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:120:14)
+#68     RenderObject.layout (package:flutter/src/rendering/object.dart:2189:7)
+#69     RenderBox.layout (package:flutter/src/rendering/box.dart:2430:11)
+#70     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:120:14)
+#71     RenderOffstage.performLayout (package:flutter/src/rendering/proxy_box.dart:3815:13)
+#72     RenderObject.layout (package:flutter/src/rendering/object.dart:2189:7)
+#73     RenderBox.layout (package:flutter/src/rendering/box.dart:2430:11)
+#74     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:120:14)
+#75     RenderObject.layout (package:flutter/src/rendering/object.dart:2189:7)
+#76     RenderBox.layout (package:flutter/src/rendering/box.dart:2430:11)
+#77     _RenderTheatre.performLayout (package:flutter/src/widgets/overlay.dart:856:15)
+#78     RenderObject.layout (package:flutter/src/rendering/object.dart:2189:7)
+#79     RenderBox.layout (package:flutter/src/rendering/box.dart:2430:11)
+#80     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:120:14)
+#81     RenderObject.layout (package:flutter/src/rendering/object.dart:2189:7)
+#82     RenderBox.layout (package:flutter/src/rendering/box.dart:2430:11)
+#83     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:120:14)
+#84     RenderObject.layout (package:flutter/src/rendering/object.dart:2189:7)
+#85     RenderBox.layout (package:flutter/src/rendering/box.dart:2430:11)
+#86     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:120:14)
+#87     RenderObject.layout (package:flutter/src/rendering/object.dart:2189:7)
+#88     RenderBox.layout (package:flutter/src/rendering/box.dart:2430:11)
+#89     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:120:14)
+#90     RenderCustomPaint.performLayout (package:flutter/src/rendering/custom_paint.dart:552:11)
+#91     RenderObject.layout (package:flutter/src/rendering/object.dart:2189:7)
+#92     RenderBox.layout (package:flutter/src/rendering/box.dart:2430:11)
+#93     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:120:14)
+#94     RenderObject.layout (package:flutter/src/rendering/object.dart:2189:7)
+#95     RenderBox.layout (package:flutter/src/rendering/box.dart:2430:11)
+#96     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:120:14)
+#97     RenderObject.layout (package:flutter/src/rendering/object.dart:2189:7)
+#98     RenderBox.layout (package:flutter/src/rendering/box.dart:2430:11)
+#99     RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:120:14)
+#100    RenderObject.layout (package:flutter/src/rendering/object.dart:2189:7)
+#101    RenderBox.layout (package:flutter/src/rendering/box.dart:2430:11)
+#102    RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:120:14)
+#103    RenderObject.layout (package:flutter/src/rendering/object.dart:2189:7)
+#104    RenderBox.layout (package:flutter/src/rendering/box.dart:2430:11)
+#105    RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:120:14)
+#106    RenderObject.layout (package:flutter/src/rendering/object.dart:2189:7)
+#107    RenderBox.layout (package:flutter/src/rendering/box.dart:2430:11)
+#108    RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:120:14)
+#109    RenderObject.layout (package:flutter/src/rendering/object.dart:2189:7)
+#110    RenderBox.layout (package:flutter/src/rendering/box.dart:2430:11)
+#111    RenderProxyBoxMixin.performLayout (package:flutter/src/rendering/proxy_box.dart:120:14)
+#112    RenderObject.layout (package:flutter/src/rendering/object.dart:2189:7)
+#113    RenderBox.layout (package:flutter/src/rendering/box.dart:2430:11)
+#114    RenderView.performLayout (package:flutter/src/rendering/view.dart:175:14)
+#115    RenderObject._layoutWithoutResize (package:flutter/src/rendering/object.dart:2027:7)
+#116    PipelineOwner.flushLayout (package:flutter/src/rendering/object.dart:1020:18)
+#117    RendererBinding.drawFrame (package:flutter/src/rendering/binding.dart:516:19)
+#118    WidgetsBinding.drawFrame (package:flutter/src/widgets/binding.dart:865:13)
+#119    RendererBinding._handlePersistentFrameCallback (package:flutter/src/rendering/binding.dart:381:5)
+#120    SchedulerBinding._invokeFrameCallback (package:flutter/src/scheduler/binding.dart:1289:15)
+#121    SchedulerBinding.handleDrawFrame (package:flutter/src/scheduler/binding.dart:1218:9)
+#122    SchedulerBinding.scheduleWarmUpFrame.<anonymous closure> (package:flutter/src/scheduler/binding.dart:942:7)
+#126    _RawReceivePort._handleMessage (dart:isolate-patch/isolate_patch.dart:192:26)
+(elided 5 frames from class _AssertionError, class _Timer, and dart:async-patch)
+
+The following RenderObject was being processed when the exception was fired: _RenderDecoration#9f5af relayoutBoundary=up8 NEEDS-LAYOUT NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE:
+  creator: _Decorator ← InputDecorator ← AnimatedBuilder ← Listener ← RawGestureDetector ←
+    TextSelectionGestureDetector ← Semantics ← AnimatedBuilder ← IgnorePointer ← TextFieldTapRegion ←
+    MouseRegion ← TextField ← ⋯
+  parentData: <none> (can use size)
+  constraints: BoxConstraints(0.0<=w<=Infinity, 0.0<=h<=741.0)
+  size: MISSING
+This RenderObject had the following descendants (showing up to depth 5):
+    input: RenderRepaintBoundary#e1176 NEEDS-LAYOUT NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE
+      child: RenderTapRegion#1f3f7 NEEDS-LAYOUT NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE
+        child: RenderMouseRegion#c36db NEEDS-LAYOUT NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE
+          child: RenderPointerListener#6dba6 NEEDS-LAYOUT NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE
+            child: RenderPointerListener#d623f NEEDS-LAYOUT NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE
+    helperError: RenderConstrainedBox#4bbf8 NEEDS-LAYOUT NEEDS-PAINT
+    container: RenderCustomPaint#256ef NEEDS-LAYOUT NEEDS-PAINT
+════════════════════════════════════════════════════════════════════════════════════════════════════
+Another exception was thrown: RenderBox was not laid out: _RenderDecoration#9f5af relayoutBoundary=up8 NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE
+Another exception was thrown: RenderBox was not laid out: RenderPointerListener#30021 relayoutBoundary=up7 NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE
+Another exception was thrown: RenderBox was not laid out: RenderSemanticsAnnotations#a2375 relayoutBoundary=up6 NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE
+Another exception was thrown: RenderBox was not laid out: RenderIgnorePointer#70d2c relayoutBoundary=up5 NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE
+Another exception was thrown: RenderBox was not laid out: RenderTapRegion#18b6d relayoutBoundary=up4 NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE
+Another exception was thrown: RenderBox was not laid out: RenderMouseRegion#a950f relayoutBoundary=up3 NEEDS-PAINT NEEDS-COMPOSITING-BITS-UPDATE
+Another exception was thrown: 'package:flutter/src/rendering/shifted_box.dart': Failed assertion: line 352 pos 12: 'child!.hasSize': is not true.
+Another exception was thrown: RenderBox was not laid out: RenderRepaintBoundary#e1176 NEEDS-LAYOUT NEEDS-PAINT
+Another exception was thrown: Updated layout information required for RenderRepaintBoundary#e1176 NEEDS-LAYOUT NEEDS-PAINT to calculate semantics.
+Another exception was thrown: Bad state: Future already completed
+```
+</details> 
+
+<details>
+<summary>flutter doctor -v (mac)</summary>
+
+```
+[✓] Flutter (Channel master, 3.7.0-3.0.pre.33, on macOS 12.6 21G115 darwin-arm64, locale en-IN)
+    • Flutter version 3.7.0-3.0.pre.33 on channel master 
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision 5201856805 (38 minutes ago), 2022-12-05 18:27:21 -0800
+    • Engine revision a309d239c4
+    • Dart version 2.19.0 (build 2.19.0-463.0.dev)
+    • DevTools version 2.20.0
+    • If those were intentional, you can disregard the above warnings; however it is recommended to use "git" directly
+      to perform update checks and upgrades.
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 33.0.0-rc4)
+    • Android SDK at /Users/mahesh/Library/Android/sdk
+    • Platform android-33, build-tools 33.0.0-rc4
+    • ANDROID_HOME = /Users/mahesh/Library/Android/sdk
+    • Java binary at: /Applications/Android Studio.app/Contents/jre/Contents/Home/bin/java
+    • Java version OpenJDK Runtime Environment (build 11.0.12+0-b1504.28-7817840)
+    • All Android licenses accepted.
+
+[✓] Xcode - develop for iOS and macOS (Xcode 14.0.1)
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • Build 14A400
+    • CocoaPods version 1.11.3
+
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] Android Studio (version 2021.2)
+    • Android Studio at /Applications/Android Studio.app/Contents
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 11.0.12+0-b1504.28-7817840)
+
+[✓] IntelliJ IDEA Community Edition (version 2021.2.1)
+    • IntelliJ at /Applications/IntelliJ IDEA CE.app
+    • Flutter plugin version 61.2.4
+    • Dart plugin version 212.5080.8
+
+[✓] VS Code (version 1.70.2)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.55.20221129
+
+[✓] Connected device (3 available)
+    • iPhone 12 Pro (mobile) • 026D5789-9E78-4AD5-B1B2-3F8D4E7F65E4 • ios            •
+      com.apple.CoreSimulator.SimRuntime.iOS-14-5 (simulator)
+    • macOS (desktop)        • macos                                • darwin-arm64   • macOS 12.6 21G115 darwin-arm64
+    • Chrome (web)           • chrome                               • web-javascript • Google Chrome 108.0.5359.94
+
+[✓] HTTP Host Availability
+    • All required HTTP hosts are available
+
+• No issues found!
+```
+```
+[✓] Flutter (Channel stable, 3.3.9, on macOS 12.6 21G115 darwin-arm, locale en-IN)
+    • Flutter version 3.3.9 on channel stable at /Users/mahesh/Development/flutter
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision b8f7f1f986 (24 hours ago), 2022-11-23 06:43:51 +0900
+    • Engine revision 8f2221fbef
+    • Dart version 2.18.5
+    • DevTools version 2.15.0
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 33.0.0-rc4)
+    • Android SDK at /Users/mahesh/Library/Android/sdk
+    • Platform android-33, build-tools 33.0.0-rc4
+    • ANDROID_HOME = /Users/mahesh/Library/Android/sdk
+    • Java binary at: /Applications/Android Studio.app/Contents/jre/Contents/Home/bin/java
+    • Java version OpenJDK Runtime Environment (build 11.0.12+0-b1504.28-7817840)
+    • All Android licenses accepted.
+
+[✓] Xcode - develop for iOS and macOS (Xcode 14.0.1)
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • Build 14A400
+    • CocoaPods version 1.11.3
+
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] Android Studio (version 2021.2)
+    • Android Studio at /Applications/Android Studio.app/Contents
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 11.0.12+0-b1504.28-7817840)
+
+[✓] IntelliJ IDEA Community Edition (version 2021.2.1)
+    • IntelliJ at /Applications/IntelliJ IDEA CE.app
+    • Flutter plugin version 61.2.4
+    • Dart plugin version 212.5080.8
+
+[✓] VS Code (version 1.70.2)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.53.20221101
+
+[✓] Connected device (3 available)
+    • iPhone 12 Pro (mobile) • 026D5789-9E78-4AD5-B1B2-3F8D4E7F65E4 • ios            •
+      com.apple.CoreSimulator.SimRuntime.iOS-14-5 (simulator)
+    • macOS (desktop)        • macos                                • darwin-arm64   • macOS 12.6 21G115 darwin-arm
+    • Chrome (web)           • chrome                               • web-javascript • Google Chrome 107.0.5304.110
+
+[✓] HTTP Host Availability
+    • All required HTTP hosts are available
+
+• No issues found!
+```
+</details>
+  ---
+================================================================================
+
+### #54998 - Directional navigation key binding defaults should be limited to those platforms that use it.
+URL: https://github.com/flutter/flutter/issues/54998
+Created: 2020-04-16T22:21:08Z Updated: 2024-07-22T18:12:38Z
+Reactions: {'total': 0, 'by_type': {}}
+Labels: ['framework', 'platform-macos', 'a: desktop', 'a: devtools', 'P2', 'team-text-input', 'triaged-text-input']
+Ownership: team-text-input
+Summary: Root cause identified as the default directional focus key bindings in `app.dart` being enabled on macOS (and potentially Linux). The fix was to disable them at the top level and re-enable per-widget (e.g., ListView). Linux was noted to also use directional nav in some apps, Windows less so. Workarounds provided: wrap in `Shortcuts` with `Intent.doNothing`, or bind `DirectionalFocusIntent` to `DoNothingAction`. Status: partially addressed; the default bindings were intended to be removed but the issue remained open with stale labels.
+Body snippet: <!-- Thank you for using Flutter!
+
+     If you are looking for support, please check out our documentation
+     or consider asking a question on Stack Overflow:
+      * https://flutter.dev/
+      * https://api.flutter.dev/
+      * https://stackoverflow.com/questions/tagged/flutter?sort=frequent
+
+     If you have found a bug or if our documentation doesn't have an answer
+     to what you're looking for, then fill our the template below. Please read
+     our guide to filing a bug first: https://flutter.dev/docs/resources/bug-reports
+-->
+
+When running the fluter devtools on macos, I'm seeing strange key handling behavior. There are extra key actions that I don't see on flutter web. Some discussion of the issue, with screenshots, is at https://github.com/flutter/devtools/issues/1769. But essentially:
+
+I'm adding row selection and keyboard navigation to a custom widget TreeTable ([built here](https://github.com/flutter/devtools/blob/ae483b098ec65941f457bf545bdc9059f6537231/pa...
+Raw Comments Count: 16
+  Comment: I just noticed that a similar thing happens in the "flutter inspector" tab. This is without any specific key handling for the arrow keys. Focus travels through the inspector tree and other UI elements in an unpredictable way.
+
+In this example I just mouse-click on the root element and then press the up/down/left/right arrow keys to see what happens.
+
+![inspector-arrow-keys](https://user-images.githubusercontent.com/3227/79902998-363e3b00-83c7-11ea-815d-2a7d90db21c2.gif)
+
+
+
+  ---
+  Comment: cc @stuartmorgan 
+  ---
+  Comment: I noticed that I can get similar behavior from the flutter gallery app.
+
+In macos, the arrow keys move through the buttons:
+![gallery-arrow-keys](https://user-images.githubusercontent.com/3227/79906160-2d039d00-83cc-11ea-8b0e-4968da65c1f7.gif)
+
+Similar to what "tab" does in flutter web; but while "tab" cycles through the UI elements, the macos arrow keys are "smart": left/right moves strictly back and forth and up/down moves focus vertically (example: with the "info" button highlighted, pressing down will focus "sign in").
+
+In simple cases I could see this as desirable behavior, but with the kind of custom UI we have in the devtools it definitely is not. Maybe I just need to know how to turn it off?
+  ---
+  Comment: > It also does not happen when I run via flutter web which leads me to believe it's a bug in the macos platform code.
+
+Extremely unlikely; it's almost certainly [this code](https://github.com/flutter/flutter/blob/0f68b46f6a7b36691e74144908b494d069ff866e/packages/flutter/lib/src/widgets/app.dart#L910). Note that macOS and web have different defaults.
+
+@gspencergoog would have more context on this. Greg, I'm not sure why arrow keys are doing control navigation on macOS by default; I can't think of any native application that has that behavior so it seems very unexpected as a default.
+  ---
+  Comment: > Maybe I just need to know how to turn it off?
+
+I believe you can turn it off per https://github.com/flutter/flutter/pull/45102, but absent a strong argument in favor of having them, I think the right fix here is to have these not be part of the default set on desktop.
+  ---
+  Comment: You're right, I think these are probably not correct for macOS. I'll disable them.
+
+I did look into the user interface guidelines for keyboard traversal on macOS at the time I defined those, but I didn't find guidance that was all that helpful there one way or another.
+  ---
+  Comment: When you disable them for macOS, maybe refactor a bit to have _defaultDesktopShortcuts, so that we don't have the same bug crop up for Linux and Windows? We can always re-specialize them later if we find places we want to diverge.
+  ---
+  Comment: Linux (Debian) at least (I can't test windows at the moment) does do this kind of navigation, at least in their system settings app and a couple of others I tested.
+  ---
+  Comment: I'm seeing some control-specific things on Windows (e.g., if I'm in a list, or in a menu, then it navigates within that context, as on macOS), but nothing that jumps to other control areas.
+  ---
+  Comment: Actually, just disabling it won't work.  I'm going to need to disable it at the top level, and then add it back in for each of the things that should be able to navigate in that way (e.g. for a list view, you should be able to navigate in the scroll axis).
+  ---
+  Comment: @gspencergoog Ah. This only partially helps me, since both my widgets are rendered in ListViews.  Is there a way to control key navigation at that level? https://github.com/flutter/devtools/blob/6d9cd23f61c3bd98a32d84acbce0d25968b49021/packages/devtools_app/lib/src/flutter/table.dart#L661
+  ---
+  Comment: You can always just turn it off, or bind it to another action.
+
+To turn it off, you can put a `Shortcuts` widget around your view with those keys bound to "Intent.doNothing".  Or bind them to your intent (and action) if you want to do something different.
+  ---
+  Comment: Or, if you want to turn off directional navigation, but don't want to know the keys it is bound to, you can also bind a `DirectionalFocusIntent` to `DoNothingAction()` in an `Actions` widget around your view.
+  ---
+  Comment: Is this still valid?
+  ---
+  Comment: Yes, this is still valid.
+  ---
+  Comment: The `triaged-desktop` label is irrelevant if there is no `team-desktop` label or `fyi-desktop` label.
+  ---
+================================================================================
+

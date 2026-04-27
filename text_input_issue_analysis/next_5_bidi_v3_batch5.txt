@@ -1,0 +1,659 @@
+### #165204 - Unicode characters not being rendered correctly in goldens test
+URL: https://github.com/flutter/flutter/issues/165204
+Created: 2025-03-14T16:19:49Z Updated: 2025-03-27T20:40:53Z
+Reactions: {'total': 0, 'by_type': {}}
+Labels: ['a: tests', 'a: text input', 'framework', 'has reproducible steps', 'P3', 'team-text-input', 'triaged-text-input', 'found in release: 3.29', 'found in release: 3.31']
+Ownership: team-text-input
+Summary: Comments confirm the issue reproduces only in golden tests, not at runtime: the Ahem test font (used by default in matchesGoldenFile) does not include the U+25CF bullet character, rendering it as a tofu box. A commenter suggests switching fonts or using loadAppFonts() properly. Status: open, P3.
+Body snippet: ### Steps to reproduce
+
+When writing a simple goldens test using unicode character \u25CF, it does not render correctly
+
+
+
+### Expected results
+
+The character ● displays correctly
+
+### Actual results
+
+![Image](https://github.com/user-attachments/assets/5ed0c550-8437-48ce-9082-e6f39eba9bf8)
+
+### Code sample
+
+<details open><summary>Code sample</summary>
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+class UnicodeCharTestPage extends StatelessWidget {
+  const UnicodeCharTestPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        children: [
+          TextFormField(
+            initialValue: 'abcde',
+            obscureText: true,
+            obscuringCharacter: '\u25CF',
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+void main() {
+  testWidgets('Verify look', (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: UnicodeCharTestPage(),
+      ),
+...
+Raw Comments Count: 6
+  Comment: Hi @adeomosanya 
+Since [golden_toolkit](https://pub.dev/packages/golden_toolkit) is discontinued, can you use flutter test and update the sample code if the issue persists? (see https://github.com/flutter/flutter/blob/master/docs/contributing/testing/Writing-a-golden-file-test-for-package-flutter.md if it helps) Thanks!
+  ---
+  Comment: @huycozy Despite the `golden_toolkit` import which I have now removed, this test is already using the flutter test goldens `matchesGoldenFile` method
+  ---
+  Comment: Yes. I can seem to reproduce the issue too. Thanks for your response.The issue only happen with test but not on app run:
+
+| golden test file | app run |
+| --------------- | --------------- |
+<img width="400" src="https://github.com/user-attachments/assets/33fea409-deef-4ccd-a294-07ae6c6db428"> | <img width="400" src="https://github.com/user-attachments/assets/46e6e425-862f-422c-9280-f31813a52a62">
+
+### Steps
+1. Generate golden image with the sample code
+<details>
+<summary>Sample code</summary>
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+
+class UnicodeCharTestPage extends StatelessWidget {
+  const UnicodeCharTestPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        children: [
+          TextFormField(
+            initialValue: 'abcde',
+            obscureText: true,
+            obscuringCharacter: '\u25CF',
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+void main() {
+  testWidgets('Verify look', (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: UnicodeCharTestPage(),
+      ),
+    );
+    // await loadAppFonts();
+    await expectLater(
+      find.byType(MaterialApp),
+      matchesGoldenFile('unicode_char_test.png'),
+    );
+  });
+}
+```
+</details>
+
+```
+flutter test --update-goldens
+```
+2. Try running app with the similar TextFormField in the test and compare results.
+
+Can you please confirm the steps?
+  ---
+  Comment: @huycozy Yes, confirmed
+  ---
+  Comment: Thanks for confirming this. Reproduced the issue on these Flutter versions:
+
+<details>
+<summary>Flutter versions (stable and master)</summary>
+
+```console
+[✓] Flutter (Channel stable, 3.29.2, on macOS 15.3.1 24D70 darwin-x64, locale en-VN) [665ms]
+    • Flutter version 3.29.2 on channel stable at /Users/huynq/Documents/GitHub/flutter
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision c236373904 (11 hours ago), 2025-03-13 16:17:06 -0400
+    • Engine revision 18b71d647a
+    • Dart version 3.7.2
+    • DevTools version 2.42.3
+```
+
+```console
+[!] Flutter (Channel master, 3.31.0-1.0.pre.104, on macOS 15.3.2 24D81 darwin-x64, locale en-VN) [3.8s]
+    • Flutter version 3.31.0-1.0.pre.104 on channel master at /Users/huynq/Documents/GitHub/flutter_master
+    ! Warning: `flutter` on your path resolves to /Users/huynq/Documents/GitHub/flutter/bin/flutter, which is not inside your current Flutter SDK checkout at /Users/huynq/Documents/GitHub/flutter_master. Consider adding /Users/huynq/Documents/GitHub/flutter_master/bin to the front of your path.
+    ! Warning: `dart` on your path resolves to /Users/huynq/Documents/GitHub/flutter/bin/dart, which is not inside your current Flutter SDK checkout at /Users/huynq/Documents/GitHub/flutter_master. Consider adding /Users/huynq/Documents/GitHub/flutter_master/bin to the front of your path.
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision 4b2c79a0e0 (2 hours ago), 2025-03-17 21:46:36 -0400
+    • Engine revision 4b2c79a0e0
+    • Dart version 3.8.0 (build 3.8.0-198.0.dev)
+    • DevTools version 2.45.0-dev.0
+    • If those were intentional, you can disregard the above warnings; however it is recommended to use "git" directly to perform update checks and upgrades.
+
+```
+</details>
+  ---
+  Comment: I wonder if this character is just not supported by the Ahem font. @adeomosanya Have you tried changing the font?
+
+By default matchesGoldenFile uses Ahem, which renders most characters as squares. See "Including Fonts" in the docs: https://api.flutter.dev/flutter/flutter_test/matchesGoldenFile.html
+  ---
+================================================================================
+
+### #167466 - Ellipsis not working properly when a text overflows via constrained height instead of max lines
+URL: https://github.com/flutter/flutter/issues/167466
+Created: 2025-04-21T07:28:45Z Updated: 2025-12-21T23:02:43Z
+Reactions: {'total': 0, 'by_type': {}}
+Labels: ['framework', 'a: typography', 'c: rendering', 'has reproducible steps', 'P2', 'team-text-input', 'triaged-text-input', 'found in release: 3.29', 'found in release: 3.32']
+Ownership: team-text-input
+Summary: Comments confirm the bug is reproducible on stable 3.29 and master 3.32 on all platforms — ellipsis is not shown when text is clipped by a constrained parent height rather than by `maxLines`. One commenter noted it may be working as intended but acknowledged it is hard to work around. A workaround using `LayoutBuilder` and `TextPainter` to compute the number of visible lines dynamically was provided; no framework fix or PR is linked.
+Body snippet: ### Steps to reproduce
+
+1. Create a new Flutter project
+2. Paste the code sample into `main.dart`
+3. Run on any platform
+
+### Expected results
+
+Ellipsis should show up at the end of the text if the text is cut off by its parent's constrained height, even if `maxLines` is null or a large value.
+
+### Actual results
+
+Ellipsis shows up when `maxLines` is null, but then it trims the text into one line. Ellipsis does not show at all if `maxLines` is greater than what could normally fit in the constrained size.
+
+### Code sample
+
+<details open><summary>Code sample</summary>
+
+```dart
+import 'package:flutter/material.dart';
+
+void main() => runApp(const App());
+
+class App extends StatelessWidget {
+  const App({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: ExamplePage(),
+    );
+  }
+}
+
+class ExamplePage extends StatelessWidget {
+  const ExamplePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final text =
+        'Lorem...
+Raw Comments Count: 6
+  Comment: Hey @rasitayaz, Thanks for filing the issue. I am able to reproduce the issue on stable and the master channel. The text ellipses are not visible if the text height (specified by maxlines) exceeds the container height
+
+<img width="362" alt="Image" src="https://github.com/user-attachments/assets/1b671e57-3670-4d5f-a1aa-642fa646bbc1" />
+
+
+<details>
+<summary>flutter doctor -v</summary>
+
+**master**
+```console
+[✓] Flutter (Channel master, 3.32.0-1.0.pre.90, on macOS 15.4 24E248 darwin-arm64, locale en-US) [30.8s]
+    • Flutter version 3.32.0-1.0.pre.90 on channel master at /Users/mahesh/Development/flutter_master
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision 29810cd6d1 (6 days ago), 2025-04-16 00:07:50 +0530
+    • Engine revision 29810cd6d1
+    • Dart version 3.8.0 (build 3.8.0-265.0.dev)
+    • DevTools version 2.45.0-dev.0
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 35.0.0) [3.0s]
+    • Android SDK at /Users/mahesh/Library/Android/sdk
+    • Platform android-35, build-tools 35.0.0
+    • ANDROID_HOME = /Users/mahesh/Library/Android/sdk
+    • Java binary at: /Applications/Android Studio.app/Contents/jbr/Contents/Home/bin/java
+      This is the JDK bundled with the latest Android Studio installation on this machine.
+      To manually set the JDK path, use: `flutter config --jdk-dir="path/to/jdk"`.
+    • Java version OpenJDK Runtime Environment (build 21.0.5+-12932927-b750.29)
+    • All Android licenses accepted.
+
+[✓] Xcode - develop for iOS and macOS (Xcode 16.3) [1,760ms]
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • Build 16E140
+    • CocoaPods version 1.16.2
+
+[✓] Chrome - develop for the web [129ms]
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] Android Studio (version 2024.3) [128ms]
+    • Android Studio at /Applications/Android Studio.app/Contents
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 21.0.5+-12932927-b750.29)
+
+[✓] IntelliJ IDEA Community Edition (version 2021.2.1) [127ms]
+    • IntelliJ at /Applications/IntelliJ IDEA CE.app
+    • Flutter plugin version 61.2.4
+    • Dart plugin version 212.5080.8
+
+[✓] VS Code (version 1.96.2) [20ms]
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.102.0
+
+[✓] Connected device (4 available) [7.3s]
+    • Pixel 7 (mobile)       • 33270DLH20012A                       • android-arm64  • Android 15 (API 35)
+    • iPhone 16 Pro (mobile) • D4BBFF03-3CBE-4EA0-80E0-7629055FD9E0 • ios            •
+      com.apple.CoreSimulator.SimRuntime.iOS-18-4 (simulator)
+    • macOS (desktop)        • macos                                • darwin-arm64   • macOS 15.4 24E248
+      darwin-arm64
+    • Chrome (web)           • chrome                               • web-javascript • Google Chrome
+      131.0.6778.265
+
+[✓] Network resources [1,465ms]
+    • All expected network resources are available.
+
+• No issues found!
+```
+
+**stable**
+```console
+[!] Flutter (Channel stable, 3.29.3, on macOS 15.4 24E248 darwin-arm64, locale en-US) [591ms]
+    • Flutter version 3.29.3 on channel stable at /Users/mahesh/Development/flutter
+    ! Warning: `flutter` on your path resolves to /Users/mahesh/Development/flutter_master/bin/flutter, which is not inside your current
+      Flutter SDK checkout at /Users/mahesh/Development/flutter. Consider adding /Users/mahesh/Development/flutter/bin to the front of
+      your path.
+    ! Warning: `dart` on your path resolves to /Users/mahesh/Development/flutter_master/bin/dart, which is not inside your current
+      Flutter SDK checkout at /Users/mahesh/Development/flutter. Consider adding /Users/mahesh/Development/flutter/bin to the front of
+      your path.
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision ea121f8859 (5 days ago), 2025-04-11 19:10:07 +0000
+    • Engine revision cf56914b32
+    • Dart version 3.7.2
+    • DevTools version 2.42.3
+    • If those were intentional, you can disregard the above warnings; however it is recommended to use "git" directly to perform update
+      checks and upgrades.
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 35.0.0) [2.3s]
+    • Android SDK at /Users/mahesh/Library/Android/sdk
+    • Platform android-35, build-tools 35.0.0
+    • ANDROID_HOME = /Users/mahesh/Library/Android/sdk
+    • Java binary at: /Applications/Android Studio.app/Contents/jbr/Contents/Home/bin/java
+      This is the JDK bundled with the latest Android Studio installation on this machine.
+      To manually set the JDK path, use: `flutter config --jdk-dir="path/to/jdk"`.
+    • Java version OpenJDK Runtime Environment (build 21.0.5+-12932927-b750.29)
+    • All Android licenses accepted.
+
+[✓] Xcode - develop for iOS and macOS (Xcode 16.3) [1,559ms]
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • Build 16E140
+    • CocoaPods version 1.16.2
+
+[✓] Chrome - develop for the web [153ms]
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] Android Studio (version 2024.3) [152ms]
+    • Android Studio at /Applications/Android Studio.app/Contents
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 21.0.5+-12932927-b750.29)
+
+[✓] IntelliJ IDEA Community Edition (version 2021.2.1) [150ms]
+    • IntelliJ at /Applications/IntelliJ IDEA CE.app
+    • Flutter plugin version 61.2.4
+    • Dart plugin version 212.5080.8
+
+[✓] VS Code (version 1.96.2) [22ms]
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.102.0
+
+[✓] Connected device (4 available) [6.5s]
+    • iPhone 15 Pro (mobile)          • 7BB5BB29-BA56-4EB1-B698-E6A1AAD138E4 • ios            •
+      com.apple.CoreSimulator.SimRuntime.iOS-18-0 (simulator)
+    • macOS (desktop)                 • macos                                • darwin-arm64   • macOS 15.4 24E248 darwin-arm64
+    • Mac Designed for iPad (desktop) • mac-designed-for-ipad                • darwin         • macOS 15.4 24E248 darwin-arm64
+    • Chrome (web)                    • chrome                               • web-javascript • Google Chrome 131.0.6778.265
+
+[✓] Network resources [351ms]
+    • All expected network resources are available.
+
+! Doctor found issues in 1 category.
+```
+</details> 
+  ---
+  Comment: This is probably working as intended, but you could argue that it's not intuitive or hard to work around. Maybe we should let this issue gather feedback from other people that might encounter this.
+  ---
+  Comment: It's definitely hard to work around, especially with variable device text sizes etc.
+  ---
+  Comment: I used an approach that dynamically calculates the number of lines the text can occupy using `LayoutBuilder` and `TextPainter`, ensuring that the ellipsis is displayed correctly.
+
+Here’s an example:
+
+```dart
+import 'package:flutter/material.dart';
+
+void main() => runApp(const App());
+
+class App extends StatelessWidget {
+  const App({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(home: ExamplePage());
+  }
+}
+
+class ExamplePage extends StatelessWidget {
+  const ExamplePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final text =
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
+
+    return Scaffold(
+      appBar: AppBar(title: Text('Example')),
+      body: Center(
+        child: Column(
+          spacing: 16,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Max lines: null'),
+            Container(
+              width: 200,
+              height: 200,
+              color: Colors.blue,
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final textPainter = TextPainter(
+                    text: TextSpan(
+                      text: 'A',
+                      // Use the same style as the actual Text widget to get correct line height.
+                      style: DefaultTextStyle.of(context).style,
+                    ),
+                    maxLines: 1,
+                    textDirection: TextDirection.ltr,
+                  )..layout(maxWidth: constraints.maxWidth);
+
+                  final lineHeight = textPainter.height;
+                  final maxLines = (constraints.maxHeight / lineHeight).floor();
+
+                  return Text(
+                    text,
+                    maxLines: maxLines,
+                    overflow: TextOverflow.ellipsis,
+                  );
+                },
+              ),
+            ),
+            Text('Max lines: 100'),
+            Container(
+              width: 200,
+              height: 200,
+              color: Colors.blue,
+              child: Text(text, overflow: TextOverflow.ellipsis, maxLines: 100),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+```
+
+<img width="310" height="595" alt="Image" src="https://github.com/user-attachments/assets/d57f56d7-c7b6-485f-9b23-f873f23017e0" />
+
+I hope this approach can be helpful.
+  ---
+  Comment: The `fyi-text-input` label is redundant with the `team-text-input` label.
+  ---
+  Comment: +1 for a native fix for this. Having issues with the same behaviour on several platforms.
+  ---
+================================================================================
+
+### #177408 - The framework should provide a mechanism to change the paragraph spacing of text
+URL: https://github.com/flutter/flutter/issues/177408
+Created: 2025-10-22T19:51:51Z Updated: 2026-01-06T20:39:06Z
+Reactions: {'total': 0, 'by_type': {}}
+Labels: ['a: text input', 'c: new feature', 'a: accessibility', 'P3', 'team-text-input', 'triaged-text-input']
+Ownership: team-text-input
+Summary: None
+Body snippet: ## Issue
+There is no mechanism to change the paragraph spacing of text in the framework.
+
+## Proposal
+`TextStyle` should add a `paragraphSpacing` member, similar to `letterSpacing` and `wordSpacing`, that allows for changing the additional space between paragraphs.
+
+In the code below:
+```dart
+Text('Hello world\nGoodbye world', style: TextStyle(paragraphSpacing: 2.0))
+```
+
+`TextStyle(paragraphSpacing: 2.0)` , would add 2 pixels of space between the paragraphs separated by the line terminator `\n`.
+
+## Use case
+Accessibility would benefit greatly from this feature, as certain specifications such as [WCAG](https://www.w3.org/TR/WCAG21/#visual-presentation) on the web have certain requirements regarding the paragraph spacing of text....
+Raw Comments Count: 0
+================================================================================
+
+### #177953 - The framework should apply `paragraphSpacingOverride` to its text
+URL: https://github.com/flutter/flutter/issues/177953
+Created: 2025-11-03T23:16:36Z Updated: 2026-01-02T18:18:13Z
+Reactions: {'total': 0, 'by_type': {}}
+Labels: ['a: text input', 'c: new feature', 'a: accessibility', 'platform-web', 'P3', 'team-text-input', 'triaged-text-input']
+Ownership: team-text-input
+Summary: None
+Body snippet: ## Issue
+As of https://github.com/flutter/flutter/pull/172915, `paragraphSpacingOverride` has been made available through `MediaQuery.maybeOfParagraphSpacingOverride`, and `MediaQueryData.paragraphSpacingOverride`. This is an API added to support accessibility use-cases related to text spacing, such as matching WCAG specifications on the web. The framework at this time does not utilize this value, but makes it accessible to developers to use in their own applications.
+
+## Proposal
+The framework should apply the `paragraphSpacingOverride` to its own text and components, so the framework can be compliant with specifications like WCAG out of the box. When applying `paragraphSpacingOverride` to our framework components we should consider scenarios where we should not apply it, for example in buttons, headers, navigations destinations, and likely other UI components....
+Raw Comments Count: 0
+================================================================================
+
+### #183571 - iOS: NSJSONSerialization crash when deleting SMP characters
+URL: https://github.com/flutter/flutter/issues/183571
+Created: 2026-03-12T06:23:21Z Updated: 2026-03-19T22:11:45Z
+Reactions: {'total': 0, 'by_type': {}}
+Labels: ['a: text input', 'platform-ios', 'P1', 'team-text-input', 'triaged-text-input']
+Ownership: team-text-input
+Summary: Reproduced on both latest stable and master on iOS. A contributor implemented a fix in the engine (`FlutterCodecs.mm`) on a fork and submitted to Gerrit mirrors; a team member redirected them to submit a PR against the monorepo at `engine/src/flutter/shell/platform/darwin/common/framework/Source/FlutterCodecs.mm`. A pre-triage note suggests it may be a bug in `UITextInput.deleteBackward` rather than a duplicate of #179727. Status: P1, has a proposed fix pending a properly submitted PR.
+Body snippet: **Describe the bug**
+When deleting Supplementary Multilingual Plane (SMP) characters on iOS, the text input system leaves orphaned UTF-16 surrogates in the NSString. This causes NSJSONSerialization to fail with "failed to convert to UTF8" error and crash the app.
+
+**Steps to reproduce**
+1. Create a Flutter app with a TextField or text input widget
+2. On an iOS device, paste this string: **ᴿ᭄𝑹ahul Rajput**
+3. Delete it character by character until only 1-2 characters remain
+4. App crashes with: "Invalid JSON message, encoding failed: (null)"
+
+**Expected behavior**
+Text input should handle surrogate pairs correctly without crashing
+
+**Actual behavior**
+NSJSONSerialization rejects the string because it contains lone (unpaired) surrogates from incomplete SMP character encoding
+
+**Proposed Solution**
+Before JSON serialization, validate and sanitize UTF-16 surrogates:
+- Drop lone/orphaned surrogates
+- Keep valid surrogate pairs
+- Preserve all BMP characters
+- Remap text-editing cursor indice...
+Raw Comments Count: 9
+  Comment: I have implemented the fix on this branch:
+https://github.com/gordon-ola/engine/tree/fix/ios-surrogate-utf16-crash
+
+Commit:
+https://github.com/gordon-ola/engine/commit/5ffdf6f689e18fe0f6b3045f0b07453d4a0c3266
+
+Modified file:
+shell/platform/darwin/common/framework/Source/FlutterCodecs.mm
+
+Key changes:
+	•	Added the sanitizeJSONObject() function
+	•	Cleans up isolated UTF-16 surrogate pairs before JSON serialization
+	•	Remaps cursor indices
+  ---
+  Comment: > I have implemented the fix on this branch
+
+If you would like to contribute code, you will need to follow [our contributor guide](https://github.com/flutter/flutter/blob/main/CONTRIBUTING.md). We are unable to accept or use code that does not come through the PR system with a signed CLA.
+  ---
+  Comment: I had try to make  PR to flutter engine repo,but it show "This repository was archived by the owner on Feb 26, 2025. It is now read-only.", How can i contribute the code?
+
+
+  ---
+  Comment: @gordon-ola Thanks for reporting! I was able to reproduce this crash on both the latest stable and master channels.
+
+When deleting the characters on an iOS device, the app immediately crashes with Lost connection from device.
+
+On Android its working fine.
+
+### Flutter doctor -v master:
+```dart
+[✓] Flutter (Channel master, 3.43.0-1.0.pre-118, on macOS 26.3 25D125 darwin-arm64, locale en-US) [2.3s]
+    • Flutter version 3.43.0-1.0.pre-118 on channel master at /Users/puneetkukreja/flutter-contribution/flutter
+    • Upstream repository https://github.com/puneetkukreja98/flutter
+    • FLUTTER_GIT_URL = https://github.com/puneetkukreja98/flutter
+    • Framework revision 21edbc8423 (9 hours ago), 2026-03-13 01:17:27 -0400
+    • Engine revision 21edbc8423
+    • Dart version 3.12.0 (build 3.12.0-243.0.dev)
+    • DevTools version 2.56.0
+    • Feature flags: enable-web, enable-linux-desktop, enable-macos-desktop, enable-windows-desktop, enable-android, enable-ios, cli-animations, enable-native-assets, enable-swift-package-manager,
+      omit-legacy-version-file, enable-lldb-debugging, enable-uiscene-migration, enable-riscv64
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 36.1.0) [2.7s]
+    • Android SDK at /Users/puneetkukreja/Library/Android/sdk
+    • Emulator version 36.4.9.0 (build_id 14788078) (CL:N/A)
+    • Platform android-36.1, build-tools 36.1.0
+    • Java binary at: /Library/Java/JavaVirtualMachines/jdk-17.jdk/Contents/Home/bin/java
+      This JDK is specified in your Flutter configuration.
+      To change the current JDK, run: `flutter config --jdk-dir="path/to/jdk"`.
+    • Java version Java(TM) SE Runtime Environment (build 17.0.12+8-LTS-286)
+    • All Android licenses accepted.
+
+[✓] Xcode - develop for iOS and macOS (Xcode 26.3) [1,438ms]
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • Build 17C529
+    • CocoaPods version 1.16.2
+
+[✓] Chrome - develop for the web [6ms]
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] Connected device (3 available) [11.8s]
+    • iPhone 17 (mobile) • 0D133E56-1769-4AB7-B38A-80881A042A48 • ios            • com.apple.CoreSimulator.SimRuntime.iOS-26-2 (simulator)
+    • macOS (desktop)    • macos                                • darwin-arm64   • macOS 26.3 25D125 darwin-arm64
+    • Chrome (web)       • chrome                               • web-javascript • Google Chrome 145.0.7632.160
+    ! Error: Browsing on the local area network for Puneet’s iPhone. Ensure the device is unlocked and attached with a cable or associated with the same local area network as this Mac.
+      The device must be opted into Developer Mode to connect wirelessly. (code -27)
+
+[✓] Network resources [551ms]
+    • All expected network resources are available.
+``` 
+### Flutter doctor -v stable:
+```dart
+[✓] Flutter (Channel stable, 3.41.4, on macOS 26.3 25D125 darwin-arm64, locale en-US) [633ms]
+    • Flutter version 3.41.4 on channel stable at /Users/puneetkukreja/Developer/flutter
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision ff37bef603 (10 days ago), 2026-03-03 16:03:22 -0800
+    • Engine revision e4b8dca3f1
+    • Dart version 3.11.1
+    • DevTools version 2.54.1
+    • Feature flags: enable-web, enable-linux-desktop, enable-macos-desktop, enable-windows-desktop, enable-android, enable-ios, cli-animations, enable-native-assets, omit-legacy-version-file,
+      enable-lldb-debugging, enable-uiscene-migration
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 36.1.0) [2.4s]
+    • Android SDK at /Users/puneetkukreja/Library/Android/sdk
+    • Emulator version 36.4.9.0 (build_id 14788078) (CL:N/A)
+    • Platform android-36.1, build-tools 36.1.0
+    • Java binary at: /Library/Java/JavaVirtualMachines/jdk-17.jdk/Contents/Home/bin/java
+      This JDK is specified in your Flutter configuration.
+      To change the current JDK, run: `flutter config --jdk-dir="path/to/jdk"`.
+    • Java version Java(TM) SE Runtime Environment (build 17.0.12+8-LTS-286)
+    • All Android licenses accepted.
+
+[✓] Xcode - develop for iOS and macOS (Xcode 26.3) [1,343ms]
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • Build 17C529
+    • CocoaPods version 1.16.2
+
+[✓] Chrome - develop for the web [6ms]
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] Connected device (3 available) [7.4s]
+    • iPhone 17 (mobile) • 0D133E56-1769-4AB7-B38A-80881A042A48 • ios            • com.apple.CoreSimulator.SimRuntime.iOS-26-2 (simulator)
+    • macOS (desktop)    • macos                                • darwin-arm64   • macOS 26.3 25D125 darwin-arm64
+    • Chrome (web)       • chrome                               • web-javascript • Google Chrome 145.0.7632.160
+    ! Error: Browsing on the local area network for Puneet’s iPhone. Ensure the device is unlocked and attached with a cable or associated with the same local area network as this Mac.
+      The device must be opted into Developer Mode to connect wirelessly. (code -27)
+
+[✓] Network resources [777ms]
+    • All expected network resources are available.
+
+``` 
+
+  ---
+  Comment: > > I have implemented the fix on this branch
+> 
+> If you would like to contribute code, you will need to follow [our contributor guide](https://github.com/flutter/flutter/blob/main/CONTRIBUTING.md). We are unable to accept or use code that does not come through the PR system with a signed CLA.
+
+I submitted a potential fix to engine:
+
+https://flutter-review.googlesource.com/c/mirrors/engine/+/76200
+  ---
+  Comment: @gordon-ola You'll need to submit a PR on GitHub following the contributing guide that @stuartmorgan-g linked. The source of truth for the file you are trying to change is here https://github.com/flutter/flutter/blob/master/engine/src/flutter/shell/platform/darwin/common/framework/Source/FlutterCodecs.mm.
+  ---
+  Comment: > [@gordon-ola](https://github.com/gordon-ola) You'll need to submit a PR on GitHub following the contributing guide that [@stuartmorgan-g](https://github.com/stuartmorgan-g) linked. The source of truth for the file you are trying to change is here https://github.com/flutter/flutter/blob/master/engine/src/flutter/shell/platform/darwin/common/framework/Source/FlutterCodecs.mm.
+
+I know what the source is，i try to creat a PR to flutter engine repo on GitHub， It show ‘This repository was archived by the owner on Feb 26, 2025. It is now read-only.’，then i try PR to https://flutter.googlesource.com/mirrors/engine, but nobody review the code。
+  ---
+  Comment: @gordon-ola Contributing to Flutter will go much more smoothly if you assume that feedback from Flutter team members is being provided for a reason, and follow the links we provide.
+
+> I know what the source is
+
+The link you were provided in that comment is to the current source of truth in https://github.com/flutter/flutter, which is not either of the repositories you tried to submit a PR to.
+
+> then i try PR to https://flutter.googlesource.com/mirrors/engine, but nobody review the code。
+
+Nothing in the contributing guide I linked to says to submit PRs to a mirror. It does say:
+
+>> Clone the Flutter source code. As of late 2024, the engine source is part of the main [flutter/flutter repo](https://github.com/flutter/flutter).
+
+As we said above, you will need to follow the contributor guide if you want to submit code.
+  ---
+  Comment: from pre-triage: potential duplicate of https://github.com/flutter/flutter/issues/179727. 
+
+EDIT: after looking at the repro, this may not be a duplicate. Could be a bug in our `UITextInput.deleteBackward`. But we are currently using `rangeOfComposedCharacterSequenceAtIndex` which should delete the entire grapheme cluster.
+
+```objc
+NSRange RangeForCharacterAtIndex(NSString* text, NSUInteger index) {
+  if (text == nil || index > text.length) {
+    return NSMakeRange(NSNotFound, 0);
+  }
+  if (index < text.length) {
+    return [text rangeOfComposedCharacterSequenceAtIndex:index];
+  }
+  return NSMakeRange(index, 0);
+}
+```
+  ---
+================================================================================
+

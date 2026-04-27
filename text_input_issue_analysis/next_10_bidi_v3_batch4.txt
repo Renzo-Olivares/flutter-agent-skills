@@ -1,0 +1,1260 @@
+### #75572 - Let RenderEditable use LineMetrics instead of assuming every line has the same height
+URL: https://github.com/flutter/flutter/issues/75572
+Created: 2021-02-07T01:04:00Z Updated: 2026-03-05T21:03:04Z
+Reactions: {'total': 0, 'by_type': {}}
+Labels: ['a: text input', 'framework', 'f: material design', 'P2', 'c: tech-debt', 'team-design', 'triaged-design']
+Ownership: team-design
+Summary: A commenter added a concrete example illustrating the expected caret behavior for up/down arrow key navigation across lines of varying length, where the caret should maintain its horizontal offset across lines rather than snapping to line end.
+Body snippet: https://github.com/flutter/flutter/blob/02d441ea55b328133c266991f43b0a1148edb63f/packages/flutter/lib/src/rendering/editable.dart#L864-L873
+
+Vertical key movements may skip a line if that line is way shorter than its adjacent lines....
+Raw Comments Count: 1
+  Comment: Additionally in a left-aligned text field:
+```
+aaaaaaa|
+aaa
+aaaaaaaaaa
+```
+pressing <kbd>↓</kbd> once should move the caret to the end of the second line:
+```
+aaaaaaa
+aaa|
+aaaaaaaaaa
+```
+press <kbd>↓</kbd> again should move the caret to the 3rd line, but further to the right:
+```
+aaaaaaa
+aaa
+aaaaaaa|aaa
+```
+  ---
+================================================================================
+
+### #87536 - BIDI text painting skipped tests.
+URL: https://github.com/flutter/flutter/issues/87536
+Created: 2021-08-03T00:41:06Z Updated: 2023-07-08T01:51:30Z
+Reactions: {'total': 0, 'by_type': {}}
+Labels: ['a: text input', 'c: contributor-productivity', 'framework', 'a: internationalization', 'P2', 'c: tech-debt', 'team: skip-test', 'team-framework', 'triaged-framework']
+Ownership: team-framework
+Summary: None
+Body snippet: As part of the latest [skip test audit](https://github.com/flutter/flutter/issues/86396), there are still several tests that are skipped in `text_painter_rtl_test.dart` that don't have a bug to track them. We can use this as a tracking bug for getting them turned back on or marked as intentional if that is the just behaviour we want.
+
+The tests in question are:
+
+https://github.com/flutter/flutter/blob/40739568ab80988d8f2671bf6ec43539ce983771/packages/flutter/test/painting/text_painter_rtl_test.dart#L37
+
+https://github.com/flutter/flutter/blob/40739568ab80988d8f2671bf6ec43539ce983771/packages/flutter/test/painting/text_painter_rtl_test.dart#L169
+
+https://github.com/flutter/flutter/blob/40739568ab80988d8f2671bf6ec43539ce983771/packages/flutter/test/painting/text_painter_rtl_test.dart#L327
+
+https://github.com/flutter/flutter/blob/40739568ab80988d8f2671bf6ec43539ce983771/packages/flutter/test/painting/text_painter_rtl_test.dart#L360
+
+https://github.com/flutter/flutter/blob/4073...
+Raw Comments Count: 0
+================================================================================
+
+### #92507 - Document "ghost run" and its interaction with `Paragraph.getBoxesForRange`
+URL: https://github.com/flutter/flutter/issues/92507
+Created: 2021-10-26T17:49:52Z Updated: 2023-08-04T20:31:40Z
+Reactions: {'total': 0, 'by_type': {}}
+Labels: ['a: text input', 'engine', 'd: api docs', 'a: typography', 'P2', 'team-engine', 'triaged-engine']
+Ownership: team-engine
+Summary: None
+Body snippet: Current the only documentation I could find is a code comment: https://github.com/flutter/engine/blob/cc9f859004f88a84f6d42e234c8be0ecaf66c46f/third_party/txt/src/txt/paragraph_txt.cc#L742-L752
+
+>       // A "ghost" run is a run that does not impact the layout, breaking,
+>      // alignment, width, etc but is still "visible" through getRectsForRange.
+>      // For example, trailing whitespace on centered text can be scrolled
+>      // through with the caret but will not wrap the line.
+>      //
+>      // Here, we add an additional run for the whitespace, but dont
+>      // let it impact metrics. After layout of the whitespace run, we do not
+>      // add its width into the x-offset adjustment, effectively nullifying its
+>     // impact on the layout.
+
+which implies `getRectsForRange` can return text boxes that are outside of the paragraph's bounding box if called on a ghost run. It's likely a common assumption that text boxes is always within the paragraph's bounding box so...
+Raw Comments Count: 0
+================================================================================
+
+### #99139 - [MacOS] Trailing whitespace in multiline TextField overflows and doesn't go to newline.
+URL: https://github.com/flutter/flutter/issues/99139
+Created: 2022-02-25T07:08:53Z Updated: 2024-06-20T22:22:11Z
+Reactions: {'total': 0, 'by_type': {}}
+Labels: ['a: text input', 'framework', 'f: material design', 'a: desktop', 'has reproducible steps', 'P2', 'found in release: 2.10', 'found in release: 2.11', 'team-text-input', 'triaged-text-input']
+Ownership: team-text-input
+Summary: Comments confirm this is distinct from mobile behavior: on macOS/desktop, trailing whitespace in a multiline TextField does not trigger line wrap, unlike Sublime Text or other native editors. On iOS/mobile, whitespace also does not wrap, but subsequent characters start on a new line. Selection extending horizontally outside the field when selecting text with trailing whitespace is noted as a separate bug. Attributed to Skia-level text layout behavior. No fix; stalled.
+Body snippet: ## Steps to Reproduce
+
+1. Use a multiline TextField.
+2. Input a lot of whitespace in the content tail.
+3. Whitespace is overflow and not switch to a newline (Tap Ctrl + A to select all).
+
+**Expected results:** Auto switch to a new line.
+
+**Actual results:** Whitespace is overflow.
+
+<details>
+<summary>Code sample</summary>
+
+```dart
+const SizedBox(
+    width: 400,
+    height: 200,
+    child: TextField(
+      maxLines: null,
+      keyboardType: TextInputType.multiline,
+      decoration: InputDecoration(
+        border: InputBorder.none,
+        filled: true,
+        fillColor: Colors.pink
+      ),
+      expands: true,
+    ),
+  )
+```
+
+</details>
+
+<details>
+  <summary>Logs</summary>
+<!-- Finally, paste the output of running `flutter doctor -v` here. -->
+
+```
+[✓] Flutter (Channel stable, 2.8.1, on macOS 12.0.1 21A559 darwin-arm, locale
+    zh-Hans-CN)
+    • Flutter version 2.8.1 at /Volumes/AOSP/flutter
+    • Upstream repository https://github.com/flut...
+Raw Comments Count: 8
+  Comment: @MegatronKing 
+I verified this behavior in a native macOS app (Notes) and observed that it behaves the same as you reported, ie, entering whitespaces doesn't move to new line which indicates this is an intended behavior since the same occurs on macOS native app. You can check the same for your reference.
+I'll close this as WAI. If you disagree, write in comments and I'll reopen it.
+
+  ---
+  Comment: @darshankawar Why don't you try XCode or VSCode Editor? I don't think this behavior of Notes is good enough. I face this issue when I develop a simple code editor with TextField. A workaround is helpful rather than closed this issue.
+  ---
+  Comment: @MegatronKing 
+Thanks for the feedback. Below are the things I observed after revisiting this use case:
+
+1. on iOS native app (Notes): pressing space bar till the end of the line doesn't directly put the cursor to new line but if we try to type in anything, it automatically starts at new line. Same behavior on Flutter mobile app (running on iOS simulator for example).
+2. on native macOS (desktop, sublime text), pressing spacebar till the end of the line takes the cursor to newline automatically.  On Flutter macOS (desktop) app, end of the line doesn't take the cursor to newline, but if you try to type in, it directly starts from the new line, which seems to be the case you are reporting.
+3. Same as above on Flutter web.
+
+Are you looking to have the native macOS desktop feature / behavior to be same on flutter macOS app ?  (point # 2 above) ?
+
+
+
+
+
+  ---
+  Comment: @darshankawar  Correctly!
+  ---
+  Comment: Thanks for confirmation. Based on my observation and verification between native macOS feature and Flutter, below are my findings:
+
+1. Flutter mobile, desktop and web behavior using trailing whitespace using multline textfield:
+
+Pressing space bar till the end of the line doesn't directly put the cursor to new line but if we try to type in anything, it automatically starts at new line.
+
+
+https://user-images.githubusercontent.com/67046386/156302710-47a77384-6928-47a0-9760-2919781278a7.mov
+
+2. Native macOS app (ex: Sublime Text) behavior using trailing whitepace:
+
+Pressing spacebar till the end of the line takes the cursor to newline automatically.
+
+
+https://user-images.githubusercontent.com/67046386/156302820-fef46622-586a-4a20-8fbd-3ef680639d8b.mov
+
+<details>
+<summary> stable, master flutter doctor -v </summary>
+
+```
+
+[✓] Flutter (Channel stable, 2.10.2, on Mac OS X 10.15.4 19E2269 darwin-x64,
+    locale en-GB)
+    • Flutter version 2.10.2 at /Users/dhs/documents/fluttersdk/flutter
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision 097d3313d8 (2 days ago), 2022-02-18 19:33:08 -0600
+    • Engine revision a83ed0e5e3
+    • Dart version 2.16.1
+    • DevTools version 2.9.2
+
+[!] Xcode - develop for iOS and macOS (Xcode 12.3)
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    ! Flutter recommends a minimum Xcode version of 13.
+      Download the latest version or update via the Mac App Store.
+    • CocoaPods version 1.11.2
+
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] VS Code (version 1.62.0)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.21.0
+
+[✓] Connected device (4 available)
+    • iPhone 12 Pro Max (mobile)                     •
+      A5473606-0213-4FD8-BA16-553433949729 • ios            •
+      com.apple.CoreSimulator.SimRuntime.iOS-14-3 (simulator)
+    • iPad Pro (12.9-inch) (4th generation) (mobile) •
+      AD9F1B85-B622-485E-97E8-E4AC866D5770 • ios            •
+      com.apple.CoreSimulator.SimRuntime.iOS-14-3 (simulator)
+    • macOS (desktop)                                • macos
+      • darwin-x64     • Mac OS X 10.15.4 19E2269 darwin-x64
+    • Chrome (web)                                   • chrome
+      • web-javascript • Google Chrome 98.0.4758.102
+
+[✓] HTTP Host Availability
+    • All required HTTP hosts are available
+
+! Doctor found issues in 1 category.
+
+
+[✓] Flutter (Channel master, 2.11.0-0.0.pre.731, on macOS 12.2.1 21D62
+    darwin-x64, locale en-GB)
+    • Flutter version 2.11.0-0.0.pre.731 at
+      /Users/dhs/documents/fluttersdk/flutter
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision 8f360c977a (5 hours ago), 2022-03-01 16:26:11 -0800
+    • Engine revision a5718ab3c3
+    • Dart version 2.17.0 (build 2.17.0-156.0.dev)
+    • DevTools version 2.11.1
+
+[!] Xcode - develop for iOS and macOS (Xcode 12.3)
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    ! Flutter recommends a minimum Xcode version of 13.
+      Download the latest version or update via the Mac App Store.
+    • CocoaPods version 1.11.2
+
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] VS Code (version 1.62.0)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.21.0
+
+[✓] Connected device (4 available)
+    • iPhone 12 Pro Max (mobile)                     •
+      A5473606-0213-4FD8-BA16-553433949729 • ios            •
+      com.apple.CoreSimulator.SimRuntime.iOS-14-3 (simulator)
+    • iPad Pro (12.9-inch) (4th generation) (mobile) •
+      AD9F1B85-B622-485E-97E8-E4AC866D5770 • ios            •
+      com.apple.CoreSimulator.SimRuntime.iOS-14-3 (simulator)
+    • macOS (desktop)                                • macos
+      • darwin-x64     • Mac OS X 10.15.4 19E2269 darwin-x64
+    • Chrome (web)                                   • chrome
+      • web-javascript • Google Chrome 98.0.4758.102
+
+[✓] HTTP Host Availability
+    • All required HTTP hosts are available
+
+! Doctor found issues in 1 category.
+
+
+```
+
+</details>
+  ---
+  Comment: /cc @justinmc 
+  ---
+  Comment: The `triaged-desktop` label is irrelevant if there is no `team-desktop` label or `fyi-desktop` label.
+  ---
+  Comment: Talking with @LongCatIsLooong and @Renzo-Olivares in triage, we think this behavior (not wrapping whitespaces) is at the Skia level. I definitely see why you would want it to wrap in the context of a code editor, though.
+
+Also, the selection extending horizontally outside of the field definitely seems like a bug we should fix either way.
+  ---
+================================================================================
+
+### #110470 -   canvas.drawLine() does not paint correctly on Samsung Galaxy Note 20 Ultra
+URL: https://github.com/flutter/flutter/issues/110470
+Created: 2022-08-29T11:47:14Z Updated: 2024-09-26T11:17:50Z
+Reactions: {'total': 0, 'by_type': {}}
+Labels: ['a: text input', 'e: device-specific', 'platform-android', 'framework', 'engine', 'f: material design', 'dependency: skia', 'c: rendering', 'P2', 'e: samsung', 'team-android', 'triaged-android', 'found in release: 3.19']
+Ownership: team-android
+Summary: Issue not reproduced on Samsung Tab A7 (Android 11/12) by triagers, but reporter confirms it persists on GT-I9500 (Android 5.0.1) through version 3.3.0. A related issue (#145872) on a different Samsung device was closed in favor of this one, so the issue remains open; the GT-I9500 is discontinued but the rendering defect via drawLine on older Samsung hardware is kept under investigation.
+Body snippet: ## Steps to Reproduce
+
+1. Execute `flutter run` on the code sample using Samsung Galaxy S4 (GT-I9500)
+
+**Expected results:** <!-- what did you want to see? -->
+
+[Dartpad code](https://dartpad.dev/?id=a02554870741d78d26f0669b808ae5ab)
+
+<img src="https://user-images.githubusercontent.com/63793311/187190642-b49b630f-0076-402c-81df-1fadd8e85dac.jpg" width=25% height=35%>
+
+**Actual results:**
+
+
+<img src="https://user-images.githubusercontent.com/63793311/187190898-b5ee1348-3450-4b72-a46e-8d573282a1d1.png" width=25% height=30%>
+<details>
+<summary>Code sample</summary>
+
+
+```
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(debugShowCheckedModeBanner: false,
+      home: HomeScreen(),
+    );
+  }
+}
+
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({Key key}) : supe...
+Raw Comments Count: 6
+  Comment: Hi @behzodfaiziev 
+I can not reproduce the issue on the latest `stable` and `master` channels with provided sample code.
+My device info: Samsung Galaxy Tab A7 Lite Android 12 OneUI 4.1, SM-T225
+
+<details>
+<summary>Demo</summary>
+
+![Screenshot 2022-08-30 at 10 41 44](https://user-images.githubusercontent.com/104349824/187344204-28d4dc55-ac88-45ca-8a75-8ff7a29abfe5.png)
+
+</details>
+
+
+<details>
+<summary>flutter doctor -v</summary>
+
+```bash
+[✓] Flutter (Channel stable, 3.0.5, on macOS 12.2.1 21D62 darwin-x64, locale en-VN)
+    • Flutter version 3.0.5 at /Users/huynq/Documents/GitHub/flutter
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision f1875d570e (9 hours ago), 2022-07-13 11:24:16 -0700
+    • Engine revision e85ea0e79c
+    • Dart version 2.17.6
+    • DevTools version 2.12.2
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 31.0.0)
+    • Android SDK at /Users/huynq/Library/Android/sdk
+    • Platform android-33, build-tools 31.0.0
+    • ANDROID_HOME = /Users/huynq/Library/Android/sdk
+    • Java binary at: /Applications/Android Studio.app/Contents/jre/Contents/Home/bin/java
+    • Java version OpenJDK Runtime Environment (build 11.0.12+0-b1504.28-7817840)
+    • All Android licenses accepted.
+
+[✓] Xcode - develop for iOS and macOS (Xcode 13.3)
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • CocoaPods version 1.11.3
+
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] Android Studio (version 2021.2)
+    • Android Studio at /Applications/Android Studio.app/Contents
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 11.0.12+0-b1504.28-7817840)
+
+[✓] IntelliJ IDEA Community Edition (version 2020.3.3)
+    • IntelliJ at /Applications/IntelliJ IDEA CE.app
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+
+[✓] IntelliJ IDEA Community Edition (version 2022.1.1)
+    • IntelliJ at /Users/huynq/Library/Application Support/JetBrains/Toolbox/apps/IDEA-C/ch-0/221.5591.52/IntelliJ IDEA CE.app
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+
+[✓] VS Code (version 1.69.0)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.44.0
+
+[✓] Connected device (3 available)
+    • SM T225 (mobile) • R9JT3004VRJ • android-arm64  • Android 11 (API 30)
+    • macOS (desktop)  • macos       • darwin-x64     • macOS 12.2.1 21D62 darwin-x64
+    • Chrome (web)     • chrome      • web-javascript • Google Chrome 103.0.5060.114
+
+[✓] HTTP Host Availability
+    • All required HTTP hosts are available
+
+• No issues found!
+
+```
+
+```bash
+[✓] Flutter (Channel master, 3.1.0-0.0.pre.2572, on macOS 12.5 21G72 darwin-x64, locale en-EE)
+    • Flutter version 3.1.0-0.0.pre.2572 on channel master at /Users/huynq/Documents/GitHub/flutter_master
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision cfee9c8467 (25 minutes ago), 2022-08-29 21:50:23 -0400
+    • Engine revision 0bf86adeff
+    • Dart version 2.19.0 (build 2.19.0-149.0.dev)
+    • DevTools version 2.16.0
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 31.0.0)
+    • Android SDK at /Users/huynq/Library/Android/sdk
+    • Platform android-33, build-tools 31.0.0
+    • ANDROID_HOME = /Users/huynq/Library/Android/sdk
+    • Java binary at: /Applications/Android Studio.app/Contents/jre/Contents/Home/bin/java
+    • Java version OpenJDK Runtime Environment (build 11.0.12+0-b1504.28-7817840)
+    • All Android licenses accepted.
+
+[✓] Xcode - develop for iOS and macOS (Xcode 13.3)
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • Build 13E113
+    • CocoaPods version 1.11.3
+
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] Android Studio (version 2021.2)
+    • Android Studio at /Applications/Android Studio.app/Contents
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 11.0.12+0-b1504.28-7817840)
+
+[✓] IntelliJ IDEA Community Edition (version 2020.3.3)
+    • IntelliJ at /Applications/IntelliJ IDEA CE.app
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+
+[✓] IntelliJ IDEA Community Edition (version 2022.1.1)
+    • IntelliJ at /Users/huynq/Library/Application Support/JetBrains/Toolbox/apps/IDEA-C/ch-0/221.5591.52/IntelliJ IDEA CE.app
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+
+[✓] VS Code (version 1.70.2)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.46.0
+
+[✓] Connected device (3 available)
+    • SM T225 (mobile) • R9JT3004VRJ • android-arm64  • Android 12 (API 31)
+    • macOS (desktop)  • macos       • darwin-x64     • macOS 12.5 21G72 darwin-x64
+    • Chrome (web)     • chrome      • web-javascript • Google Chrome 104.0.5112.101
+
+[✓] HTTP Host Availability
+    • All required HTTP hosts are available
+
+• No issues found!
+
+```
+</details>
+
+Could you please try reproducing the issue on Flutter master channel?
+  ---
+  Comment: @huycozy I tried to run on master channel and then downgraded to version 2.0.0 but that issue was still reproduced.
+  ---
+  Comment: Does this issue still persist after upgrading to 3.3.0?
+  ---
+  Comment: yes, it still persists on version 3.3.0
+  ---
+  Comment: @behzodfaiziev It looks like the issue is only reproducible on a specific device. Labeling this issue for further investigation.
+  ---
+  Comment: Revisiting this issue, I verified on S10+ device (Android 12) wherein the reported behavior doesn't occur.
+Also, the device mentioned in this issue GT-I19500 is [discontinued](https://www.gsmarena.com/samsung_i9500_galaxy_s4-5125.php). But a [similar](https://github.com/flutter/flutter/issues/145872) issue from this year was closed in favor of this issue which also reports same behavior around textfields but on device as mentioned in [this](https://github.com/flutter/flutter/issues/145872#issuecomment-2026957788) comment, so based on it, I will keep this issue open and label as applicable.
+Updating the issue title to reflect affected devices.
+
+  ---
+================================================================================
+
+### #113228 - Provide an API to detect if a TextPosition is located at a soft word wrap
+URL: https://github.com/flutter/flutter/issues/113228
+Created: 2022-10-10T19:27:48Z Updated: 2024-03-06T21:15:03Z
+Reactions: {'total': 0, 'by_type': {}}
+Labels: ['a: text input', 'c: new feature', 'platform-ios', 'framework', 'c: proposal', 'P3', 'team-design', 'triaged-design']
+Ownership: team-design
+Summary: None
+Body snippet: Currently it is not possible to detect if a TextPosition is located at a soft word wrap. We should provide an API, most likely through `RenderEditable` that gives this information. This is necessary to accomplish the use case below.
+
+## Use case
+On iOS we want to be able to toggle the toolbar if we tap on the same `TextPosition` regardless of the `TextAffinity` when our tap is not at a soft word wrap. When our tap is at a soft word wrap we want to hide the toolbar if the `TextAffinity` has changed and toggle the toolbar if it hasn't.
+
+## Proposal
+Provide an API through `RenderEditable` that tells us if a given `TextPosition` is located at a word wrap.
+...
+Raw Comments Count: 0
+================================================================================
+
+### #119684 - Extending to paragraph/or word boundary on MacOS should default to the `downstream` position when at a word wrap
+URL: https://github.com/flutter/flutter/issues/119684
+Created: 2023-02-01T05:22:17Z Updated: 2024-06-06T22:06:38Z
+Reactions: {'total': 0, 'by_type': {}}
+Labels: ['a: text input', 'framework', 'platform-macos', 'P2', 'team-text-input', 'triaged-text-input']
+Ownership: team-text-input
+Summary: Comments point to PR #116549 discussion for context.
+Body snippet: When using keyboard shortcuts on MacOS
+* shift + option + up/down to extend to the next/previous paragraph boundary
+* shift + option + left/right to extend to the next/previous word boundary
+
+And the caret is positioned at a word wrap initially, and the selection is extended, when returning to the original position (collapsing at the base when the selection inverts) the resulting selection should to default to the `downstream`  position.
+
+Current Behavior:
+The selection inherits the `affinity` from `selection.base.affinity`.
+
+Expected Behavior:
+The selection defaults to a `downstream` affinity.
+
+Expected|Actual
+---|---
+<video src="https://user-images.githubusercontent.com/948037/215957886-fbafa1e7-8b3a-4df4-8403-f88dc84e372d.mov" />|<video src="https://user-images.githubusercontent.com/948037/215958318-7da3618b-2362-4791-97f9-7c3c19e97b33.mov" />...
+Raw Comments Count: 3
+  Comment: Some discussion around this issue here: https://github.com/flutter/flutter/pull/116549#discussion_r1089370739
+  ---
+  Comment: The `triaged-desktop` label is irrelevant if there is no `team-desktop` label or `fyi-desktop` label.
+  ---
+  Comment: I'm assuming the problem here is in our shortcuts/actions handling in the framework side, so I added it to team-text-input.
+  ---
+================================================================================
+
+### #139443 - [Windows] Incorrect character deletion in right-to-left texts
+URL: https://github.com/flutter/flutter/issues/139443
+Created: 2023-12-03T11:34:20Z Updated: 2025-08-21T21:50:21Z
+Reactions: {'total': 0, 'by_type': {}}
+Labels: ['a: text input', 'framework', 'a: internationalization', 'platform-windows', 'has reproducible steps', 'P3', 'found in release: 3.16', 'found in release: 3.18', 'team-text-input', 'triaged-text-input']
+Ownership: team-text-input
+Summary: Comments confirmed reproduction on Windows with RTL (Persian/Farsi) multiline text that was manually typed (not pasted); pasting the same text works correctly. The root cause was identified as a caret placement issue: when text contains CRLF-style line endings from manual typing, the cursor offset reported by the framework is incorrect for RTL text in multiline mode on Windows. A commenter linked this to issue #140739 and suspected a connection to CRLF handling. Another commenter noted the bug also manifests with custom fonts on Android (wrong caret position and incorrect word selection). A user shared a workaround that manually inserts `\r\n` instead of `\n` on Enter. The assignee (LongCatIsLooong) was removed after no status updates.
+Body snippet: ### Is there an existing issue for this?
+
+- [X] I have searched the [existing issues](https://github.com/flutter/flutter/issues)
+- [X] I have read the [guide to filing a bug](https://flutter.dev/docs/resources/bug-reports)
+
+### Steps to reproduce
+
+Type rtl text to multiline textfield :
+(DO NOT COPY AND PASTE)
+
+بابا آب داد
+با مهربانی
+4طتانا جمعا 4واتا +یکسوییت 20متری
+بنبابا 40ساله
+
+### Expected results
+
+The letter to the right of the cursor should be deleted.
+(It should be noted that when I copy the text from above and paste it in the text field, everything works correctly.)
+
+https://github.com/flutter/flutter/assets/32570964/b3d09305-3b20-4388-b938-2ce451217a79
+
+
+
+### Actual results
+
+But when I type the rtl text , the letter on the left side of the cursor is deleted.
+
+https://github.com/flutter/flutter/assets/32570964/31f9ee2d-3aeb-441a-8568-97dcf7fdefe7
+
+
+
+### Code sample
+
+<details><summary>Code sample</summary>
+
+```dart
+import 'package:flutter/mat...
+Raw Comments Count: 16
+  Comment: Thanks for the report @mohammadjalalis 
+I ran your code and observed below:
+
+
+https://github.com/flutter/flutter/assets/67046386/9b1f8083-188e-4f24-84ae-13f4d7a2c9bd
+
+When I tried deleting, it started to delete the letter / words that are on left side of the cursor, but the expected behavior is, the letter / words to the right of cursor should get deleted. Is this a correct interpretation of the issue you are reporting ?
+
+
+  ---
+  Comment: Yes, Exactly.
+  ---
+  Comment: Thanks for the update. Based on the findings and report, labeling for tracking.
+
+<details>
+<summary> stable, master flutter doctor -v </summary>
+
+```
+[!] Flutter (Channel stable, 3.16.0, on macOS 12.2.1 21D62 darwin-x64, locale
+    en-GB)
+    • Flutter version 3.16.0 on channel stable at
+      /Users/dhs/documents/fluttersdk/flutter
+    ! Warning: `flutter` on your path resolves to
+      /Users/dhs/Documents/Fluttersdk/flutter/bin/flutter, which is not inside
+      your current Flutter SDK checkout at
+      /Users/dhs/documents/fluttersdk/flutter. Consider adding
+      /Users/dhs/documents/fluttersdk/flutter/bin to the front of your path.
+    ! Warning: `dart` on your path resolves to
+      /Users/dhs/Documents/Fluttersdk/flutter/bin/dart, which is not inside your
+      current Flutter SDK checkout at /Users/dhs/documents/fluttersdk/flutter.
+      Consider adding /Users/dhs/documents/fluttersdk/flutter/bin to the front
+      of your path.
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision db7ef5bf9f (12 days ago), 2023-11-15 11:25:44 -0800
+    • Engine revision 74d16627b9
+    • Dart version 3.2.0
+    • DevTools version 2.28.2
+    • If those were intentional, you can disregard the above warnings; however
+      it is recommended to use "git" directly to perform update checks and
+      upgrades.
+
+[!] Xcode - develop for iOS and macOS (Xcode 12.3)
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    ! Flutter recommends a minimum Xcode version of 13.
+      Download the latest version or update via the Mac App Store.
+    • CocoaPods version 1.11.2
+
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] VS Code (version 1.62.0)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.21.0
+
+[✓] Connected device (5 available)
+    • SM G975F (mobile)       • RZ8M802WY0X • android-arm64   • Android 11 (API 30)
+    • Darshan's iphone (mobile)  • 21150b119064aecc249dfcfe05e259197461ce23 •
+      ios            • iOS 14.4.1 18D61
+    • iPhone 12 Pro Max (mobile) • A5473606-0213-4FD8-BA16-553433949729     •
+      ios            • com.apple.CoreSimulator.SimRuntime.iOS-14-3 (simulator)
+    • macOS (desktop)            • macos                                    •
+      darwin-x64     • Mac OS X 10.15.4 19E2269 darwin-x64
+    • Chrome (web)               • chrome                                   •
+      web-javascript • Google Chrome 98.0.4758.80
+
+[✓] HTTP Host Availability
+    • All required HTTP hosts are available
+
+! Doctor found issues in 1 category.
+
+[!] Flutter (Channel master, 3.18.0-2.0.pre.22, on macOS 12.2.1 21D62
+    darwin-x64, locale en-GB)
+    • Flutter version 3.18.0-2.0.pre.22 on channel master at
+      /Users/dhs/documents/fluttersdk/flutter
+    ! Warning: `flutter` on your path resolves to
+      /Users/dhs/Documents/Fluttersdk/flutter/bin/flutter, which is not inside
+      your current Flutter SDK checkout at
+      /Users/dhs/documents/fluttersdk/flutter. Consider adding
+      /Users/dhs/documents/fluttersdk/flutter/bin to the front of your path.
+    ! Warning: `dart` on your path resolves to
+      /Users/dhs/Documents/Fluttersdk/flutter/bin/dart, which is not inside your
+      current Flutter SDK checkout at /Users/dhs/documents/fluttersdk/flutter.
+      Consider adding /Users/dhs/documents/fluttersdk/flutter/bin to the front
+      of your path.
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision bfaacd5ef8 (81 minutes ago), 2023-12-04 22:48:25 -0500
+    • Engine revision f43ef6cbdd
+    • Dart version 3.3.0 (build 3.3.0-190.0.dev)
+    • DevTools version 2.30.0
+    • If those were intentional, you can disregard the above warnings; however
+      it is recommended to use "git" directly to perform update checks and
+      upgrades.
+
+[!] Android toolchain - develop for Android devices (Android SDK version 30.0.3)
+    • Android SDK at /Users/dhs/Library/Android/sdk
+    ✗ cmdline-tools component is missing
+      Run `path/to/sdkmanager --install "cmdline-tools;latest"`
+      See https://developer.android.com/studio/command-line for more details.
+    ✗ Android license status unknown.
+      Run `flutter doctor --android-licenses` to accept the SDK licenses.
+      See https://flutter.dev/docs/get-started/install/macos#android-setup for
+      more details.
+
+[✓] Xcode - develop for iOS and macOS (Xcode 13.2.1)
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • Build 13C100
+    • CocoaPods version 1.11.2
+
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] IntelliJ IDEA Ultimate Edition (version 2021.3.2)
+    • IntelliJ at /Applications/IntelliJ IDEA.app
+    • Flutter plugin version 65.1.4
+    • Dart plugin version 213.7228
+
+[✓] VS Code (version 1.62.0)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.29.0
+
+[✓] Connected device (3 available)
+    • Darshan's iphone (mobile) • 21150b119064aecc249dfcfe05e259197461ce23 • ios
+      • iOS 15.3.1 19D52
+    • macOS (desktop)           • macos                                    •
+      darwin-x64     • macOS 12.2.1 21D62 darwin-x64
+    • Chrome (web)              • chrome                                   •
+      web-javascript • Google Chrome 109.0.5414.119
+
+[✓] Network resources
+    • All expected network resources are available.
+
+! Doctor found issues in 1 category.
+      
+[!] Xcode - develop for iOS and macOS (Xcode 12.3)
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    ! Flutter recommends a minimum Xcode version of 13.
+      Download the latest version or update via the Mac App Store.
+    • CocoaPods version 1.11.2
+
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] VS Code (version 1.62.0)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.21.0
+
+[✓] Connected device (5 available)
+    • SM G975F (mobile)       • RZ8M802WY0X • android-arm64   • Android 11 (API 30)
+    • Darshan's iphone (mobile)  • 21150b119064aecc249dfcfe05e259197461ce23 •
+      ios            • iOS 14.4.1 18D61
+    • iPhone 12 Pro Max (mobile) • A5473606-0213-4FD8-BA16-553433949729     •
+      ios            • com.apple.CoreSimulator.SimRuntime.iOS-14-3 (simulator)
+    • macOS (desktop)            • macos                                    •
+      darwin-x64     • Mac OS X 10.15.4 19E2269 darwin-x64
+    • Chrome (web)               • chrome                                   •
+      web-javascript • Google Chrome 98.0.4758.80
+
+[✓] HTTP Host Availability
+    • All required HTTP hosts are available
+
+! Doctor found issues in 1 category.
+
+
+
+```
+
+</details>
+  ---
+  Comment: I tried  `20متری`  in an RTL paragraph but couldn't reproduce the issue. @mohammadjalalis could you provide more detailed instructions to help us reproduce this?
+
+
+
+
+  ---
+  Comment: In single-line mode, everything is OK.
+But in multi-line mode, when we decide to delete a letter, usually the next letter is deleted. And in general, the placement of the cursor in multi-line mode in right-to-left texts is very problematic.
+
+Video description:
+
+From second 1 to 25, you can see that everything is correct in single-line mode, and when we try to remove the letter "ر", the same "ر" is removed.
+
+From 25 to 1:40, we type a three-line RTL text(Persian language), when we decide to remove the letter "ر" in the second line, the letter "ی" is removed instead, which is incorrect.
+
+From 1:40 to the end with the arrow keys on the keyboard, when we move the pointer over the text, the cursor is not in the right place, and sometimes it moves three times on some letters. For example, in the first line, the cursor moves three times on the word "آب" and the letter "ب".
+But the interesting thing is that in the last line, the cursor moves completely correct and is placed at the end of each letter and spaces.
+
+
+https://github.com/flutter/flutter/assets/32570964/12e18d3a-a5a0-42b2-8080-e566a11a4e5c
+
+Tip:
+I recently noticed an issue, that is, when we type the same text, for example, in the GitHub editor and copy it to the Flutter Textfield, everything is exactly as we expect.
+The reason is the addition of "\r" before "\n". 
+I hope this tip helps.
+In this video, I copied and pasted the following text into the Textfield.
+
+بابا آب داد
+20 متری
+تا ابد
+
+https://github.com/flutter/flutter/assets/32570964/6e563a8e-4fcc-4f6f-9d1c-1e45ee6cdfce
+
+
+
+
+
+  ---
+  Comment: Unfortunately I still couldn't reproduce the issue. Could you add a listener to the controller:
+```dart
+  controller.addListener(() {
+    print(controller.text.codeUnits);
+    print(controller.value.selection);
+    print(controller.value.composing);
+  });
+```
+
+and copy paste the output before you press the backspace? 
+  ---
+  Comment: This is code :
+```dart
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Demo',
+      locale: const Locale("fa"),
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [Locale("fa")],
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({Key? key, required this.title}) : super(key: key);
+
+  final String title;
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  final controller = TextEditingController();
+
+  @override
+  void initState() {
+    controller.addListener(() {
+      print(controller.text.codeUnits);
+      print(controller.value.selection);
+      print(controller.value.composing);
+    });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: TextField(
+            controller: controller,
+            maxLines: 20,
+            style: const TextStyle(
+              fontSize: 100,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+```
+
+This is log:
+![image](https://github.com/flutter/flutter/assets/32570964/8b1190d9-f30f-454f-a39e-15e3d7cc9b67)
+
+
+```
+flutter: [1576, 1575, 1576, 1575, 32, 1570, 1576, 32, 1583, 1575, 1583, 10, 50, 48, 32, 1605, 1578, 1585, 1740, 10, 1578, 1575, 32, 1575, 1576, 1583]
+flutter: TextSelection.collapsed(offset: 19, affinity: TextAffinity.upstream, isDirectional: false)
+flutter: TextRange(start: -1, end: -1)
+```
+  ---
+  Comment: ![image_2024-01-01_13-25-52 copy](https://github.com/flutter/flutter/assets/32570964/2ce71965-ff99-444c-b011-78c7c3abca87)
+
+  ---
+  Comment: Thanks for the detailed repro! When the caret offset is 19 the caret should be placed after "ی" 
+
+![image](https://github.com/flutter/flutter/assets/31859944/bb15537b-44d4-4d4a-b402-b3390b285fbb)
+
+So this appears to be a caret placement issue. 
+
+  ---
+  Comment: Ah I reproduced this on Windows. 
+![image](https://github.com/flutter/flutter/assets/31859944/caccd4c7-5aad-4fb1-8973-c2f584292d27)
+
+It's interesting that this is platform specific since the cursor placement logic in the framework is supposed to be platform-agnostic. I doubt this has to do with DirectWrite. Maybe this has something to do with CRLF.
+
+Maybe related: https://github.com/flutter/flutter/issues/140739
+  ---
+  Comment: When we use the built-in font on Android, everything works fine; however, there are issues when we use a custom font.
+In this case, the caret is not positioned correctly and the selection of words is incorrect.
+
+https://github.com/flutter/flutter/assets/32570964/166ef398-6999-4b61-9eaa-fe8c92583eaa
+
+
+  ---
+  Comment: @LongCatIsLooong Did you check this out?
+  ---
+  Comment: This is important and has a huge impact on the performance of the RTL applications. Please check and fix this issue.
+@LongCatIsLooong @Renzo-Olivares @darshankawar 
+  ---
+  Comment: I solved my problem temporarily with this piece of code. But it is much better if this problem is fixed permanently by the Flutter team.
+
+```dart
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('RTL Text with \r\n on Enter'),
+        ),
+        body: MyForm(),
+      ),
+    );
+  }
+}
+
+class MyForm extends StatefulWidget {
+  @override
+  _MyFormState createState() => _MyFormState();
+}
+
+class _MyFormState extends State<MyForm> {
+  final TextEditingController _textEditingController = TextEditingController();
+
+  @override
+  void initState() {
+    _textEditingController.addListener(() {
+      print(_textEditingController.text.codeUnits);
+      print(_textEditingController.selection);
+      print(_textEditingController.value.composing);
+    });
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: TextField(
+        controller: _textEditingController,
+        keyboardType: TextInputType.multiline,
+        maxLines: null, // Allow multiple lines
+        textAlign: TextAlign.center,
+        textDirection: TextDirection.rtl,
+        style: const TextStyle(
+          fontFamily: 'IranBakh',
+          fontSize: 50,
+        ),
+        decoration: const InputDecoration(
+          hintText: 'Type RTL text here',
+        ),
+        onChanged: (text) {
+          // Handle cursor movement and backspace
+          int cursorPosition = _textEditingController.selection.baseOffset;
+
+          _textEditingController.value = TextEditingValue(
+            text: text,
+            selection: TextSelection.fromPosition(
+              TextPosition(offset: cursorPosition),
+            ),
+          );
+
+          if (text.isNotEmpty && text[cursorPosition - 1] == '\n') {
+            print("Enter key pressed!");
+            // Check if '\r' already exists before all '\n'
+            bool existingCarriageReturn = _textEditingController.text.contains('\n');
+
+            // Replace '\n' with '\r\n' only if '\r' doesn't already exist before all '\n'
+            if (existingCarriageReturn) {
+              _handleEnterKey(cursorPosition);
+            }
+          }
+        },
+      ),
+    );
+  }
+
+  void _handleEnterKey(int cursorPosition) {
+    String text = _textEditingController.text;
+
+    String newText = '';
+
+    for (int i = 0; i < text.length; i++) {
+      if (text[i] == '\n' && (i == 0 || text[i - 1] != '\r')) {
+        // Add '\r' before '\n' if '\r' doesn't exist before it
+        newText += '\r\n';
+        cursorPosition = cursorPosition + 1;
+      } else {
+        newText += text[i];
+        cursorPosition = cursorPosition;
+      }
+    }
+
+    newText = newText.replaceAll('\r\n\r\n', '\r\n \r\n');
+
+    _textEditingController.value = TextEditingValue(
+      text: newText,
+      selection: TextSelection.fromPosition(
+        TextPosition(offset: cursorPosition), // Restore cursor position
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _textEditingController.dispose();
+    super.dispose();
+  }
+}
+
+```
+  ---
+  Comment: This issue is assigned to @LongCatIsLooong but has had no recent status updates. Please consider unassigning this issue if it is not going to be addressed in the near future. This allows people to have a clearer picture of what work is actually planned. Thanks!
+  ---
+  Comment: This issue was assigned to @LongCatIsLooong but has had no status updates in a long time. To remove any ambiguity about whether the issue is being worked on, the assignee was removed.
+  ---
+================================================================================
+
+### #144759 - Arrow key navigation gets stuck at the end of RTL text using Samsung Keyboard
+URL: https://github.com/flutter/flutter/issues/144759
+Created: 2024-03-07T08:33:22Z Updated: 2024-03-07T23:00:00Z
+Reactions: {'total': 0, 'by_type': {}}
+Labels: ['a: text input', 'framework', 'a: internationalization', 'has reproducible steps', 'P2', 'found in release: 3.19', 'team-text-input', 'triaged-text-input', 'found in release: 3.21']
+Ownership: team-text-input
+Summary: Root cause identified: Samsung keyboard ignores the left-arrow key when the cursor is already at the visual left end of RTL text, because Flutter uses logical order for arrow key navigation while Samsung keyboard uses visual order. Gboard is not affected. On native, arrow key navigation moves in visual order which Flutter does not currently support; a commenter notes this is a long-standing architectural gap.
+Body snippet: ```dart
+const text = 'ی';
+final controller = TextEditingController(text: text * 10)..selection = TextSelection.collapsed(offset: 10); // Selection is placed at the logical end of the text.
+
+TextField(textDirection: TextDirection.rtl, controller: controller, autofocus: true),
+```
+## Steps to reproduce
+1. wait for the text field autofocus
+2. switch to the Samsung keyboard
+3. press <kbd>←</kbd> to move the cursor to the start of the text (since flutter currently uses logical order for arrow key navigation).
+
+## Expected behavior:
+the cursor moves to the right
+
+## Actual behavior:
+the cursor does not move....
+Raw Comments Count: 3
+  Comment: This does not happen on Gboard. It seems that the Samsung keyboard ignores the <kbd>←</kbd> key when the cursor is already at the left end of the text. 
+
+## Screen recording
+
+https://github.com/flutter/flutter/assets/31859944/3aac9554-a946-4c1e-a376-7be13bc75246
+
+
+  ---
+  Comment: I can also reproduce this with Samsung keyboard.
+
+<details>
+<summary>Complete sample code</summary>
+
+```dart
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(
+    const MaterialApp(
+      title: 'Flutter Demo',
+      home: Home(),
+    ),
+  );
+}
+
+class Home extends StatelessWidget {
+  const Home({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    const text = 'ی';
+    final controller = TextEditingController(text: text * 10)
+      ..selection = const TextSelection.collapsed(offset: 10); // Selection is placed at the logical end of the text.
+    return Scaffold(
+      body: Center(
+        child: TextField(
+          textDirection: TextDirection.rtl,
+          controller: controller,
+          autofocus: true,
+        ),
+      ),
+    );
+  }
+}
+
+```
+</details>
+
+<details>
+<summary>flutter doctor -v (stable and master)</summary>
+
+```bash
+[✓] Flutter (Channel stable, 3.19.2, on macOS 14.1 23B74 darwin-x64, locale en-VN)
+    • Flutter version 3.19.2 on channel stable at /Users/huynq/Documents/GitHub/flutter
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision 7482962148 (5 days ago), 2024-02-27 16:51:22 -0500
+    • Engine revision 04817c99c9
+    • Dart version 3.3.0
+    • DevTools version 2.31.1
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 34.0.0)
+    • Android SDK at /Users/huynq/Library/Android/sdk
+    • Platform android-34, build-tools 34.0.0
+    • ANDROID_HOME = /Users/huynq/Library/Android/sdk
+    • Java binary at: /Applications/Android Studio.app/Contents/jbr/Contents/Home/bin/java
+    • Java version OpenJDK Runtime Environment (build 17.0.9+0-17.0.9b1087.7-11185874)
+    • All Android licenses accepted.
+
+[✓] Xcode - develop for iOS and macOS (Xcode 15.2)
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • Build 15C500b
+    • CocoaPods version 1.15.2
+
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] Android Studio (version 2023.2)
+    • Android Studio at /Applications/Android Studio.app/Contents
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+    • android-studio-dir = /Applications/Android Studio.app/
+    • Java version OpenJDK Runtime Environment (build 17.0.9+0-17.0.9b1087.7-11185874)
+
+[✓] VS Code (version 1.87.0)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.84.0
+
+[✓] Connected device (3 available)
+    • RMX2001 (mobile) • EUYTFEUSQSRGDA6D • android-arm64  • Android 11 (API 30)
+    • macOS (desktop)  • macos            • darwin-x64     • macOS 14.1 23B74 darwin-x64
+    • Chrome (web)     • chrome           • web-javascript • Google Chrome 122.0.6261.94
+
+[✓] Network resources
+    • All expected network resources are available.
+
+• No issues found!
+```
+
+```bash
+[!] Flutter (Channel master, 3.21.0-1.0.pre.46, on macOS 14.1 23B74 darwin-x64, locale en-VN)
+    • Flutter version 3.21.0-1.0.pre.46 on channel master at /Users/huynq/Documents/GitHub/flutter_master
+    ! Warning: `flutter` on your path resolves to /Users/huynq/Documents/GitHub/flutter/bin/flutter, which is not inside your current Flutter SDK checkout at /Users/huynq/Documents/GitHub/flutter_master. Consider adding /Users/huynq/Documents/GitHub/flutter_master/bin to the front of your path.
+    ! Warning: `dart` on your path resolves to /Users/huynq/Documents/GitHub/flutter/bin/dart, which is not inside your current Flutter SDK checkout at /Users/huynq/Documents/GitHub/flutter_master. Consider adding /Users/huynq/Documents/GitHub/flutter_master/bin to the front of your path.
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision 95bf597afe (37 minutes ago), 2024-03-06 21:57:25 -0500
+    • Engine revision 03ebd6460b
+    • Dart version 3.4.0 (build 3.4.0-205.0.dev)
+    • DevTools version 2.33.1
+    • If those were intentional, you can disregard the above warnings; however it is recommended to use "git" directly to perform update checks and upgrades.
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 34.0.0)
+    • Android SDK at /Users/huynq/Library/Android/sdk
+    • Platform android-34, build-tools 34.0.0
+    • ANDROID_HOME = /Users/huynq/Library/Android/sdk
+    • Java binary at: /Applications/Android Studio.app/Contents/jbr/Contents/Home/bin/java
+    • Java version OpenJDK Runtime Environment (build 17.0.9+0-17.0.9b1087.7-11185874)
+    • All Android licenses accepted.
+
+[✓] Xcode - develop for iOS and macOS (Xcode 15.2)
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • Build 15C500b
+    • CocoaPods version 1.15.2
+
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] Android Studio (version 2023.2)
+    • Android Studio at /Applications/Android Studio.app/Contents
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+    • android-studio-dir = /Applications/Android Studio.app/
+    • Java version OpenJDK Runtime Environment (build 17.0.9+0-17.0.9b1087.7-11185874)
+
+[✓] VS Code (version 1.87.0)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.84.0
+
+[✓] Connected device (3 available)
+    • RMX2001 (mobile) • EUYTFEUSQSRGDA6D • android-arm64  • Android 11 (API 30)
+    • macOS (desktop)  • macos            • darwin-x64     • macOS 14.1 23B74 darwin-x64
+    • Chrome (web)     • chrome           • web-javascript • Google Chrome 122.0.6261.112
+
+[✓] Network resources
+    • All expected network resources are available.
+
+! Doctor found issues in 1 category.
+```
+</details>
+  ---
+  Comment: On native, arrow key navigation moves in visual order, which Flutter doesn't support at the moment. That's probably a long way off due to the framework not knowing the visual order of the text, unfortunately.
+  ---
+================================================================================
+
+### #155919 - Error where possible null is being asserted in rendering paragraph
+URL: https://github.com/flutter/flutter/issues/155919
+Created: 2024-09-30T08:33:00Z Updated: 2024-10-23T05:47:45Z
+Reactions: {'total': 0, 'by_type': {}}
+Labels: ['framework', 'a: error message', 'P2', 'team-text-input', 'triaged-text-input']
+Ownership: team-text-input
+Summary: Reporter was unable to produce a minimal reproducer but identified the trigger: when a Row child with Expanded wrapping a Text widget has its BoxConstraints width collapse to 0, the null assertion fires. The workaround is to wrap both Row children in Expanded. A related PR #155920 was filed but the issue was noted as still needing a fix.
+Body snippet: ### Steps to reproduce
+
+Spam asynchronous redraws of a Text element on macOS by resizing the window
+
+### Expected results
+
+No Error
+
+### Actual results
+
+```
+RenderParagraph.text (/opt/homebrew/Caskroom/flutter/3.24.3/flutter/packages/flutter/lib/src/rendering/paragraph.dart:348)
+RenderParagraph.debugDescribeChildren (/opt/homebrew/Caskroom/flutter/3.24.3/flutter/packages/flutter/lib/src/rendering/paragraph.dart:1278)
+DiagnosticableTreeNode.getChildren (/opt/homebrew/Caskroom/flutter/3.24.3/flutter/packages/flutter/lib/src/foundation/diagnostics.dart:2882)
+DiagnosticsNode.toJsonMap.<anonymous closure> (/opt/homebrew/Caskroom/flutter/3.24.3/flutter/packages/flutter/lib/src/foundation/diagnostics.dart:1611)
+DiagnosticsNode.toJsonMap (/opt/homebrew/Caskroom/flutter/3.24.3/flutter/packages/flutter/lib/src/foundation/diagnostics.dart:1652)
+DiagnosticsNode.toJsonList.<anonymous closure> (/opt/homebrew/Caskroom/flutter/3.24.3/flutter/packages/flutter/lib/src/foundation/diagnost...
+Raw Comments Count: 5
+  Comment: Hi @grahamjenson, can you provide more detailed steps to reproduce along with a complete sample? I just tested with a simple hello world sample and resized my window multiple times but I could not reproduce the issue. 
+
+Does this occur for you every time?
+  ---
+  Comment: @danagbemava-nc I can reliably cause the error with my larger app, but have spent the last few hours failing to build a minimal app that causes the error.
+
+The error always occurs when the BoxContraints width of a Text element is 0, so it is not going to be drawn to the screen, but maybe some other place tries to draw it. I am sorry don't know more than that. 
+
+The way in which a text element is set to 0 is:
+
+```
+Row(children: [Expanded(child: Text("some")), Text("text")])]
+```
+
+When the size of the box is squished the second child doesnt compress so the first child disappears, when that happens the Texts BoxConstraints are 0, and  the error occurs.
+
+My fix is just to add `Expanded` to both elements. This "fixes" my issue, but probably leaves the underlying issue.
+
+Hope you find the cause, sorry I couldnt be more help. 
+  ---
+  Comment: Hi @grahamjenson, can you share a recording of you reproducing the issue? That could maybe offer some hints as to what is happening
+  ---
+  Comment: Hey, I am just going to comment on the pr #155920
+  ---
+  Comment: This will still need to be fixed
+  ---
+================================================================================
+

@@ -1,0 +1,1207 @@
+### #71083 - TextFormField (and TextField) widgets do not wrap text correctly
+URL: https://github.com/flutter/flutter/issues/71083
+Created: 2020-11-23T14:50:43Z Updated: 2024-03-06T21:14:56Z
+Reactions: {'total': 5, 'by_type': {'THUMBS_UP': 5}}
+Labels: ['a: text input', 'framework', 'f: material design', 'dependency: skia', 'a: typography', 'P2', 'team-design', 'triaged-design']
+Ownership: team-design
+Summary: Comments confirm the bug is distinct from #18761 (which is about read-only Text widgets), and the issue persists through at least Flutter 3.10.6 / Dart 3.0 on macOS. Multiple commenters reproduced it with long URLs in `TextFormField` using `FractionallySizedBox`. No proposed fix or PR exists; status is open and unresolved.
+Body snippet: Similar to the issues reported in #18761, the input fields in Flutter suffer from the same disfunction.
+
+Currently, the text input fields in Flutter do not wrap their input correctly. Instead of breaking a word in the middle and wrapping the remainder to the next line, Flutter is breaking the string at the word boundary closest to the end of the line, which is non buono.
+
+#### Flutter
+<img width="240" alt="Screen Shot 2020-11-23 at 16 37 05" src="https://user-images.githubusercontent.com/921173/99974945-44fc2e80-2daa-11eb-9599-691eed55a0c6.png">
+
+#### Chrome
+Web browsers correctly split the string at the character that would otherwise overflow.
+<img width="343" alt="Screen Shot 2020-11-23 at 16 44 58" src="https://user-images.githubusercontent.com/921173/99975781-5265e880-2dab-11eb-9d40-81ee07b07921.png">
+
+
+#### Code snippet
+```dart
+TextFormField(
+  decoration: InputDecoration(border: OutlineInputBorder()),
+  minLines: null,
+  maxLines: null,
+  initialValue: 'https://...
+Raw Comments Count: 12
+  Comment: @benPesso 
+how does this issue differ from the one you [referenced](https://github.com/flutter/flutter/issues/18761)?
+isn't it a duplicate
+  ---
+  Comment: @iapicca That one is for Text (read-only) widgets, whereas this one is for input widgets. It's about the **wrapping** of text. Not clipping. With input fields, you don't want to clip the text, but to wrap it, so it's 100% visible.
+
+Here's another wacky example:
+<img width="217" alt="Screen Shot 2020-11-23 at 17 40 30" src="https://user-images.githubusercontent.com/921173/99982398-2c444680-2db3-11eb-97e5-7378a623d40a.png">
+
+  ---
+  Comment: Have you ever found a solution to this problem @benPesso?
+
+  ---
+  Comment: @Sembauke Not really, no. I haven't tested it in a while (after #18761 was resolved). If you're experiencing this, I guess that fix did not resolve this issue. 
+  ---
+  Comment: @benPesso This seems like it it fixed in the newest version of Flutter. But please confirm yourself.
+  ---
+  Comment: @Sembauke  Still not really working as expected.
+https://github.com/flutter/flutter/assets/921173/07a721d1-319c-4ec9-8aaa-39aef3ec6b8c
+
+
+  ---
+  Comment: are you sure you are on 3.10?
+  ---
+  Comment: [✓] Flutter (Channel stable, 3.10.3, on macOS 13.0 22A380 darwin-x64, locale en-US)
+  ---
+  Comment: > [✓] Flutter (Channel stable, 3.10.3, on macOS 13.0 22A380 darwin-x64, locale en-US)
+
+Have you set the Dart SDK to 3.0 in your pubspec.yaml?
+  ---
+  Comment: Yes, I created a brand new project for it.
+>  sdk: '>=3.0.3 <4.0.0'
+
+The input field was set in a `FractionallySizedBox`:
+```
+FractionallySizedBox(
+  widthFactor: .8,
+  child: TextFormField(
+    decoration: const InputDecoration(border: OutlineInputBorder()),
+    minLines: null,
+    maxLines: null,
+    initialValue: 'https://www.example.com/some/thingweirdisgoingon.here',
+  ),
+),
+```
+  ---
+  Comment: Same here, flutter: 3.10.6 dart: 3.0+
+![image](https://github.com/flutter/flutter/assets/13160176/cd262fc9-04f9-4295-b282-ed9474f17f24)
+
+  ---
+  Comment: This issue is missing a priority label. Please set a priority label when adding the `triaged-design` label.
+  ---
+================================================================================
+
+### #91738 - [Proposal] Add support for automatically switching text input to `RTL` or `LTR` based on first character typed
+URL: https://github.com/flutter/flutter/issues/91738
+Created: 2021-10-13T10:38:12Z Updated: 2023-09-15T22:45:35Z
+Reactions: {'total': 5, 'by_type': {'THUMBS_UP': 4, 'HEART': 1}}
+Labels: ['a: text input', 'c: new feature', 'framework', 'a: internationalization', 'c: proposal', 'P3', 'team-framework', 'triaged-framework']
+Ownership: team-framework
+Summary: Discussion notes the Bidi class exists in Flutter's intl. Suggestion to add an auto value similar to HTML's dir attribute. Noted as technically feasible via ICU ubidi API. Adding to TextPainter suggested, along with needing a low-level API for WidgetSpan writing directions.
+Body snippet: <!-- Thank you for using Flutter!
+
+     If you are looking for support, please check out our documentation
+     or consider asking a question on Stack Overflow:
+      * https://flutter.dev/
+      * https://api.flutter.dev/
+      * https://stackoverflow.com/questions/tagged/flutter?sort=frequent
+
+     If you have found a bug or if our documentation doesn't have an answer
+     to what you're looking for, then fill out the template below. Please read
+     our guide to filing a bug first: https://flutter.dev/docs/resources/bug-reports
+-->
+
+## Use case
+
+<!--
+     Please tell us the problem you are running into that led to you wanting
+     a new feature.
+
+     Is your feature request related to a problem? Please give a clear and
+     concise description of what the problem is.
+
+     Describe the alternative solutions you've considered. Is there a package
+     on pub.dev/flutter that already solves this?
+-->
+
+In multilingual text fields, Bidirectional text input is a...
+Raw Comments Count: 9
+  Comment: Not only `TextField`, but also `Text` must detect bidirectional text out of the box, I think having a `bool` property like `matchContentDirection` with default value as `true` is awesome, I'm not sure may be `TextAlign.auto` as default text direction is better
+ Detecting bidirectional text must be added to `TextField` itself and all text in it like `hint` , `helper`, `error` 
+  ---
+  Comment: > In multilingual text input, usually it detect Bidirectional text
+
+Hi @sm2017, I'm not particularly familiar with `Bidirectional` text input, can you expand more on this?
+
+  ---
+  Comment: See https://en.m.wikipedia.org/wiki/Bidirectional_text
+
+There is a bidi class in flutter https://api.flutter.dev/flutter/intl/Bidi-class.html
+
+It is impossible to implement my feature request in application layer, because we have dependencies that has text field or text widget
+  ---
+  Comment: @sm2017, my question was poorly phrased, what I meant was can you expand a bit more on this statement you made earlier?
+
+> In multilingual text input, usually it detect Bidirectional text
+
+  ---
+  Comment: Let me describe default behavior of text input in Android os, Chrome, Whatsapp and ...
+
+In your Chrome search bar, try to type `ب` , feel free to copy and paste it, you can see the direction of text is detected as LRT, AFAIK it's a common behavior in most operation systems and applications
+
+It's Bidirectional text input as it's context-aware
+  ---
+  Comment: @sm2017, thanks for the insight. 
+I have updated the proposal to make it clearer.
+  ---
+  Comment: It might be a good idea to add a new value called `auto` similar to the web.
+
+For reference here are the docs on `dir`.
+https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/dir
+  ---
+  Comment: I need this, it's so useful. I added some code to `onChange` property of `TextField`s in my app to set text direction based on content.
+  ---
+  Comment: @goderbauer This seems technically feasible (https://unicode-org.github.io/icu-docs/apidoc/dev/icu4c/ubidi_8h.html#a165ae276878c7a54fd8b067db0d12f40). 
+
+Does it make sense to add this to `TextPainter`? I guess for `WidgetSpan`s we'll need a new low-level API that gives us the real writing direction of a paragraph, before we can build those inline widgets with the correct writing directions? 
+  ---
+================================================================================
+
+### #91010 - `dart:ui.LineMetrics` should include the line boundaries 
+URL: https://github.com/flutter/flutter/issues/91010
+Created: 2021-09-30T06:16:02Z Updated: 2023-09-19T01:58:18Z
+Reactions: {'total': 4, 'by_type': {'THUMBS_UP': 3, 'EYES': 1}}
+Labels: ['a: text input', 'engine', 'a: typography', 'c: proposal', 'P3', 'team-engine', 'triaged-engine']
+Ownership: team-engine
+Summary: A commenter confirmed the need for TextRange in LineMetrics and described the current workaround: calling Paragraph.getPositionForOffset to derive line text ranges, which is inconvenient and indirect.
+Body snippet: The information is currently manually stripped when constructing a `LineMetrics`:
+https://github.com/google/skia/blob/a92b268f7d78e0069b2a61b22cb7ce615d12a60e/modules/skparagraph/include/Metrics.h#L39-L93
+
+It will be much easier to implement vertical caret movements for up/down arrow keys with the line boundary information included. This corresponds to a todo item in https://github.com/flutter/flutter/pull/90684 .
+...
+Raw Comments Count: 1
+  Comment: Up vote for this issue. It would be very convenient if the `LineMetrics` includes `TextRange` for the current line. 
+Right now, our approach of getting the text range is by calling the `getPositionForOffset` method that `Paragraph` provides. 
+  ---
+================================================================================
+
+### #41324 - TextField/TextFormField labelText and hintText should be right-aligned with TextDirection.rtl
+URL: https://github.com/flutter/flutter/issues/41324
+Created: 2019-09-25T22:38:16Z Updated: 2026-02-16T20:09:34Z
+Reactions: {'total': 3, 'by_type': {'THUMBS_UP': 3}}
+Labels: ['a: text input', 'c: new feature', 'framework', 'f: material design', 'a: internationalization', 'P2', 'team-text-input', 'triaged-text-input']
+Ownership: team-text-input
+Summary: Confirmed reproducible with a code sample; video demonstration added. A commenter noted they implemented a solution fixing RTL alignment inconsistencies in InputDecoration.
+Body snippet: There is forgotten attribute **write** for the `labelText of(TextFormField or TextField)` from right to left.
+I tried with `textAlign`, `textDirection`. Although, it works with `hintText` and the user input, it doesn't work with the `labelText`.
+
+
+![Screenshot](https://user-images.githubusercontent.com/15935347/65644781-86058100-dff5-11e9-82f0-60321192c474.png)
+[textfield.txt](https://github.com/flutter/flutter/files/3655101/textfield.txt)
+
+
+
+```dart
+TextFormField(
+        textAlign: Language.lang  == 'NotArabic'  ?TextAlign.left:TextAlign.right,
+        validator: (value) {
+          return Validators().validateEmail(value);
+        },
+        controller: _emailController,
+        decoration: new InputDecoration(
+            hintStyle: new TextStyle(color: Colors.grey[500],),
+            labelStyle: new TextStyle(color: Colors.grey[900],),
+            hintText: 'hint Email',
+            labelText: 'label Email',
+            fillColor: Colors.white70),
+        tex...
+Raw Comments Count: 5
+  Comment: Hello @mohamed-reda !
+
+Thank you for posting an issue.
+Can you please also attach the `flutter doctor -v` command output?
+
+Thank you.
+  ---
+  Comment: flutter doctor print : 
+> 
+C:\src\flutter\bin\flutter.bat doctor --verbose
+[√] Flutter (Channel stable, v1.9.1+hotfix.6, on Microsoft Windows [Version 6.1.7601], locale ar-EG)
+    • Flutter version 1.9.1+hotfix.6 at C:\src\flutter
+    • Framework revision 68587a0916 (7 weeks ago), 2019-09-13 19:46:58 -0700
+    • Engine revision b863200c37
+    • Dart version 2.5.0
+
+[√] Android toolchain - develop for Android devices (Android SDK version 29.0.2)
+    • Android SDK at C:\Users\AboReda\AppData\Local\Android\sdk
+    • Android NDK location not configured (optional; useful for native profiling support)
+    • Platform android-29, build-tools 29.0.2
+    • Java binary at: C:\Program Files\Android\Android Studio1\jre\bin\java
+    • Java version OpenJDK Runtime Environment (build 1.8.0_202-release-1483-b03)
+    • All Android licenses accepted.
+
+[√] Android Studio (version 3.5)
+    • Android Studio at C:\Program Files\Android\Android Studio1
+    • Flutter plugin version 39.0.3
+    • Dart plugin version 191.8423
+    • Java version OpenJDK Runtime Environment (build 1.8.0_202-release-1483-b03)
+
+[√] IntelliJ IDEA Community Edition (version 2019.1)
+    • IntelliJ at C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2019.1.1
+    • Flutter plugin version 35.3.3
+    • Dart plugin version 191.7141.49
+
+[√] VS Code (version 1.38.1)
+    • VS Code at C:\Users\AboReda\AppData\Local\Programs\Microsoft VS Code
+    • Flutter extension version 3.4.1
+
+[√] Connected device (1 available)
+    • Infinix X5515 • 0350225897007314 • android-arm • Android 8.1.0 (API 27)
+
+• No issues found!
+Process finished with exit code 0
+> 
+  ---
+  Comment: cc @victorsanni 
+  ---
+  Comment: Reproducible using the code sample below.
+
+<details open>
+<summary>Sample code</summary>
+
+```dart
+import 'package:flutter/material.dart';
+
+void main() => runApp(TextLabelRtlApp());
+
+class TextLabelRtlApp extends StatelessWidget {
+  const TextLabelRtlApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('RTL TextFormField'),
+        ),
+        body: Center(
+          child: TextField(
+            decoration: InputDecoration(
+              hintText: 'hint text',
+              labelText: 'label text',
+            ),
+            textDirection: TextDirection.rtl,
+          ),
+        ),
+      ),
+    );
+  }
+}
+```
+</details>
+
+https://github.com/user-attachments/assets/79449cdc-3f95-4253-ad75-510bb9519e1c
+  ---
+  Comment: @victorsanni I’ve implemented a solution that resolves a few inconsistencies and improves `InputDecoration` consistency across dependent widgets.
+  ---
+================================================================================
+
+### #93934 - [Desktop] TextField with pasted CRLF endings has invisible CR char
+URL: https://github.com/flutter/flutter/issues/93934
+Created: 2021-11-19T20:50:04Z Updated: 2024-06-07T19:08:08Z
+Reactions: {'total': 2, 'by_type': {'THUMBS_UP': 2}}
+Labels: ['a: text input', 'framework', 'platform-windows', 'a: desktop', 'has reproducible steps', 'P2', 'found in release: 2.5', 'found in release: 2.6', 'found in release: 2.8', 'team-windows', 'triaged-windows']
+Ownership: team-windows
+Summary: A commenter confirmed reproduction on both macOS and Windows desktop (not on web). The issue affects both stable and master channels. No fix or PR was proposed; status is open and stalled.
+Body snippet: When I paste some text with CRLF endings into a TextField and click on the end of the line, cursor is placed after invisible `\r` char. When I press left arrow, it goes over that char to the actual text end. Now when I press right arrow, it skips to the next line like there wasn't any additional char. But that `\r` is still there after I click there with mouse again.
+
+I found that it is `\r` by selecting it and pasting it into hex editor.
+
+This only happens in Windows build, tried on web and it doesn't happen there. Don't know about the other platforms.
+
+<details>
+<summary>Code sample</summary>
+
+```dart
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        body: Container(
+          padding: const EdgeInsets.all(8),
+          child: const TextFiel...
+Raw Comments Count: 4
+  Comment: Hi @leoshusar, Thanks for filing the issue. 
+
+I am having hard time understanding the reproducible steps, Could you please clarify it, specifically this part.
+
+> When I paste some text with CRLF endings into a TextField and click on the end of the line, 
+
+How do you paste the CRLF character in the texfield? and whats the expected vs actual results it would be great if you could update the main post.
+
+Thank you.
+  ---
+  Comment: Hi @maheshmnj, I have updated the main post. I hope it's more understandable now.
+  ---
+  Comment: Thanks for the update @leoshusar, I can reproduce the same behavior as you
+
+Steps to reproduce
+- Run the first code sample from the main Post.
+- Paste the CRLF text in the textfield from the `crlf.txt` file in the main post.
+- Clicking at the end of a line with a mouse the cursor is shown after a CRLF character (with a visible space between text and cursor)
+ - On pressing the left arrow key the cursor moves to the end of text and pressing the right arrow key the cursor moves to next line as if there was no character at the end. 
+ 
+This happens on both MacOS & Windows Desktop and not on the web, This can be understood from the below video comparison on Desktop and Web. Reproducible on both stable and the master channel.
+
+Not sure if this is intended Keeping this issue open for further investigation from the team.
+
+Windows Desktop | Web
+:-: | :-:
+<video src='https://user-images.githubusercontent.com/31410839/143193313-de023438-5b69-4994-ac2f-c23bd1dc3aec.mp4' width=180/> | <video src='https://user-images.githubusercontent.com/31410839/143193292-90fce5a3-a997-4022-a6ba-4463bb4e6814.mp4' width=180/>
+
+
+<details>
+<summary>flutter doctor -v</summary>
+
+```
+[√] Flutter (Channel stable, 2.5.3, on Microsoft Windows [Version 10.0.19042.1348], locale en-US)
+    • Flutter version 2.5.3 at C:\flutter_sdk\stable
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision 18116933e7 (6 weeks ago), 2021-10-15 10:46:35 -0700
+    • Engine revision d3ea636dc5
+    • Dart version 2.14.4
+
+[√] Android toolchain - develop for Android devices (Android SDK version 31.0.0)    
+    • Android SDK at C:\Users\mahesh\AppData\Local\Android\sdk
+    • Platform android-31, build-tools 31.0.0
+    • Java binary at: C:\Program Files\Android\Android Studio\jre\bin\java
+    • Java version OpenJDK Runtime Environment (build 11.0.10+0-b96-7249189)        
+    • All Android licenses accepted.
+
+[√] Chrome - develop for the web
+    • Chrome at C:\Program Files\Google\Chrome\Application\chrome.exe
+
+[√] Visual Studio - develop for Windows (Visual Studio Community 2019 16.11.4)      
+    • Visual Studio at C:\Program Files (x86)\Microsoft Visual Studio\2019\Community
+    • Visual Studio Community 2019 version 16.11.31727.386
+    • Windows 10 SDK version 10.0.19041.0
+
+[√] Android Studio (version 2020.3)
+    • Android Studio at C:\Program Files\Android\Android Studio
+    • Flutter plugin can be installed from:
+       https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+       https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 11.0.10+0-b96-7249189)
+
+[√] VS Code (version 1.61.2)
+    • VS Code at C:\Users\mahesh\AppData\Local\Programs\Microsoft VS Code   
+    • Flutter extension version 3.28.0
+
+[√] Connected device (3 available)
+    • Windows (desktop) • windows • windows-x64    • Microsoft Windows [Version 10.0.19042.1348]
+    • Chrome (web)      • chrome  • web-javascript • Google Chrome 96.0.4664.45
+    • Edge (web)        • edge    • web-javascript • Microsoft Edge 95.0.1020.44
+
+• No issues found!
+```
+```
+PS C:\flutter_projects\counter> flutterm doctor -v
+[√] Flutter (Channel master, 2.6.0-12.0.pre.765, on Microsoft Windows [Version 10.0.19042.1348], locale en-US)
+    • Flutter version 2.6.0-12.0.pre.765 at C:\flutter_sdk\master
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision e961ea6f41 (5 days ago), 2021-11-18 22:38:05 -0800
+    • Engine revision a3ef1d5351
+    • Dart version 2.16.0 (build 2.16.0-20.0.dev)
+    • DevTools version 2.8.0
+
+[√] Android toolchain - develop for Android devices (Android SDK version 31.0.0)
+    • Android SDK at C:\Users\mahesh\AppData\Local\Android\sdk
+    • Platform android-31, build-tools 31.0.0
+    • Java binary at: C:\Program Files\Android\Android Studio\jre\bin\java
+    • Java version OpenJDK Runtime Environment (build 11.0.10+0-b96-7249189)
+    • All Android licenses accepted.
+
+[√] Chrome - develop for the web
+    • Chrome at C:\Program Files\Google\Chrome\Application\chrome.exe
+
+[√] Visual Studio - develop for Windows (Visual Studio Community 2019 16.11.4)
+    • Visual Studio at C:\Program Files (x86)\Microsoft Visual Studio\2019\Community
+    • Visual Studio Community 2019 version 16.11.31727.386
+    • Windows 10 SDK version 10.0.19041.0
+
+[√] Android Studio (version 2020.3)
+    • Android Studio at C:\Program Files\Android\Android Studio
+    • Flutter plugin can be installed from:
+       https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+       https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 11.0.10+0-b96-7249189)
+
+[√] VS Code (version 1.61.2)
+    • VS Code at C:\Users\mahesh\AppData\Local\Programs\Microsoft VS Code
+    • Flutter extension version 3.28.0
+
+[√] Connected device (3 available)
+    • Windows (desktop) • windows • windows-x64    • Microsoft Windows [Version 10.0.19042.1348]
+    • Chrome (web)      • chrome  • web-javascript • Google Chrome 96.0.4664.45
+    • Edge (web)        • edge    • web-javascript • Microsoft Edge 95.0.1020.44
+
+• No issues found!
+```
+</details>
+  ---
+  Comment: The `triaged-desktop` label is irrelevant if there is no `team-desktop` label or `fyi-desktop` label.
+  ---
+================================================================================
+
+### #117139 - Incorrect selection area in RTL TextField.
+URL: https://github.com/flutter/flutter/issues/117139
+Created: 2022-12-15T13:15:07Z Updated: 2023-07-08T02:03:21Z
+Reactions: {'total': 2, 'by_type': {'THUMBS_UP': 2}}
+Labels: ['a: text input', 'framework', 'a: internationalization', 'has reproducible steps', 'P2', 'found in release: 3.3', 'found in release: 3.7', 'team-framework', 'triaged-framework']
+Ownership: team-framework
+Summary: Triage confirmed reproduction on master 3.7 on Android and iOS. Root cause identified: Skia SkParagraph's `getRectsForRange` API; a Skia bug was filed at https://bugs.chromium.org/p/skia/issues/detail?id=14035. A whitespace workaround was suggested.
+Body snippet: A dot at the end of a line that is followed by another line makes the text selection area incorrect!
+First, create a simple app with an RTL multiline TextField. (or use my sample code.)
+
+Steps to Reproduce:
+1. Add a line with this text: "Select a word and see the selected area."
+2. Add another line
+3. Double click on the "word" to select it.
+
+Expected:
+The selection area should match the "word" area.
+
+Actual:
+The selected area is not matched with the "word" area.
+
+<details>
+<summary>Sample code</summary>
+
+```dart
+import 'package:flutter/material.dart';
+
+void main() =>
+  runApp(MaterialApp(
+    home: Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          TextField(
+            controller: TextEditingController(text: '\nSelect a word and see the incorrect selected area.\n'),
+            textDirection: TextDirection.rtl,
+            maxLines: null,
+          ),
+          TextField(
+            contro...
+Raw Comments Count: 3
+  Comment: ## Triage report
+
+I can reproduce this issue on `Master (3.7.0-9.0.pre.11)`. The selection as an offset when selecting a word. On pressing select all, the handles are both at the end of the text, instead of on opposite ends. Reproducible on both Android and iOS
+
+<details>
+<summary>Code Sample (Same as OP)</summary>
+
+```dart
+import 'package:flutter/material.dart';
+
+void main() => runApp(
+      MaterialApp(
+        home: Scaffold(
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextField(
+                controller: TextEditingController(
+                    text:
+                        '\nSelect a word and see the incorrect selected area.\n'),
+                textDirection: TextDirection.rtl,
+                maxLines: null,
+              ),
+              TextField(
+                controller: TextEditingController(
+                    text:
+                        '\nSelect a word and see the correct selected area.\n'),
+                maxLines: null,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+```
+
+</details>
+
+##### Selecting a word
+
+![image](https://user-images.githubusercontent.com/50555895/207884621-0682bbb2-be55-4eae-872e-8a9c8d60bf97.png)
+
+##### Selecting all
+
+![image](https://user-images.githubusercontent.com/50555895/207884900-4ffd904d-efc9-4400-bad4-e4b0f0795407.png)
+
+  ---
+  Comment: just add white space between /n and words
+
+```
+Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          TextField(
+            controller: TextEditingController(text: '\n Select a word and see the incorrect selected area. \n'),
+            textDirection: TextDirection.rtl,
+            maxLines: null,
+          ),
+          TextField(
+            controller: TextEditingController(text: '\nSelect a word and see the correct selected area.\n'),
+            maxLines: null,
+          ),
+        ],
+      ),
+    )
+```
+  ---
+  Comment: This is caused by the implementation of the `getRectsForRange` API in the Skia SkParagraph text layout library.
+
+Filed a Skia bug: https://bugs.chromium.org/p/skia/issues/detail?id=14035
+
+  ---
+================================================================================
+
+### #181759 - RTL TextField breaks when inserting emojis between existing emojis
+URL: https://github.com/flutter/flutter/issues/181759
+Created: 2026-01-31T19:50:07Z Updated: 2026-03-06T01:26:39Z
+Reactions: {'total': 2, 'by_type': {'THUMBS_UP': 2}}
+Labels: ['a: text input', 'platform-android', 'framework', 'f: material design', 'platform-macos', 'P2', 'team-text-input', 'triaged-text-input']
+Ownership: team-text-input
+Summary: Comments identify the root cause: on macOS and Linux, dynamically changing `textDirection` during IME composition triggers a `wstring_convert::to_bytes` exception in the engine (built with `-fno-exceptions`), causing an abort; on Android the IME composing state is invalidated, producing `?`/replacement characters. iOS and web cannot reproduce. A crash log from macOS shows the engine decoding an invalid JSON surrogate pair. A comment in #183112 indicates this cannot be fixed in the framework and requires fixes in each affected embedder (macOS, Linux). Status: needs engine/embedder fix.
+Body snippet: ### Steps to reproduce
+
+When using a TextField with RTL text direction, inserting an emoji between two existing emojis sometimes breaks the text, showing ? character.
+
+### Expected results
+
+Inserting emojis between existing emojis in an RTL TextField should render correctly.
+
+### Actual results
+
+The inserted emoji breaks the text and may render as ?.
+
+### Code sample
+
+<details open><summary>Code sample</summary>
+
+```dart
+TextField(textDirection: TextDirection.rtl)
+```
+
+</details>
+
+
+### Screenshots or Video
+
+<details open>
+<summary>Screenshots / Video demonstration</summary>
+
+https://github.com/user-attachments/assets/706052f5-2309-4bdf-a44b-6ab05848f8a7
+
+</details>
+
+
+### Logs
+
+<details colose><summary>Logs</summary>
+
+```console
+n/a
+```
+
+</details>
+
+
+### Flutter Doctor output
+
+<details colose><summary>Doctor output</summary>
+
+```console
+n/a
+```
+
+</details>
+...
+Raw Comments Count: 5
+  Comment: The issue behaves differently across platforms.
+
+On Flutter Desktop (Windows/Linux/macOS), dynamically changing textDirection on an active TextField can crash the Flutter Engine. During the rebuild of the native text input layout, the engine attempts to convert a wide string (`std::wstring`) to UTF-8 using `wstring_convert::to_bytes`.
+If the text is in an intermediate or invalid Unicode state (for example, during IME composition or layout recalculation), this conversion fails and throws a std::range_error with the message:
+```
+wstring_convert: to_bytes error
+```
+
+
+Since the Flutter Engine is built with -fno-exceptions, the exception cannot be caught, resulting in an application abort.
+
+On mobile platforms (Android/iOS), the app usually does not crash because a different text input pipeline is used. However, changing textDirection during active text composition may invalidate the IME composing state, causing unsupported or incomplete Unicode sequences to be replaced with a fallback character (**displayed as ? or �**).
+  ---
+  Comment: Hey @mbfakourii ,
+Thanks for reporting the issue.
+
+**Issue exists on android only, iOS seems working fine**
+
+### Code sample
+```dart
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(title: 'Flutter Demo', home: MyHomePage());
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  late TextEditingController textEditingController;
+  TextDirection _textDirection = TextDirection.ltr;
+
+  void _toggleDirection() {
+    setState(() {
+      _textDirection = _textDirection == TextDirection.ltr
+          ? TextDirection.rtl
+          : TextDirection.ltr;
+    });
+  }
+
+  @override
+  void initState() {
+    textEditingController = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            children: [
+              SizedBox(height: 40),
+              TextField(
+                controller: textEditingController,
+                textDirection: _textDirection,
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  _toggleDirection();
+                },
+                child: Text("Change to rtl/ltr"),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+``` 
+### Android video
+
+https://github.com/user-attachments/assets/005525bd-f6f6-49f1-b065-2200849cf12d
+
+### iOS video - working fine
+
+https://github.com/user-attachments/assets/917d1f5f-1756-4b6b-9037-ab1b8ce4cb80
+
+### Flutter doctor
+```dart
+Doctor summary (to see all details, run flutter doctor -v):
+[✓] Flutter (Channel stable, 3.38.9, on macOS 26.2 25C56 darwin-arm64, locale
+    en-US)
+[✓] Android toolchain - develop for Android devices (Android SDK version 36.1.0)
+[✓] Xcode - develop for iOS and macOS (Xcode 26.2)
+[✓] Chrome - develop for the web
+[✓] Connected device (5 available)
+[✓] Network resources
+
+``` 
+  ---
+  Comment: @puneetkukreja98 this is a problem in macos as well.
+  ---
+  Comment: @warioddly I’m able to reproduce this issue on macOS as well. Thanks for reporting it.
+### LOGS 
+```
+range_error was thrown in -fno-exceptions mode with message "wstring_convert: to_bytes error"
+Lost connection to device.
+
+Exited.
+``` 
+  ---
+  Comment: Other platforms:
+
+* ✅ iOS - could not repro
+* ✅ Web - could not repro
+* ✅ Windows - could not repro
+* ❌ macOS - app crashes
+* ❌ Linux - Text field shows `?` instead of emoji
+
+<details><summary>Crash on macOS...</summary>
+<p>
+
+```
+*** Terminating app due to uncaught exception 'NSInternalInconsistencyException', reason: 'Invalid JSON message, decoding failed: Error Domain=NSCocoaErrorDomain Code=3840 "Missing low code point in surrogate pair around line 1, column 64." UserInfo={NSDebugDescription=Missing low code point in surrogate pair around line 1, column 64., NSJSONSerializationErrorIndex=64}'
+*** First throw call stack:
+(
+	0   CoreFoundation                      0x000000019480ba30 __exceptionPreprocess + 176
+	1   libobjc.A.dylib                     0x00000001942ceb90 objc_exception_throw + 88
+	2   Foundation                          0x0000000195e1ba78 -[NSCalendarDate initWithCoder:] + 0
+	3   FlutterMacOS                        0x0000000105dd1dc0 -[FlutterJSONMessageCodec decode:] + 568
+	4   FlutterMacOS                        0x0000000105dd2508 -[FlutterJSONMethodCodec decodeMethodCall:] + 112
+	5   FlutterMacOS                        0x0000000105dd00a8 __45-[FlutterMethodChannel setMethodCallHandler:]_block_invoke + 76
+	6   FlutterMacOS                        0x0000000105d63948 -[FlutterEngine engineCallbackOnPlatformMessage:] + 416
+	7   FlutterMacOS                        0x00000001066d4fb4 _ZNSt4__fl10__function6__funcIZ23FlutterEngineInitializeE3$_3NS_9allocatorIS2_EEFvNS_10unique_ptrIN7flutter15PlatformMessageENS_14default_deleteIS7_EEEEEEclEOSA_ + 128
+	8   FlutterMacOS                        0x00000001066e8f48 _ZN7flutter20PlatformViewEmbedder21HandlePlatformMessageENSt4__fl10unique_ptrINS_15PlatformMessageENS1_14default_deleteIS3_EEEE + 76
+	9   FlutterMacOS                        0x00000001066e9b38 _ZNSt4__fl10__function6__funcIN3fml8internal14CopyableLambdaIZN7flutter20PlatformViewEmbedder30EmbedderPlatformMessageHandler21HandlePlatformMessageENS_10unique_ptrINS5_15PlatformMessageENS_14def	10  FlutterMacOS                        0x00000001066e5cb8 _ZN7flutter18EmbedderTaskRunner8PostTaskEy + 576
+	11  FlutterMacOS                        0x00000001066d9c78 _ZN7flutter14EmbedderEngine7RunTaskEPK11FlutterTask + 56
+	12  FlutterMacOS                        0x00000001066cc614 FlutterEngineRunTask + 68
+	13  FlutterMacOS                        0x0000000105d67448 __60-[FlutterEngine postMainThreadTask:targetTimeInNanoseconds:]_block_invoke + 72
+	14  FlutterMacOS                        0x0000000105dcafbc $sIeyB_Ieg_TR + 16
+	15  FlutterMacOS                        0x0000000105dca01c $s20InternalFlutterSwift0B7RunLoopC19performExpiredTasks33_D4CDF1FCA38C25E611593B39D16A3F51LLyyF + 916
+	16  FlutterMacOS                        0x0000000105dc9c70 $s20InternalFlutterSwift0B7RunLoopCACyc33_D4CDF1FCA38C25E611593B39D16A3F51LlfcySvSgcfU_ + 204
+	17  FlutterMacOS                        0x0000000105dca064 $s20InternalFlutterSwift0B7RunLoopCACyc33_D4CDF1FCA38C25E611593B39D16A3F51LlfcySvSgcfU_To + 12
+	18  CoreFoundation                      0x000000019479aa64 __CFRUNLOOP_IS_CALLING_OUT_TO_A_SOURCE0_PERFORM_FUNCTION__ + 28
+	19  CoreFoundation                      0x000000019479a9f8 __CFRunLoopDoSource0 + 172
+	20  CoreFoundation                      0x000000019479a764 __CFRunLoopDoSources0 + 232
+	21  CoreFoundation                      0x00000001947993b8 __CFRunLoopRun + 840
+	22  CoreFoundation                      0x00000001947989e8 CFRunLoopRunSpecific + 572
+	23  HIToolbox                           0x00000001a023a27c RunCurrentEventLoopInMode + 324
+	24  HIToolbox                           0x00000001a023d4e8 ReceiveNextEventCommon + 676
+	25  HIToolbox                           0x00000001a03c8484 _BlockUntilNextEventMatchingListInModeWithFilter + 76
+	26  AppKit                              0x00000001986b9a34 _DPSNextEvent + 684
+	27  AppKit                              0x00000001990585cc -[NSApplication(NSEventRouting) _nextEventMatchingEventMask:untilDate:inMode:dequeue:] + 688
+	28  AppKit                              0x00000001986acbe4 -[NSApplication run] + 480
+	29  AppKit                              0x00000001986832dc NSApplicationMain + 880
+	30  x086.debug.dylib                    0x0000000102e89bc4 $sSo21NSApplicationDelegateP6AppKitE4mainyyFZ + 40
+	31  x086.debug.dylib                    0x0000000102e89b8c $s4x08611AppDelegateC5$mainyyFZ + 44
+	32  x086.debug.dylib                    0x0000000102e89c2c __debug_main_executable_dylib_entry_point + 28
+	33  dyld                                0x000000019430eb98 start + 6076
+)
+libc++abi: terminating due to uncaught exception of type NSException
+Lost connection to device.
+
+Exited.
+```
+
+</p>
+</details> 
+
+Unfortunately, we cannot fix this in the framework ([more details](https://github.com/flutter/flutter/pull/183112#issuecomment-4008832450)). We will need to fix this in each affected embedder.
+  ---
+================================================================================
+
+### #41641 - [web] Support line height + word spacing in text fields
+URL: https://github.com/flutter/flutter/issues/41641
+Created: 2019-09-30T20:25:30Z Updated: 2024-03-06T21:14:49Z
+Reactions: {'total': 1, 'by_type': {'THUMBS_UP': 1}}
+Labels: ['a: text input', 'c: new feature', 'framework', 'platform-web', 'P3', 'team-web', 'triaged-web']
+Ownership: team-web
+Summary: None
+Body snippet: TextInput.setStyle method call informs the engine about the styling info of an editable text.
+
+This method does not support line height and word spacing. 
+...
+Raw Comments Count: 0
+================================================================================
+
+### #71318 - TextField RTL input problem with LTR letters/numbers while obscureText is true
+URL: https://github.com/flutter/flutter/issues/71318
+Created: 2020-11-27T16:52:58Z Updated: 2024-07-11T10:52:42Z
+Reactions: {'total': 1, 'by_type': {'THUMBS_UP': 1}}
+Labels: ['a: text input', 'framework', 'engine', 'f: material design', 'a: typography', 'has reproducible steps', 'P2', 'found in release: 3.3', 'found in release: 3.7', 'team-design', 'triaged-design']
+Ownership: team-design
+Summary: Reproduced across many Flutter versions up through 3.3.x. The cursor visually appears on the left during typing but the submitted value is correct. Multiple related RTL issues linked (#47745, #50098, #54099). Status: stalled, long-standing RTL/obscureText regression affecting Android and iOS.
+Body snippet: I believe there's a bug with textfield when writing LTR characters in an obscured field.
+
+The characters are not written in the correct direction while typing (this issue appears only when obscureText is true).
+
+The input value actually is submitted correctly with no problems and also if the password is made visible it is shown in the right way with no issues, the issue only is while typing so it makes it feel like if the password is written in a reversed direction.
+
+**While typing the letters are written to the left not to the right as expected.**
+
+### Steps to Reproduce
+
+1. Create an empty application.
+2. Add a TextField  or TextFormField to the application.
+3. Set textDirection: TextDirection.rtl
+4. Set obscureText: true.
+5. type something in English.
+
+
+![screen-20201127-184354](https://user-images.githubusercontent.com/30502213/100470646-51052a80-30e1-11eb-84a7-838968ba2232.gif)
+
+
+### Expected behavior
+
+To act the same like when obscureText: false.
+
+### Flut...
+Raw Comments Count: 18
+  Comment: possible duplicate of https://github.com/flutter/flutter/issues/71207
+  ---
+  Comment: > possible duplicate of #71207
+
+Totally different issue.
+  ---
+  Comment: > > possible duplicate of #71207
+> 
+> Totally different issue.
+
+The issue I'm talking about occurs only when you type LTR in a RTL text field with obscureText enabled.
+
+The cursor should be on the right while typing not on the left, the letters are shown to the left (while typing) when they are actually written to the left. The GIF provided shows "helloworld" written as if it is "dlrowolleh" but it's actually written correctly. 
+  ---
+  Comment: Verified and replicable on latest stable.
+
+1. With `obscureText : false`:
+
+<img width="330" alt="Screenshot 2020-11-30 at 12 43 20 PM" src="https://user-images.githubusercontent.com/67046386/100579221-d1a66f80-3309-11eb-8352-88a384e6b9b2.png">
+
+2. With 'obscureText: true`:
+
+<img width="330" alt="Screenshot 2020-11-30 at 12 44 05 PM" src="https://user-images.githubusercontent.com/67046386/100579244-dc610480-3309-11eb-9c81-60520bacd8c9.png">
+
+<details>
+<summary>flutter doctor -v</summary>
+
+```
+
+[✓] Flutter (Channel stable, 1.22.4, on Mac OS X 10.15.4 19E2269 darwin-x64,
+    locale en-IN)
+    • Flutter version 1.22.4 at /Users/dhs/documents/Fluttersdk/flutter
+    • Framework revision 1aafb3a8b9 (2 weeks ago), 2020-11-13 09:59:28 -0800
+    • Engine revision 2c956a31c0
+    • Dart version 2.10.4
+
+ 
+[✓] Android toolchain - develop for Android devices (Android SDK version 30.0.0)
+    • Android SDK at /Users/dhs/Library/Android/sdk
+    • Platform android-30, build-tools 30.0.0
+    • Java binary at: /Applications/Android
+      Studio.app/Contents/jre/jdk/Contents/Home/bin/java
+    • Java version OpenJDK Runtime Environment (build
+      1.8.0_242-release-1644-b3-6222593)
+    • All Android licenses accepted.
+
+[✓] Xcode - develop for iOS and macOS (Xcode 12.0.1)
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • Xcode 12.0.1, Build version 12A7300
+    • CocoaPods version 1.9.3
+
+[✓] Android Studio (version 4.0)
+    • Android Studio at /Applications/Android Studio.app/Contents
+    • Flutter plugin version 46.0.2
+    • Dart plugin version 193.7361
+    • Java version OpenJDK Runtime Environment (build
+      1.8.0_242-release-1644-b3-6222593)
+
+[✓] VS Code (version 1.50.1)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.15.1
+
+[✓] Connected device (1 available)
+    • sdk gphone x86 arm (mobile) • emulator-5554 • android-x86 • Android 11
+      (API 30) (emulator)
+
+• No issues found!
+
+
+```
+
+</details>
+  ---
+  Comment: any updates about this bug?
+  ---
+  Comment: I hope the issues with LTR input on RTL fields get fixed soon. I'm making an app entirely RTL but obviously, the devices of the users are LTR. Getting a lot of negative feedback from the testers. 
+  ---
+  Comment: I am still facing the same bug in Flutter 2.2.3
+  ---
+  Comment: Yes, bug still persists.
+
+On Fri, 23 Jul 2021 at 7:43 PM Moaz El-sawaf ***@***.***>
+wrote:
+
+> I am still facing the same bug in Flutter 2.2.3
+>
+> —
+> You are receiving this because you authored the thread.
+> Reply to this email directly, view it on GitHub
+> <https://github.com/flutter/flutter/issues/71318#issuecomment-885797504>,
+> or unsubscribe
+> <https://github.com/notifications/unsubscribe-auth/AHIW2RKZKM6IN4IMS5MX5I3TZGS25ANCNFSM4UFD3R7A>
+> .
+>
+
+  ---
+  Comment: i have same issue on flutter version 2.5.2 
+this issue is already exist very old
+
+I think the Flutter team is also incapable of solving this problem as usual, and this problem has never been and will never be solved.
+
+
+
+https://github.com/flutter/flutter/issues/47745
+https://github.com/flutter/flutter/issues/50098
+https://github.com/flutter/flutter/issues/54099
+  ---
+  Comment: dear @darshankawar  please add these label on this issue :
+
+found in release: 2.2
+found in release: 2.5
+found in release: 2.5.1
+found in release: 2.5.2
+  ---
+  Comment: i have same issue on flutter 3.0.4 :)
+
+any updates about this bug?
+  ---
+  Comment: flutter RTL issues never fixing just we open issue on github 
+you can see this issue on 8.1.1 version of flutter very soon !!!
+  ---
+  Comment: Verified this issue using latest versions and observed that the behavior persists.
+
+<img width="123" alt="Screenshot 2022-12-27 at 5 42 58 PM" src="https://user-images.githubusercontent.com/67046386/209665213-9d2aebb7-1baf-44da-8d07-f4ada206ddc4.png">
+<img width="84" alt="Screenshot 2022-12-27 at 5 43 17 PM" src="https://user-images.githubusercontent.com/67046386/209665223-86f0cb96-4cc2-48cb-a4c5-fec8e884d73e.png">
+
+<details>
+<summary> stable, master flutter doctor -v </summary>
+
+```
+[✓] Flutter (Channel stable, 3.3.10, on macOS 12.2.1 21D62 darwin-x64, locale
+    en-GB)
+    • Flutter version 3.3.10 on channel stable at
+      /Users/dhs/documents/fluttersdk/flutter
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision 135454af32 (15 hours ago), 2022-12-15 07:36:55 -0800
+    • Engine revision 3316dd8728
+    • Dart version 2.18.6
+    • DevTools version 2.15.0
+
+[!] Xcode - develop for iOS and macOS (Xcode 12.3)
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    ! Flutter recommends a minimum Xcode version of 13.
+      Download the latest version or update via the Mac App Store.
+    • CocoaPods version 1.11.2
+
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] VS Code (version 1.62.0)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.21.0
+
+[✓] Connected device (5 available)
+    • SM G975F (mobile)       • RZ8M802WY0X • android-arm64   • Android 11 (API 30)
+    • Darshan's iphone (mobile)  • 21150b119064aecc249dfcfe05e259197461ce23 •
+      ios            • iOS 14.4.1 18D61
+    • iPhone 12 Pro Max (mobile) • A5473606-0213-4FD8-BA16-553433949729     •
+      ios            • com.apple.CoreSimulator.SimRuntime.iOS-14-3 (simulator)
+    • macOS (desktop)            • macos                                    •
+      darwin-x64     • Mac OS X 10.15.4 19E2269 darwin-x64
+    • Chrome (web)               • chrome                                   •
+      web-javascript • Google Chrome 98.0.4758.80
+
+[✓] HTTP Host Availability
+    • All required HTTP hosts are available
+
+! Doctor found issues in 1 category.
+
+[!] Flutter (Channel master, 3.7.0-13.0.pre.51, on macOS 12.2.1 21D62
+    darwin-x64, locale en-GB)
+    • Flutter version 3.7.0-13.0.pre.51 on channel master at
+      /Users/dhs/documents/fluttersdk/flutter
+    ! Warning: `flutter` on your path resolves to
+      /Users/dhs/Documents/Fluttersdk/flutter/bin/flutter, which is not inside
+      your current Flutter SDK checkout at
+      /Users/dhs/documents/fluttersdk/flutter. Consider adding
+      /Users/dhs/documents/fluttersdk/flutter/bin to the front of your path.
+    ! Warning: `dart` on your path resolves to
+      /Users/dhs/Documents/Fluttersdk/flutter/bin/dart, which is not inside your
+      current Flutter SDK checkout at /Users/dhs/documents/fluttersdk/flutter.
+      Consider adding /Users/dhs/documents/fluttersdk/flutter/bin to the front
+      of your path.
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision 6441a7dc62 (3 hours ago), 2022-12-22 20:38:18 -0500
+    • Engine revision 12badb5459
+    • Dart version 3.0.0 (build 3.0.0-60.0.dev)
+    • DevTools version 2.20.0
+    • If those were intentional, you can disregard the above warnings; however
+      it is recommended to use "git" directly to perform update checks and
+      upgrades.
+
+[!] Xcode - develop for iOS and macOS (Xcode 12.3)
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    ! Flutter recommends a minimum Xcode version of 13.
+      Download the latest version or update via the Mac App Store.
+    • CocoaPods version 1.11.2
+
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] VS Code (version 1.62.0)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.21.0
+
+[✓] Connected device (5 available)
+    • SM G975F (mobile)       • RZ8M802WY0X • android-arm64   • Android 11 (API 30)
+    • Darshan's iphone (mobile)  • 21150b119064aecc249dfcfe05e259197461ce23 •
+      ios            • iOS 14.4.1 18D61
+    • iPhone 12 Pro Max (mobile) • A5473606-0213-4FD8-BA16-553433949729     •
+      ios            • com.apple.CoreSimulator.SimRuntime.iOS-14-3 (simulator)
+    • macOS (desktop)            • macos                                    •
+      darwin-x64     • Mac OS X 10.15.4 19E2269 darwin-x64
+    • Chrome (web)               • chrome                                   •
+      web-javascript • Google Chrome 98.0.4758.80
+
+[✓] HTTP Host Availability
+    • All required HTTP hosts are available
+
+! Doctor found issues in 1 category.
+
+
+
+```
+
+</details>
+  ---
+  Comment: please dont call flutter 'stable' any more!!!
+  ---
+  Comment: any updates? I'm facing the same issue :(
+  ---
+  Comment: This issue still persist
+  ---
+  Comment: any updates?
+  ---
+  Comment: I am having this issue right now.
+  ---
+================================================================================
+
+### #78864 - Text does not draw correctly based on text direction
+URL: https://github.com/flutter/flutter/issues/78864
+Created: 2021-03-23T12:53:11Z Updated: 2025-07-22T15:26:14Z
+Reactions: {'total': 1, 'by_type': {'THUMBS_UP': 1}}
+Labels: ['a: text input', 'framework', 'f: material design', 'a: internationalization', 'a: typography', 'has reproducible steps', 'P2', 'found in release: 2.1', 'team-design', 'triaged-design']
+Ownership: team-design
+Summary: Comments are limited to a compile error in the original sample and a single confirmation screenshot; no root cause, fix, or additional platform data added beyond what is in the body.
+Body snippet: I was create the flutter application to format the date time and the text was rendered incorrectly. The text formatted correctly but it rendered wrongly. 
+
+## Steps to Reproduce
+
+1. Run the sample with below code
+2. Set the locale as 'en' and change the directionality text direction as rtl(formatted texts are 06 PM, PM 06 but rendered PM 06, PM 06)
+3. See both the different formatted text(english) rendered like same.
+4. again change the locale as 'he' and change the directionality text direction as ltr
+5. See both the different formatted text(hebrew) rendered like same.
+
+<details>
+<summary>code sample</summary>
+
+```dart
+void main() {
+  return runApp(LocalizationSupport());
+}
+
+class LocalizationSupport extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: [
+   ...
+Raw Comments Count: 3
+  Comment: @Sasikumar3595 
+Thanks for the detailed report. Using your code sample, I am getting below compile error:
+
+<img width="400" alt="Screenshot 2021-03-23 at 7 13 01 PM" src="https://user-images.githubusercontent.com/67046386/112156036-e3d75100-8c0b-11eb-974c-ec0ccc71f3ba.png">
+
+I am on latest master (2.1.0-13.0.pre.206).
+
+
+  ---
+  Comment: @darshankawar ,
+
+Specify the TextDirection.rtl from dart.ui package.
+find the sample main.dart file as below,
+
+**Sample:** [main.dart.zip](https://github.com/flutter/flutter/files/6194778/main.dart.zip)
+
+
+
+  ---
+  Comment: <img width="279" alt="Screenshot 2021-03-24 at 12 42 11 PM" src="https://user-images.githubusercontent.com/67046386/112269461-690b4600-8c9e-11eb-9c38-7045e55e8fea.png">
+
+<details>
+<summary>flutter doctor -v</summary>
+
+```
+[✓] Flutter (Channel master, 2.1.0-13.0.pre.230, on Mac OS X 10.15.4 19E2269
+    darwin-x64, locale en-GB)
+    • Flutter version 2.1.0-13.0.pre.230 at
+      /Users/dhs/documents/Fluttersdk/flutter
+    • Framework revision 975fb0f06c (2 hours ago), 2021-03-23 21:33:05 -0700
+    • Engine revision d59a01d2d3
+    • Dart version 2.13.0 (build 2.13.0-150.0.dev)
+
+[!] Xcode - develop for iOS and macOS
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • Xcode 12.3, Build version 12C33
+    ! CocoaPods 1.9.3 out of date (1.10.0 is recommended).
+        CocoaPods is used to retrieve the iOS and macOS platform side's plugin
+        code that responds to your plugin usage on the Dart side.
+        Without CocoaPods, plugins will not work on iOS or macOS.
+        For more info, see https://flutter.dev/platform-plugins
+      To upgrade see
+      https://guides.cocoapods.org/using/getting-started.html#installation for
+      instructions.
+
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] VS Code (version 1.54.3)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.20.0
+
+[✓] Connected device (3 available)
+    • iPhone 12 Pro Max (mobile) • A5473606-0213-4FD8-BA16-553433949729 • ios
+      • com.apple.CoreSimulator.SimRuntime.iOS-14-3 (simulator)
+    • macOS (desktop)            • macos                                •
+      darwin-x64     • Mac OS X 10.15.4 19E2269 darwin-x64
+    • Chrome (web)               • chrome                               •
+      web-javascript • Google Chrome 89.0.4389.90
+
+! Doctor found issues in 1 category.
+
+
+```
+
+</details>
+  ---
+================================================================================
+
