@@ -168,36 +168,10 @@ is authored.
   - Interpretation: which `write-test` sub-outcome applies.
   - Any caveats (e.g. "passes but does not exercise the real bug path").
 
-**Dedup scan.** Three required sub-bullets, in order:
-
-  - **Terms / scope:** the symptom, mechanism, or surface terms searched
-    (in titles, bodies, and comment summaries within the current
-    category, per convention C2).
-  - **Hits, classified:** every hit a future editor would want to
-    re-evaluate, labeled as one of:
-    - **duplicate** — same root cause; merge into a canonical (this
-      issue's `Decision` should also be `likely-duplicate` when it is
-      itself the dup).
-    - **cluster member** — same root cause as ≥1 other issue, tracked
-      under a cluster code in the report's Duplicate-clusters section.
-    - **adjacent-different** — overlapping vocabulary or surface but a
-      different root cause; one-line distinguisher required.
-    - **weak** — keyword match that did not survive scrutiny; one-line
-      reason required.
-
-    If a class yields no hits, say so explicitly rather than omitting
-    the line.
-  - **Cluster decision:** the cluster code this issue joins or starts,
-    or `no cluster` only after consulting the running cluster list at
-    the top of the report. Starting a new cluster requires ≥2 members
-    surfaced from the audit so far; record it in the Duplicate-clusters
-    section the same turn.
-
-A scan that reads only "Searched for X, Y. No duplicates." is
-incomplete. The audit asks how this issue relates to the rest of its
-category, not just whether a copy exists — absence of duplicates is
-informative only when it is paired with absence of cluster members and
-adjacent-different surfaces.
+**Dedup scan.** Describe what was searched (terms, scope) and what turned
+up. If no in-category duplicates, say so explicitly. List weak
+related-issue candidates with one-line reasons so a future editor can
+re-verify.
 
 **Cross-category siblings (optional).** Only if a non-IME/CJK sibling was
 noticed. Name the issue, its category, and the shared surface. Do **not**
@@ -266,47 +240,6 @@ category. If a cross-category sibling surfaces from an issue's own text
 (e.g. it references another issue number explicitly), record it under
 "Cross-category sibling / split-issue links" — don't expand the scan to
 go hunting.
-
-### C3 — Cross-issue clustering is a first-class output of the audit
-
-**Rule.** Cluster discovery is part of the deliverable, not a side
-effect of the dedup grep. Every dedup scan ends with an explicit
-cluster decision (join an existing cluster / start a new one / none);
-starting a new cluster mid-audit obligates the agent to populate the
-report's "Duplicate clusters" section the same turn.
-
-**Why.** A re-audit of the same category by an agent that treated dedup
-scans as one-line "no duplicates" notes produced 1 cluster covering 2
-issues. A parallel pass over the same 44 issues that took dedup scans
-seriously produced 6 clusters covering 14 issues — including 3
-mutually-redundant paragraph-spacing proposals and a 3-member
-trailing-whitespace-with-TextAlign.right cluster the first pass missed.
-Same inputs, very different actionable output, driven by whether the
-agent treated clustering as a goal.
-
-**How to apply.** Enforced through the per-issue entry schema's `Dedup
-scan` field: the `Cluster decision` sub-bullet requires an explicit
-join / start / none call after consulting the running cluster list at
-the top of the report. The grep itself stays scoped to the current
-category (C2); C3 just says: while you are there, look for patterns
-across the issues you have already classified, and record them as
-clusters when they appear.
-
-**Anti-pattern: deliverable-mutation pipelines.** Tooling that splices
-new entries into the report via string-replace (or any other
-non-re-reading mutation) lets the agent satisfy this convention's form
-without paying its cost — the running cluster list is never
-re-encountered because the pipeline writes around it. The prior
-re-audit of this category used an `update_cat<N>_batchM.py`
-script-per-batch pattern that prepended each entry below the section
-header without re-reading; the artifact ended up reactions-ascending
-(inverted from spec) and surfaced only 1 cluster across 44 issues.
-**Prefer in-context edits** (read the section, then write a focused
-edit) over batched splice scripts. The legitimate carve-out is
-**idempotent regenerators** that rebuild the report from structured
-inputs (`assemble_final.py`-style consolidation of per-issue files) —
-those do not make per-entry judgments, they just serialize already-
-decided structured state.
 
 ## Regenerating / resuming
 
