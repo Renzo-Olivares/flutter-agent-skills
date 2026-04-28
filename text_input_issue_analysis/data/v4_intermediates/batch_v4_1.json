@@ -1,0 +1,315 @@
+[
+  {
+    "number": 61069,
+    "title": "[proposal] ability to change text overflow on the TextField",
+    "url": "https://github.com/flutter/flutter/issues/61069",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "c: new feature",
+      "framework",
+      "f: material design",
+      "c: proposal",
+      "P2",
+      "team-text-input",
+      "triaged-text-input"
+    ],
+    "assignees": [],
+    "ownership": "team-text-input",
+    "created_at": "2020-07-08T05:01:37Z",
+    "updated_at": "2025-07-18T13:13:51Z",
+    "body": "If the user inputs more text than can fit into the available space of a single line `TextFormField`, then end of the text is simply cropped. \r\nIn debug mode, an overflow warning is also displayed on screen.\r\n\r\nUnlike the `Text` widget however, the `TextFormField` does not have an `overflow` parameter so that we can for example show an ellipsis in this situation.\r\n\r\nImplementing `overflow` handling for the `TextFormField` will allow us to give valuable visual feedback to users.",
+    "reactions": {
+      "total": 65,
+      "by_type": {
+        "THUMBS_UP": 65
+      }
+    },
+    "comment_summary": "Comments are largely me-too and bumps spanning multiple years with no root-cause analysis. One substantive comment links a related DevTools bug and notes @LongCatIsLooong is working on overflow ellipsis. The auto_size_text_field package is offered as an imperfect workaround; a TextPainter-based manual ellipsis workaround is also shared. No PR opened.",
+    "category": "Internationalization, BiDi, and text layout",
+    "comments_raw": []
+  },
+  {
+    "number": 51258,
+    "title": "Need to find how much of a long word could fit in one line before an unnatural line break",
+    "url": "https://github.com/flutter/flutter/issues/51258",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "framework",
+      "a: typography",
+      "c: proposal",
+      "P3",
+      "team-framework",
+      "triaged-framework"
+    ],
+    "assignees": [],
+    "ownership": "team-framework",
+    "created_at": "2020-02-22T11:31:17Z",
+    "updated_at": "2023-07-08T01:41:26Z",
+    "body": "As described in issue #35994, there are a number of use cases for doing non rectangular LTR or RTL text layout. Although not convenient, it is possible to do custom text layout by breaking a string into short runs and measuring each run as a `Paragraph` itself before painting it at some desired location. A word/line breaker would make this easier (see issue #50171), but for general cases breaking at a space works OK.\r\n\r\nA problem arises, though, when there is text run that is longer than the available length for the line. Take the following example:\r\n\r\n```\r\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\r\n```\r\n\r\nThere are no spaces to break at. That means that you have to measure every character or use some algorithm to test chunks of various lengths to see how much of it will fit. An unnatural break will be inserted at that location. The rest of the run will continue onto the next line.\r\n\r\nA further complication is that some languages (like Mongolian and Arabic) use different size glyphs depending on the context. For example, here is a Mongolian word rendered correctly on the left, but the same word with the characters as they would look in isolation. \r\n\r\n![Mongolian word](https://user-images.githubusercontent.com/10300220/75090963-252da500-55a3-11ea-910b-dbd31511a16e.png)\r\n\r\nThe size is obviously different so simply taking the sum of the size of each character is not a viable option to find the length. Even taking a substring of the long word and measuring it would be different because the character at the break point would think it was at a final rather than a medial position and thus return the wrong size. A workaround would be to insert a Zero Width Joiner at the break point before measuring, but this is a lot of extra work compared to the feature request below. \r\n\r\n## Feature request\r\n\r\nIt would be very useful to have a feature like Android's `Paint.breakText` (see [example](https://stackoverflow.com/questions/45253574/does-paint-breaktext-include-the-character-at-the-maxwidth)). You feed it a string and a max length, and it tells you how many characters of that string will fit within the specified length.",
+    "reactions": {
+      "total": 28,
+      "by_type": {
+        "THUMBS_UP": 24,
+        "EYES": 4
+      }
+    },
+    "comment_summary": null,
+    "category": "Internationalization, BiDi, and text layout",
+    "comments_raw": []
+  },
+  {
+    "number": 77023,
+    "title": "[Web] [CanvasKit][Feature Request]: Load fonts as soon as detecting browser locale",
+    "url": "https://github.com/flutter/flutter/issues/77023",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "c: new feature",
+      "a: internationalization",
+      "a: typography",
+      "platform-web",
+      "c: proposal",
+      "c: rendering",
+      "e: web_canvaskit",
+      "P2",
+      "team-web",
+      "triaged-web"
+    ],
+    "assignees": [],
+    "ownership": "team-web",
+    "created_at": "2021-03-02T00:16:39Z",
+    "updated_at": "2025-10-30T11:24:09Z",
+    "body": "Currently, when I am testing the TexField I saw a weird effect. Below is the demo (web application).\r\n\r\n![demo1](https://user-images.githubusercontent.com/44708790/108788895-f4b48880-75b3-11eb-813d-c6a4db59e6bc.gif)\r\n\r\nAs you can see, initially when you typed in the Chinese character, it will show the gibberish character first then render the correct Chinese character. After the first try, it works kinda fine afterward. But sometimes you can still see the gibberish character interchangeably. However, I am not sure if this is the nature of how it is... but to me, something seems wrong here.\r\n\r\nHere is another demo for Japanese!\r\n\r\n![demo2_jp](https://user-images.githubusercontent.com/44708790/108790134-ee73db80-75b6-11eb-94ea-045535c072d4.gif)\r\n\r\n\r\nBased on @yjbanov commented in #76473, it might be flutter loading fonts dynamically. Flutter detects that it doesn't have enough fonts and that is likely the reason. \r\n\r\n<details>\r\n<summary>flutter doctor -v</summary>\r\n\r\n```\r\n[\u221a] Flutter (Channel beta, 1.26.0-17.6.pre, on Microsoft Windows [Version 10.0.19041.804], locale zh-TW)\r\n    \u2022 Flutter version 1.26.0-17.6.pre at D:\\flutterdevelopment\\flutter     \r\n    \u2022 Framework revision a29104a69b (5 days ago), 2021-02-16 09:26:56 -0800\r\n    \u2022 Engine revision 21fa8bb99e\r\n    \u2022 Dart version 2.12.0 (build 2.12.0-259.12.beta)\r\n\r\n[\u221a] Android toolchain - develop for Android devices (Android SDK version 30.0.2) \r\n    \u2022 Android SDK at D:\\androidsdk\r\n    \u2022 Platform android-30, build-tools 30.0.2\r\n    \u2022 ANDROID_SDK_ROOT = D:\\androidsdk\r\n    \u2022 Java binary at: C:\\Program Files\\Android\\Android Studio\\jre\\bin\\java       \r\n    \u2022 Java version OpenJDK Runtime Environment (build 1.8.0_242-release-1644-b01)\r\n    \u2022 All Android licenses accepted.\r\n\r\n[\u221a] Chrome - develop for the web\r\n    \u2022 Chrome at C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe      \r\n\r\n[\u221a] Android Studio (version 4.1.0)\r\n    \u2022 Android Studio at C:\\Program Files\\Android\\Android Studio\r\n    \u2022 Java version OpenJDK Runtime Environment (build 1.8.0_242-release-1644-b01)\r\n\r\n[\u221a] VS Code (version 1.53.2)\r\n    \u2022 Flutter extension version 3.19.0\r\n\r\n[\u221a] Connected device (2 available)\r\n    \u2022 Chrome (web) \u2022 chrome \u2022 web-javascript \u2022 Google Chrome 88.0.4324.182\r\n    \u2022 Edge (web)   \u2022 edge   \u2022 web-javascript \u2022 Microsoft Edge 88.0.705.56\r\n\r\n```\r\n</details>\r\n\r\n_Originally posted by @AscentionOne in https://github.com/flutter/flutter/issues/76473#issuecomment-783794373_",
+    "reactions": {
+      "total": 21,
+      "by_type": {
+        "THUMBS_UP": 17,
+        "EYES": 4
+      }
+    },
+    "comment_summary": "Comments identify the root cause as CanvasKit dynamically loading CJK fonts when unknown characters are first encountered; switching to the HTML renderer avoids the issue. The workaround of using a custom font family (bundled) also resolves it. Community notes this affects Hebrew and Arabic too, and persists through 3.32.4. The issue was marked P1 but has had no recent owner; status is stalled.",
+    "category": "Internationalization, BiDi, and text layout",
+    "comments_raw": []
+  },
+  {
+    "number": 34610,
+    "title": "Mixing RTL and LTR text bugs",
+    "url": "https://github.com/flutter/flutter/issues/34610",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "framework",
+      "engine",
+      "a: typography",
+      "customer: crowd",
+      "P2",
+      "team-engine",
+      "triaged-engine"
+    ],
+    "assignees": [],
+    "ownership": "team-engine",
+    "created_at": "2019-06-17T23:02:13Z",
+    "updated_at": "2024-03-06T21:14:32Z",
+    "body": "We are seeing strange behavior when mixing RTL and LTR text.\r\n\r\nNotably:\r\n\r\n- Type arabic, Type chinese, Type arabic, switch to chinese keyboard, delete. The arabic will delete all at once.\r\n- Emojis work strangely when mixing with RTL and LTR.\r\n- Caret positioning is not consistent.\r\n\r\nThere are a few other minor issues that I am not clear on how to describe.",
+    "reactions": {
+      "total": 18,
+      "by_type": {
+        "THUMBS_UP": 14,
+        "ROCKET": 1,
+        "EYES": 3
+      }
+    },
+    "comment_summary": "Early comment identified root cause: ParagraphStyle directionality is LTR for mixed text, causing spaces to be inserted at the wrong end of Arabic spans. The SkParagraph switch (#39420) was expected to fix many behaviors. Subsequent comments report partial improvements but deletion with opposite-direction keyboards remains broken.",
+    "category": "Internationalization, BiDi, and text layout",
+    "comments_raw": []
+  },
+  {
+    "number": 40648,
+    "title": "Trailing space doesn't work with TextField with TextAlign.right ",
+    "url": "https://github.com/flutter/flutter/issues/40648",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "framework",
+      "f: material design",
+      "has reproducible steps",
+      "P2",
+      "found in release: 2.5",
+      "found in release: 2.6",
+      "team-framework",
+      "triaged-framework"
+    ],
+    "assignees": [],
+    "ownership": "team-framework",
+    "created_at": "2019-09-17T06:02:47Z",
+    "updated_at": "2025-01-29T12:53:32Z",
+    "body": "TextField  Widget Option textAlign Setting for [TextAlign.right] ,input  space key cursor fault\r\n\r\n\r\n `TextField(\r\n            textAlign: TextAlign.right,\r\n          )\r\n`",
+    "reactions": {
+      "total": 16,
+      "by_type": {
+        "THUMBS_UP": 16
+      }
+    },
+    "comment_summary": "Comments confirm the bug persists through 2025 on all tested stable versions. The trailing space is visually trimmed/not rendered when TextAlign.right is used. A Skia bug was filed at bugs.chromium.org/p/skia/issues/detail?id=11933 and accepted. One commenter notes SkParagraph treats \\r as a soft line break with CodeUnitFlag 0x0006, which may be related. A layout workaround using IntrinsicWidth inside a Row was suggested. No fix has landed in Flutter; status is stalled.",
+    "category": "Internationalization, BiDi, and text layout",
+    "comments_raw": []
+  },
+  {
+    "number": 78660,
+    "title": "Arrow keys in RTL move the wrong way",
+    "url": "https://github.com/flutter/flutter/issues/78660",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "framework",
+      "f: material design",
+      "a: internationalization",
+      "has reproducible steps",
+      "P2",
+      "found in release: 2.1",
+      "team-framework",
+      "triaged-framework"
+    ],
+    "assignees": [],
+    "ownership": "team-framework",
+    "created_at": "2021-03-19T23:24:09Z",
+    "updated_at": "2024-03-06T21:14:29Z",
+    "body": "The left/right arrow keys should move the caret left/right respectively, regardless of the text direction.  In Flutter they move in the wrong direction in RTL text.\r\n\r\nThe methods that handle this in RenderEditable should be updated to perform the correct behavior without being renamed.  ~~So for example, the method [_moveGivenSelectionLeft](https://github.com/flutter/flutter/blob/8c44abc009a333b0494598c0cfda0fbc07358234/packages/flutter/lib/src/rendering/editable.dart#L735) actually moves the selection upstream right now, not necessarily left.  It should be modified to move the selection left like it says.~~ This is out of date, see below.\r\n\r\n## Steps to Reproduce\r\n\r\n1. Run the app below, which is just a TextField with some Arabic text in it, on a device with arrow keys.\r\n2. Try to navigate with the left and right arrow keys.\r\n\r\n**Expected results:** The cursor moves left with the left key and right with the right key.  Tested on TextEdit on a Mac after changing my keyboard to Arabic.\r\n\r\n**Actual results:** The cursor movement direction is reversed.\r\n\r\n<details>\r\n  <summary>Code</summary>\r\n\r\n```dart\r\nimport 'package:flutter/material.dart';\r\n \r\nvoid main() {\r\n  runApp(MyApp());\r\n}\r\n \r\nclass MyApp extends StatelessWidget {\r\n  final TextEditingController controller = TextEditingController(text: '\u0634\u0633\u064a\u0628');\r\n\r\n  @override\r\n  Widget build(BuildContext context) {\r\n    return MaterialApp(\r\n      home: Scaffold(\r\n        body: Center(\r\n          child: TextField(\r\n            controller: controller,\r\n          ),\r\n        ),\r\n      ),\r\n    );\r\n  }\r\n}\r\n```\r\n\r\n</details>",
+    "reactions": {
+      "total": 15,
+      "by_type": {
+        "THUMBS_UP": 15
+      }
+    },
+    "comment_summary": "Visual order (left = left, right = right) traversal support is acknowledged as a planned feature but not yet implemented. A commenter noted the existing Intent/Action system uses a `forward` boolean that may need to be extended to support left/right explicitly. Status: stalled, planned but not implemented.",
+    "category": "Internationalization, BiDi, and text layout",
+    "comments_raw": []
+  },
+  {
+    "number": 36854,
+    "title": "Feature request: Setting paragraph distance in Text and TextField",
+    "url": "https://github.com/flutter/flutter/issues/36854",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "c: new feature",
+      "framework",
+      "f: material design",
+      "a: typography",
+      "P3",
+      "team-framework",
+      "triaged-framework"
+    ],
+    "assignees": [],
+    "ownership": "team-framework",
+    "created_at": "2019-07-24T16:34:05Z",
+    "updated_at": "2024-03-06T21:15:12Z",
+    "body": "Currently, we have no control over paragraph spacing in both Text and TextField. This feature is important in text stying. ",
+    "reactions": {
+      "total": 12,
+      "by_type": {
+        "THUMBS_UP": 12
+      }
+    },
+    "comment_summary": null,
+    "category": "Internationalization, BiDi, and text layout",
+    "comments_raw": []
+  },
+  {
+    "number": 39755,
+    "title": "Selection of any justified-text is inaccurate in non-latin languages",
+    "url": "https://github.com/flutter/flutter/issues/39755",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "framework",
+      "f: material design",
+      "a: internationalization",
+      "a: typography",
+      "has reproducible steps",
+      "P2",
+      "found in release: 3.3",
+      "found in release: 3.7",
+      "team-framework",
+      "triaged-framework"
+    ],
+    "assignees": [],
+    "ownership": "team-framework",
+    "created_at": "2019-09-03T16:42:40Z",
+    "updated_at": "2024-03-06T21:14:15Z",
+    "body": "I hope I can clarify this issue because it is a little weird. It took me a while to figure out when exactly does it occur.\r\n\r\nHere is a very primitive application:\r\n\r\n```dart\r\n// main.dart\r\nimport 'package:flutter/material.dart';\r\nvoid main() => runApp(MaterialApp(\r\n  home: Scaffold(\r\n    appBar: AppBar(),\r\n    body: Padding(\r\n      padding: const EdgeInsets.all(18.0),\r\n      child: TextField(\r\n        textAlign: TextAlign.justify,\r\n        maxLines: null,\r\n      ),\r\n    ),\r\n  ),\r\n));\r\n```\r\n\r\nNow, type any latin charachter text. Try to select any single or multiple words, you will find that the selection blue highlight matches accurately the boundaries of the word(s). See this screen shot:\r\n\r\n![image](https://user-images.githubusercontent.com/3346502/64191394-5a3e2200-ceb3-11e9-82a9-6f48d6333256.png)\r\n\r\n_____________________\r\n\r\nThen, put some Korean text. You will find that some words are poorly highlighted:\r\n\r\n![image](https://user-images.githubusercontent.com/3346502/64191512-9bcecd00-ceb3-11e9-85ea-4002d85f54da.png)\r\n\r\n> \ud55c\uad6d\uc5b4(\u97d3\u570b\u8a9e)\ub294 \ub300\ud55c\ubbfc\uad6d\uacfc \uc870\uc120\ubbfc\uc8fc\uc8fc\uc758\uc778\ubbfc\uacf5\ud654\uad6d\uc758 \uacf5\uc6a9\uc5b4\ub85c, \ub300\ud55c\ubbfc\uad6d\uc5d0\uc11c\ub294 \ud55c\uad6d\uc5b4 \ub610\ub294 \ud55c\uad6d\ub9d0\uc774\ub77c\uace0 \ubd80\ub974\uace0, \uc870\uc120\ubbfc\uc8fc\uc8fc\uc758\uc778\ubbfc\uacf5\ud654\uad6d\uc5d0\uc11c\ub294 \uc870\uc120\ub9d0\uc774\ub77c\uace0 \ubd80\ub978\ub2e4.\r\n\r\n_____________________\r\n\r\nAlso in Arabic texts (it does not matter here that the `textDirection` is not RTL. Both RTL and LTR have the same issue):\r\n\r\n![image](https://user-images.githubusercontent.com/3346502/64191648-e18b9580-ceb3-11e9-8e5c-6fe5a3bb1dba.png)\r\n\r\n> \u0627\u0644\u0639\u0631\u0628\u064a\u0629 \u0644\u063a\u0629 \u0631\u0633\u0645\u064a\u0629 \u0641\u064a \u0643\u0644 \u062f\u0648\u0644 \u0627\u0644\u0648\u0637\u0646 \u0627\u0644\u0639\u0631\u0628\u064a \u0625\u0636\u0627\u0641\u0629 \u0625\u0644\u0649 \u0643\u0648\u0646\u0647\u0627 \u0644\u063a\u0629 \u0631\u0633\u0645\u064a\u0629 \u0641\u064a \u062a\u0634\u0627\u062f \u0648\u0625\u0631\u064a\u062a\u0631\u064a\u0627 \u0648\u0625\u0633\u0631\u0627\u0626\u064a\u0644. \u0648\u0647\u064a \u0625\u062d\u062f\u0649 \u0627\u0644\u0644\u063a\u0627\u062a \u0627\u0644\u0631\u0633\u0645\u064a\u0629 \u0627\u0644\u0633\u062a \u0641\u064a \u0645\u0646\u0638\u0645\u0629 \u0627\u0644\u0623\u0645\u0645 \u0627\u0644\u0645\u062a\u062d\u062f\u0629\u060c \u0648\u064a\u064f\u062d\u062a\u0641\u0644 \u0628\u0627\u0644\u064a\u0648\u0645 \u0627\u0644\u0639\u0627\u0644\u0645\u064a \u0644\u0644\u063a\u0629 \u0627\u0644\u0639\u0631\u0628\u064a\u0629 \u0641\u064a 18 \u062f\u064a\u0633\u0645\u0628\u0631 \u0643\u0630\u0643\u0631\u0649 \u0627\u0639\u062a\u0645\u0627\u062f \u0627\u0644\u0639\u0631\u0628\u064a\u0629 \u0628\u064a\u0646 \u0644\u063a\u0627\u062a \u0627\u0644\u0639\u0645\u0644 \u0641\u064a \u0627\u0644\u0623\u0645\u0645 \u0627\u0644\u0645\u062a\u062d\u062f\u0629.\r\n\r\n_____________________\r\n\r\nSame in Hebrew:\r\n\r\n![image](https://user-images.githubusercontent.com/3346502/64191829-5068ee80-ceb4-11e9-84f2-780841b134b3.png)\r\n\r\n> \u05e2\u05b4\u05d1\u05b0\u05e8\u05b4\u05d9\u05ea \u05d4\u05d9\u05d0 \u05e9\u05e4\u05d4 \u05e9\u05de\u05d9\u05ea, \u05de\u05de\u05e9\u05e4\u05d7\u05ea \u05d4\u05e9\u05e4\u05d5\u05ea \u05d4\u05d0\u05e4\u05e8\u05d5-\u05d0\u05e1\u05d9\u05d0\u05ea\u05d9\u05d5\u05ea, \u05d4\u05d9\u05d3\u05d5\u05e2\u05d4 \u05db\u05e9\u05e4\u05ea\u05dd \u05e9\u05dc \u05d4\u05d9\u05d4\u05d5\u05d3\u05d9\u05dd \u05d5\u05e9\u05dc \u05d4\u05e9\u05d5\u05de\u05e8\u05d5\u05e0\u05d9\u05dd, \u05d0\u05e9\u05e8 \u05e0\u05d9\u05d1 \u05de\u05d5\u05d3\u05e8\u05e0\u05d9 \u05e9\u05dc\u05d4 (\u05e2\u05d1\u05e8\u05d9\u05ea \u05d9\u05e9\u05e8\u05d0\u05dc\u05d9\u05ea) \u05d4\u05d5\u05d0 \u05e9\u05e4\u05ea\u05d4 \u05d4\u05e8\u05e9\u05de\u05d9\u05ea \u05e9\u05dc \u05de\u05d3\u05d9\u05e0\u05ea \u05d9\u05e9\u05e8\u05d0\u05dc, \u05de\u05e2\u05de\u05d3 \u05e9\u05e2\u05d5\u05d2\u05df \u05d1\u05e9\u05e0\u05ea 2018 \u05d1\u05d7\u05d5\u05e7 \u05d9\u05e1\u05d5\u05d3: \u05d9\u05e9\u05e8\u05d0\u05dc \u2013 \u05de\u05d3\u05d9\u05e0\u05ea \u05d4\u05dc\u05d0\u05d5\u05dd \u05e9\u05dc \u05d4\u05e2\u05dd \u05d4\u05d9\u05d4\u05d5\u05d3\u05d9.\r\n\r\n_____________________\r\n\r\nJust copy these texts and paste them in the input field, then try to select one word. In all cases above I just long tapped on one word and the highlight missed the word boundry as shown.\r\n\r\nIt does have to be a text field or input though. Any justified selectable text would reproduce the same behavior. I tried in both stable and master channels.\r\n\r\nHere is my `flutter doctor` output:\r\n\r\n```\r\nDoctor summary (to see all details, run flutter doctor -v):\r\n[\u2713] Flutter (Channel master, v1.9.8-pre.54, on Linux, locale en_US.UTF-8)\r\n \r\n[\u2713] Android toolchain - develop for Android devices (Android SDK version 29.0.2)\r\n[\u2713] Android Studio (version 3.5)\r\n[\u2713] VS Code (version 1.37.1)\r\n[\u2713] Connected device (1 available)\r\n\r\n\u2022 No issues found!\r\n```",
+    "reactions": {
+      "total": 10,
+      "by_type": {
+        "THUMBS_UP": 9,
+        "EYES": 1
+      }
+    },
+    "comment_summary": "Comments narrow the scope: the inaccurate selection highlight affects Korean, Arabic, Hebrew, and Persian scripts but not Cyrillic (Russian). Using a language-appropriate font (e.g., Amiri for Arabic) fixes the issue for pure RTL text, but mixed Latin+RTL text remains broken even with a proper font. The `selectionHeightStyle`/`selectionWidthStyle` options partially helped but did not fully resolve the issue. The problem is present in all text-alignment modes for RTL scripts, not only justified text. Status: open since 2019, no PR, long-standing stall.",
+    "category": "Internationalization, BiDi, and text layout",
+    "comments_raw": []
+  },
+  {
+    "number": 90058,
+    "title": "TextFormField with textAlign: TextAlign.right  whitespace doesn't show unless text is entered.",
+    "url": "https://github.com/flutter/flutter/issues/90058",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "framework",
+      "f: material design",
+      "has reproducible steps",
+      "P2",
+      "found in release: 2.5",
+      "found in release: 2.6",
+      "team-design",
+      "triaged-design"
+    ],
+    "assignees": [],
+    "ownership": "team-design",
+    "created_at": "2021-09-14T15:04:37Z",
+    "updated_at": "2025-08-13T18:06:38Z",
+    "body": " I use TextFormField and property textAlign: TextAlign.right in my web application but I see prob when typing space, it don't show if don't have any text after it :(\r\n Please help!",
+    "reactions": {
+      "total": 6,
+      "by_type": {
+        "THUMBS_UP": 6
+      }
+    },
+    "comment_summary": "Comments confirm the trailing whitespace rendering bug with `TextAlign.right` is reproducible on all platforms (web, macOS, Android, Windows) on stable and master. The space exists in the string but is not rendered because of text alignment trimming. A creative hack workaround (transparent TextField overlaid with a Text widget) is provided but is not suitable for production. The issue is missing a priority label as noted by a bot. Status: open, stalled, workaround available.",
+    "category": "Internationalization, BiDi, and text layout",
+    "comments_raw": []
+  },
+  {
+    "number": 71083,
+    "title": "TextFormField (and TextField) widgets do not wrap text correctly",
+    "url": "https://github.com/flutter/flutter/issues/71083",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "framework",
+      "f: material design",
+      "dependency: skia",
+      "a: typography",
+      "P2",
+      "team-design",
+      "triaged-design"
+    ],
+    "assignees": [],
+    "ownership": "team-design",
+    "created_at": "2020-11-23T14:50:43Z",
+    "updated_at": "2024-03-06T21:14:56Z",
+    "body": "Similar to the issues reported in #18761, the input fields in Flutter suffer from the same disfunction.\r\n\r\nCurrently, the text input fields in Flutter do not wrap their input correctly. Instead of breaking a word in the middle and wrapping the remainder to the next line, Flutter is breaking the string at the word boundary closest to the end of the line, which is non buono.\r\n\r\n#### Flutter\r\n<img width=\"240\" alt=\"Screen Shot 2020-11-23 at 16 37 05\" src=\"https://user-images.githubusercontent.com/921173/99974945-44fc2e80-2daa-11eb-9599-691eed55a0c6.png\">\r\n\r\n#### Chrome\r\nWeb browsers correctly split the string at the character that would otherwise overflow.\r\n<img width=\"343\" alt=\"Screen Shot 2020-11-23 at 16 44 58\" src=\"https://user-images.githubusercontent.com/921173/99975781-5265e880-2dab-11eb-9d40-81ee07b07921.png\">\r\n\r\n\r\n#### Code snippet\r\n```dart\r\nTextFormField(\r\n  decoration: InputDecoration(border: OutlineInputBorder()),\r\n  minLines: null,\r\n  maxLines: null,\r\n  initialValue: 'https://www.example.com/some/thingweirdisgoingon.here',\r\n)\r\n```\r\n",
+    "reactions": {
+      "total": 5,
+      "by_type": {
+        "THUMBS_UP": 5
+      }
+    },
+    "comment_summary": "Comments confirm the bug is distinct from #18761 (which is about read-only Text widgets), and the issue persists through at least Flutter 3.10.6 / Dart 3.0 on macOS. Multiple commenters reproduced it with long URLs in `TextFormField` using `FractionallySizedBox`. No proposed fix or PR exists; status is open and unresolved.",
+    "category": "Internationalization, BiDi, and text layout",
+    "comments_raw": []
+  }
+]

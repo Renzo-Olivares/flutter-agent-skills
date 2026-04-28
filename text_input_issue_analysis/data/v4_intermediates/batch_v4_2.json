@@ -1,0 +1,310 @@
+[
+  {
+    "number": 91738,
+    "title": "[Proposal] Add support for automatically switching text input to `RTL` or `LTR` based on first character typed",
+    "url": "https://github.com/flutter/flutter/issues/91738",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "c: new feature",
+      "framework",
+      "a: internationalization",
+      "c: proposal",
+      "P3",
+      "team-framework",
+      "triaged-framework"
+    ],
+    "assignees": [],
+    "ownership": "team-framework",
+    "created_at": "2021-10-13T10:38:12Z",
+    "updated_at": "2023-09-15T22:45:35Z",
+    "body": "<!-- Thank you for using Flutter!\r\n\r\n     If you are looking for support, please check out our documentation\r\n     or consider asking a question on Stack Overflow:\r\n      * https://flutter.dev/\r\n      * https://api.flutter.dev/\r\n      * https://stackoverflow.com/questions/tagged/flutter?sort=frequent\r\n\r\n     If you have found a bug or if our documentation doesn't have an answer\r\n     to what you're looking for, then fill out the template below. Please read\r\n     our guide to filing a bug first: https://flutter.dev/docs/resources/bug-reports\r\n-->\r\n\r\n## Use case\r\n\r\n<!--\r\n     Please tell us the problem you are running into that led to you wanting\r\n     a new feature.\r\n\r\n     Is your feature request related to a problem? Please give a clear and\r\n     concise description of what the problem is.\r\n\r\n     Describe the alternative solutions you've considered. Is there a package\r\n     on pub.dev/flutter that already solves this?\r\n-->\r\n\r\nIn multilingual text fields, Bidirectional text input is automatically recognised. For example, typing `\u0628 ` as the first character in `Whatsapp` places the cursor the right side and typing `b` as the first, places the cursor at the left side. That is it automatically detects the language and makes the text input appropriate, whether it is an `RTL` or `LTR` language.\r\n\r\n## Proposal\r\n\r\n<!--\r\n     Briefly but precisely describe what you would like Flutter to be able to do.\r\n\r\n     Consider attaching something showing what you are imagining:\r\n      * images\r\n      * videos\r\n      * code samples\r\n\r\n     Does this have to be provided by Flutter directly, or can it be provided\r\n     by a package on pub.dev/flutter? If so, maybe consider implementing and\r\n     publishing such a package rather than filing a bug.\r\n-->\r\n\r\nI think flutter must detect bidirectional text input out of the box, no matter what is the current `Directionality.of(context)`. The same behaviour stated above should be exhibited in flutter textfields.",
+    "reactions": {
+      "total": 5,
+      "by_type": {
+        "THUMBS_UP": 4,
+        "HEART": 1
+      }
+    },
+    "comment_summary": "Discussion notes the Bidi class exists in Flutter's intl. Suggestion to add an auto value similar to HTML's dir attribute. Noted as technically feasible via ICU ubidi API. Adding to TextPainter suggested, along with needing a low-level API for WidgetSpan writing directions.",
+    "category": "Internationalization, BiDi, and text layout",
+    "comments_raw": []
+  },
+  {
+    "number": 91010,
+    "title": "`dart:ui.LineMetrics` should include the line boundaries ",
+    "url": "https://github.com/flutter/flutter/issues/91010",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "engine",
+      "a: typography",
+      "c: proposal",
+      "P3",
+      "team-engine",
+      "triaged-engine"
+    ],
+    "assignees": [],
+    "ownership": "team-engine",
+    "created_at": "2021-09-30T06:16:02Z",
+    "updated_at": "2023-09-19T01:58:18Z",
+    "body": "The information is currently manually stripped when constructing a `LineMetrics`:\r\nhttps://github.com/google/skia/blob/a92b268f7d78e0069b2a61b22cb7ce615d12a60e/modules/skparagraph/include/Metrics.h#L39-L93\r\n\r\nIt will be much easier to implement vertical caret movements for up/down arrow keys with the line boundary information included. This corresponds to a todo item in https://github.com/flutter/flutter/pull/90684 .\r\n",
+    "reactions": {
+      "total": 4,
+      "by_type": {
+        "THUMBS_UP": 3,
+        "EYES": 1
+      }
+    },
+    "comment_summary": "A commenter confirmed the need for TextRange in LineMetrics and described the current workaround: calling Paragraph.getPositionForOffset to derive line text ranges, which is inconvenient and indirect.",
+    "category": "Internationalization, BiDi, and text layout",
+    "comments_raw": []
+  },
+  {
+    "number": 41324,
+    "title": "TextField/TextFormField labelText and hintText should be right-aligned with TextDirection.rtl",
+    "url": "https://github.com/flutter/flutter/issues/41324",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "c: new feature",
+      "framework",
+      "f: material design",
+      "a: internationalization",
+      "P2",
+      "team-text-input",
+      "triaged-text-input"
+    ],
+    "assignees": [],
+    "ownership": "team-text-input",
+    "created_at": "2019-09-25T22:38:16Z",
+    "updated_at": "2026-02-16T20:09:34Z",
+    "body": "There is forgotten attribute **write** for the `labelText of(TextFormField or TextField)` from right to left.\r\nI tried with `textAlign`, `textDirection`. Although, it works with `hintText` and the user input, it doesn't work with the `labelText`.\r\n\r\n\r\n![Screenshot](https://user-images.githubusercontent.com/15935347/65644781-86058100-dff5-11e9-82f0-60321192c474.png)\r\n[textfield.txt](https://github.com/flutter/flutter/files/3655101/textfield.txt)\r\n\r\n\r\n\r\n```dart\r\nTextFormField(\r\n        textAlign: Language.lang  == 'NotArabic'  ?TextAlign.left:TextAlign.right,\r\n        validator: (value) {\r\n          return Validators().validateEmail(value);\r\n        },\r\n        controller: _emailController,\r\n        decoration: new InputDecoration(\r\n            hintStyle: new TextStyle(color: Colors.grey[500],),\r\n            labelStyle: new TextStyle(color: Colors.grey[900],),\r\n            hintText: 'hint Email',\r\n            labelText: 'label Email',\r\n            fillColor: Colors.white70),\r\n        textDirection:\r\n            Language.lang == 'NotArabic' ? TextDirection.ltr : TextDirection.rtl,\r\n      ) \r\n```",
+    "reactions": {
+      "total": 3,
+      "by_type": {
+        "THUMBS_UP": 3
+      }
+    },
+    "comment_summary": "Confirmed reproducible with a code sample; video demonstration added. A commenter noted they implemented a solution fixing RTL alignment inconsistencies in InputDecoration.",
+    "category": "Internationalization, BiDi, and text layout",
+    "comments_raw": []
+  },
+  {
+    "number": 93934,
+    "title": "[Desktop] TextField with pasted CRLF endings has invisible CR char",
+    "url": "https://github.com/flutter/flutter/issues/93934",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "framework",
+      "platform-windows",
+      "a: desktop",
+      "has reproducible steps",
+      "P2",
+      "found in release: 2.5",
+      "found in release: 2.6",
+      "found in release: 2.8",
+      "team-windows",
+      "triaged-windows"
+    ],
+    "assignees": [],
+    "ownership": "team-windows",
+    "created_at": "2021-11-19T20:50:04Z",
+    "updated_at": "2024-06-07T19:08:08Z",
+    "body": "When I paste some text with CRLF endings into a TextField and click on the end of the line, cursor is placed after invisible `\\r` char. When I press left arrow, it goes over that char to the actual text end. Now when I press right arrow, it skips to the next line like there wasn't any additional char. But that `\\r` is still there after I click there with mouse again.\r\n\r\nI found that it is `\\r` by selecting it and pasting it into hex editor.\r\n\r\nThis only happens in Windows build, tried on web and it doesn't happen there. Don't know about the other platforms.\r\n\r\n<details>\r\n<summary>Code sample</summary>\r\n\r\n```dart\r\nimport 'package:flutter/material.dart';\r\n\r\nvoid main() {\r\n  runApp(const MyApp());\r\n}\r\n\r\nclass MyApp extends StatelessWidget {\r\n  const MyApp({Key? key}) : super(key: key);\r\n\r\n  @override\r\n  Widget build(BuildContext context) {\r\n    return MaterialApp(\r\n      home: Scaffold(\r\n        body: Container(\r\n          padding: const EdgeInsets.all(8),\r\n          child: const TextField(\r\n            style: TextStyle(fontSize: 50),\r\n            expands: true,\r\n            minLines: null,\r\n            maxLines: null,\r\n          ),\r\n        ),\r\n      ),\r\n    );\r\n  }\r\n}\r\n```\r\n\r\n</details>\r\n\r\n<details>\r\n  <summary>Logs</summary>\r\n\r\n```\r\n[\u221a] Flutter (Channel beta, 2.8.0-3.1.pre, on Microsoft Windows [Version 10.0.22000.318], locale en-GB)\r\n    \u2022 Flutter version 2.8.0-3.1.pre at C:\\Users\\husar\\AppData\\Local\\Flutter\\SDK\\flutter\r\n    \u2022 Upstream repository https://github.com/flutter/flutter.git\r\n    \u2022 Framework revision 3dab555040 (7 days ago), 2021-11-12 11:50:00 -0800\r\n    \u2022 Engine revision 09f1520e8b\r\n    \u2022 Dart version 2.15.0 (build 2.15.0-268.8.beta)\r\n\r\n[!] Android toolchain - develop for Android devices (Android SDK version 30.0.2)\r\n    \u2022 Android SDK at C:\\Users\\husar\\AppData\\Local\\Android\\sdk\r\n    X cmdline-tools component is missing\r\n      Run `path/to/sdkmanager --install \"cmdline-tools;latest\"`\r\n      See https://developer.android.com/studio/command-line for more details.\r\n    X Android license status unknown.\r\n      Run `flutter doctor --android-licenses` to accept the SDK licenses.\r\n      See https://flutter.dev/docs/get-started/install/windows#android-setup for more details.\r\n\r\n[\u221a] Chrome - develop for the web\r\n    \u2022 Chrome at C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe\r\n\r\n[\u221a] Visual Studio - develop for Windows (Visual Studio Community 2019 16.11.0)\r\n    \u2022 Visual Studio at C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\r\n    \u2022 Visual Studio Community 2019 version 16.11.31605.320\r\n    \u2022 Windows 10 SDK version 10.0.19041.0\r\n\r\n[\u221a] Android Studio (version 4.0)\r\n    \u2022 Android Studio at C:\\Program Files\\Android\\Android Studio\r\n    \u2022 Flutter plugin version 47.1.2\r\n    \u2022 Dart plugin version 193.7361\r\n    \u2022 Java version OpenJDK Runtime Environment (build 1.8.0_242-release-1644-b01)\r\n\r\n[\u221a] IntelliJ IDEA Community Edition (version 2021.2)\r\n    \u2022 IntelliJ at C:\\Program Files\\JetBrains\\IntelliJ IDEA Community Edition 2021.2\r\n    \u2022 Flutter plugin can be installed from:\r\n       https://plugins.jetbrains.com/plugin/9212-flutter\r\n    \u2022 Dart plugin can be installed from:\r\n       https://plugins.jetbrains.com/plugin/6351-dart\r\n\r\n[\u221a] VS Code, 64-bit edition (version 1.62.2)\r\n    \u2022 VS Code at C:\\Program Files\\Microsoft VS Code\r\n    \u2022 Flutter extension version 3.28.0\r\n\r\n[\u221a] Connected device (3 available)\r\n    \u2022 Windows (desktop) \u2022 windows \u2022 windows-x64    \u2022 Microsoft Windows [Version 10.0.22000.318]\r\n    \u2022 Chrome (web)      \u2022 chrome  \u2022 web-javascript \u2022 Google Chrome 95.0.4638.69\r\n    \u2022 Edge (web)        \u2022 edge    \u2022 web-javascript \u2022 Microsoft Edge 93.0.961.52\r\n\r\n! Doctor found issues in 1 category.\r\n```\r\n\r\n</details>\r\n\r\nVideo:\r\n\r\n\r\n\r\nhttps://user-images.githubusercontent.com/13891066/142689108-0109464f-b223-41cf-bc75-83b9f90373f0.mp4\r\n\r\n\r\n\r\nEDIT:\r\nBy pasting text with CRLF line endings I meant like when you open some file with text and that text has `\\r\\n` as line endings. You select that text and paste it into TextField.\r\n\r\nI have created another repro with comparison of LF / CRLF.\r\n\r\n<details>\r\n<summary>Code sample</summary>\r\n\r\n```dart\r\nimport 'dart:io';\r\n\r\nimport 'package:flutter/material.dart';\r\n\r\nvoid main() {\r\n  runApp(const MyApp());\r\n}\r\n\r\nclass MyApp extends StatelessWidget {\r\n  const MyApp({Key? key}) : super(key: key);\r\n\r\n  @override\r\n  Widget build(BuildContext context) {\r\n    return const MaterialApp(\r\n      home: Main(),\r\n    );\r\n  }\r\n}\r\n\r\nclass Main extends StatefulWidget {\r\n  const Main({Key? key}) : super(key: key);\r\n\r\n  @override\r\n  _MainState createState() => _MainState();\r\n}\r\n\r\nclass _MainState extends State<Main> {\r\n  final _lfFilePath = 'C:/Projects/Flutter/bug_repro/lf.txt';\r\n  final _crlfFilePath = 'C:/Projects/Flutter/bug_repro/crlf.txt';\r\n\r\n  final _lfController = TextEditingController();\r\n  final _crlfController = TextEditingController();\r\n\r\n  @override\r\n  void initState() {\r\n    super.initState();\r\n    _lfController.text = File(_lfFilePath).readAsStringSync();\r\n    _crlfController.text = File(_crlfFilePath).readAsStringSync();\r\n  }\r\n\r\n  @override\r\n  Widget build(BuildContext context) {\r\n    return Scaffold(\r\n      body: Container(\r\n        padding: const EdgeInsets.all(8),\r\n        child: Column(\r\n          mainAxisSize: MainAxisSize.max,\r\n          crossAxisAlignment: CrossAxisAlignment.start,\r\n          children: [\r\n            const Text('LF'),\r\n            Expanded(\r\n              child: TextField(\r\n                controller: _lfController,\r\n                style: const TextStyle(fontSize: 50),\r\n                expands: true,\r\n                minLines: null,\r\n                maxLines: null,\r\n              ),\r\n            ),\r\n            const Text('CRLF'),\r\n            Expanded(\r\n              child: TextField(\r\n                controller: _crlfController,\r\n                style: const TextStyle(fontSize: 50),\r\n                expands: true,\r\n                minLines: null,\r\n                maxLines: null,\r\n              ),\r\n            ),\r\n          ],\r\n        ),\r\n      ),\r\n    );\r\n  }\r\n}\r\n```\r\n\r\n</details>\r\n\r\nDownload these two files:\r\n[crlf.txt](https://github.com/flutter/flutter/files/7588894/crlf.txt)\r\n[lf.txt](https://github.com/flutter/flutter/files/7588895/lf.txt)\r\n\r\nBoth are created in VS Code and one is just saved with CRLF endings and the other one with LF endings:\r\n![image](https://user-images.githubusercontent.com/13891066/143046452-90bbbe67-0b06-4dd7-89ce-c3f3f792f8ad.png)\r\n\r\nChange paths to yours in `_lfFilePath` and `_crlfFilePath` variables, run it.\r\n\r\nIf you place cursor at the end of the line, in the LF part is everything ok\r\n![image](https://user-images.githubusercontent.com/13891066/143046717-ecd74467-d90f-4f50-a3f3-19137fb1f173.png)\r\n\r\nBut in the CRLF part is this invisible `\\r` char:\r\n![image](https://user-images.githubusercontent.com/13891066/143046954-93929c1f-c9cd-419e-b95c-260ff7067e22.png)\r\n\r\nI have also noticed that when you copy / paste it, Windows (presumably?) automatically converts LF to CRLF, so this actually happens even if you try to copy / paste LF text. But by directly comparing those two files it's clearer.",
+    "reactions": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "comment_summary": "A commenter confirmed reproduction on both macOS and Windows desktop (not on web). The issue affects both stable and master channels. No fix or PR was proposed; status is open and stalled.",
+    "category": "Internationalization, BiDi, and text layout",
+    "comments_raw": []
+  },
+  {
+    "number": 117139,
+    "title": "Incorrect selection area in RTL TextField.",
+    "url": "https://github.com/flutter/flutter/issues/117139",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "framework",
+      "a: internationalization",
+      "has reproducible steps",
+      "P2",
+      "found in release: 3.3",
+      "found in release: 3.7",
+      "team-framework",
+      "triaged-framework"
+    ],
+    "assignees": [],
+    "ownership": "team-framework",
+    "created_at": "2022-12-15T13:15:07Z",
+    "updated_at": "2023-07-08T02:03:21Z",
+    "body": "A dot at the end of a line that is followed by another line makes the text selection area incorrect!\r\nFirst, create a simple app with an RTL multiline TextField. (or use my sample code.)\r\n\r\nSteps to Reproduce:\r\n1. Add a line with this text: \"Select a word and see the selected area.\"\r\n2. Add another line\r\n3. Double click on the \"word\" to select it.\r\n\r\nExpected:\r\nThe selection area should match the \"word\" area.\r\n\r\nActual:\r\nThe selected area is not matched with the \"word\" area.\r\n\r\n<details>\r\n<summary>Sample code</summary>\r\n\r\n```dart\r\nimport 'package:flutter/material.dart';\r\n\r\nvoid main() =>\r\n  runApp(MaterialApp(\r\n    home: Scaffold(\r\n      body: Column(\r\n        mainAxisAlignment: MainAxisAlignment.center,\r\n        children: [\r\n          TextField(\r\n            controller: TextEditingController(text: '\\nSelect a word and see the incorrect selected area.\\n'),\r\n            textDirection: TextDirection.rtl,\r\n            maxLines: null,\r\n          ),\r\n          TextField(\r\n            controller: TextEditingController(text: '\\nSelect a word and see the correct selected area.\\n'),\r\n            maxLines: null,\r\n          ),\r\n        ],\r\n      ),\r\n    ),\r\n  ));\r\n```\r\n</details>",
+    "reactions": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "comment_summary": "Triage confirmed reproduction on master 3.7 on Android and iOS. Root cause identified: Skia SkParagraph's `getRectsForRange` API; a Skia bug was filed at https://bugs.chromium.org/p/skia/issues/detail?id=14035. A whitespace workaround was suggested.",
+    "category": "Internationalization, BiDi, and text layout",
+    "comments_raw": []
+  },
+  {
+    "number": 181759,
+    "title": "RTL TextField breaks when inserting emojis between existing emojis",
+    "url": "https://github.com/flutter/flutter/issues/181759",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "platform-android",
+      "framework",
+      "f: material design",
+      "platform-macos",
+      "P2",
+      "team-text-input",
+      "triaged-text-input"
+    ],
+    "assignees": [],
+    "ownership": "team-text-input",
+    "created_at": "2026-01-31T19:50:07Z",
+    "updated_at": "2026-03-06T01:26:39Z",
+    "body": "### Steps to reproduce\n\nWhen using a TextField with RTL text direction, inserting an emoji between two existing emojis sometimes breaks the text, showing ? character.\n\n### Expected results\n\nInserting emojis between existing emojis in an RTL TextField should render correctly.\n\n### Actual results\n\nThe inserted emoji breaks the text and may render as ?.\n\n### Code sample\n\n<details open><summary>Code sample</summary>\n\n```dart\nTextField(textDirection: TextDirection.rtl)\n```\n\n</details>\n\n\n### Screenshots or Video\n\n<details open>\n<summary>Screenshots / Video demonstration</summary>\n\nhttps://github.com/user-attachments/assets/706052f5-2309-4bdf-a44b-6ab05848f8a7\n\n</details>\n\n\n### Logs\n\n<details colose><summary>Logs</summary>\n\n```console\nn/a\n```\n\n</details>\n\n\n### Flutter Doctor output\n\n<details colose><summary>Doctor output</summary>\n\n```console\nn/a\n```\n\n</details>\n",
+    "reactions": {
+      "total": 2,
+      "by_type": {
+        "THUMBS_UP": 2
+      }
+    },
+    "comment_summary": "Comments identify the root cause: on macOS and Linux, dynamically changing `textDirection` during IME composition triggers a `wstring_convert::to_bytes` exception in the engine (built with `-fno-exceptions`), causing an abort; on Android the IME composing state is invalidated, producing `?`/replacement characters. iOS and web cannot reproduce. A crash log from macOS shows the engine decoding an invalid JSON surrogate pair. A comment in #183112 indicates this cannot be fixed in the framework and requires fixes in each affected embedder (macOS, Linux). Status: needs engine/embedder fix.",
+    "category": "Internationalization, BiDi, and text layout",
+    "comments_raw": []
+  },
+  {
+    "number": 41641,
+    "title": "[web] Support line height + word spacing in text fields",
+    "url": "https://github.com/flutter/flutter/issues/41641",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "c: new feature",
+      "framework",
+      "platform-web",
+      "P3",
+      "team-web",
+      "triaged-web"
+    ],
+    "assignees": [],
+    "ownership": "team-web",
+    "created_at": "2019-09-30T20:25:30Z",
+    "updated_at": "2024-03-06T21:14:49Z",
+    "body": "TextInput.setStyle method call informs the engine about the styling info of an editable text.\r\n\r\nThis method does not support line height and word spacing. \r\n",
+    "reactions": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "comment_summary": null,
+    "category": "Internationalization, BiDi, and text layout",
+    "comments_raw": []
+  },
+  {
+    "number": 71318,
+    "title": "TextField RTL input problem with LTR letters/numbers while obscureText is true",
+    "url": "https://github.com/flutter/flutter/issues/71318",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "framework",
+      "engine",
+      "f: material design",
+      "a: typography",
+      "has reproducible steps",
+      "P2",
+      "found in release: 3.3",
+      "found in release: 3.7",
+      "team-design",
+      "triaged-design"
+    ],
+    "assignees": [],
+    "ownership": "team-design",
+    "created_at": "2020-11-27T16:52:58Z",
+    "updated_at": "2024-07-11T10:52:42Z",
+    "body": "I believe there's a bug with textfield when writing LTR characters in an obscured field.\r\n\r\nThe characters are not written in the correct direction while typing (this issue appears only when obscureText is true).\r\n\r\nThe input value actually is submitted correctly with no problems and also if the password is made visible it is shown in the right way with no issues, the issue only is while typing so it makes it feel like if the password is written in a reversed direction.\r\n\r\n**While typing the letters are written to the left not to the right as expected.**\r\n\r\n### Steps to Reproduce\r\n\r\n1. Create an empty application.\r\n2. Add a TextField  or TextFormField to the application.\r\n3. Set textDirection: TextDirection.rtl\r\n4. Set obscureText: true.\r\n5. type something in English.\r\n\r\n\r\n![screen-20201127-184354](https://user-images.githubusercontent.com/30502213/100470646-51052a80-30e1-11eb-84a7-838968ba2232.gif)\r\n\r\n\r\n### Expected behavior\r\n\r\nTo act the same like when obscureText: false.\r\n\r\n### Flutter Doctor\r\n\r\n[\u2713] Flutter (Channel stable, 1.22.4, on Mac OS X 10.15.7 19H2 darwin-x64, locale en-EG)\r\n \r\n[\u2713] Android toolchain - develop for Android devices (Android SDK version 30.0.0)\r\n \r\n[\u2713] Xcode - develop for iOS and macOS (Xcode 11.6)\r\n[\u2713] Android Studio (version 4.0)\r\n[\u2713] VS Code (version 1.51.1)\r\n[\u2713] Connected device (1 available)\r\n\r\n\r\n",
+    "reactions": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "comment_summary": "Reproduced across many Flutter versions up through 3.3.x. The cursor visually appears on the left during typing but the submitted value is correct. Multiple related RTL issues linked (#47745, #50098, #54099). Status: stalled, long-standing RTL/obscureText regression affecting Android and iOS.",
+    "category": "Internationalization, BiDi, and text layout",
+    "comments_raw": []
+  },
+  {
+    "number": 78864,
+    "title": "Text does not draw correctly based on text direction",
+    "url": "https://github.com/flutter/flutter/issues/78864",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "framework",
+      "f: material design",
+      "a: internationalization",
+      "a: typography",
+      "has reproducible steps",
+      "P2",
+      "found in release: 2.1",
+      "team-design",
+      "triaged-design"
+    ],
+    "assignees": [],
+    "ownership": "team-design",
+    "created_at": "2021-03-23T12:53:11Z",
+    "updated_at": "2025-07-22T15:26:14Z",
+    "body": "I was create the flutter application to format the date time and the text was rendered incorrectly. The text formatted correctly but it rendered wrongly. \r\n\r\n## Steps to Reproduce\r\n\r\n1. Run the sample with below code\r\n2. Set the locale as 'en' and change the directionality text direction as rtl(formatted texts are 06 PM, PM 06 but rendered PM 06, PM 06)\r\n3. See both the different formatted text(english) rendered like same.\r\n4. again change the locale as 'he' and change the directionality text direction as ltr\r\n5. See both the different formatted text(hebrew) rendered like same.\r\n\r\n<details>\r\n<summary>code sample</summary>\r\n\r\n```dart\r\nvoid main() {\r\n  return runApp(LocalizationSupport());\r\n}\r\n\r\nclass LocalizationSupport extends StatelessWidget {\r\n  @override\r\n  Widget build(BuildContext context) {\r\n    return MaterialApp(\r\n      localizationsDelegates: [\r\n        GlobalMaterialLocalizations.delegate,\r\n        GlobalWidgetsLocalizations.delegate,\r\n      ],\r\n      supportedLocales: [\r\n        const Locale('en'),\r\n        const Locale('zh'),\r\n        const Locale('ru'),\r\n        const Locale('fr', 'BE'),\r\n        const Locale('fr', 'CA'),\r\n        const Locale('ja'),\r\n        const Locale('de'),\r\n        const Locale('hi'),\r\n        const Locale('ar'),\r\n        const Locale('he'),\r\n      ],\r\n      locale: const Locale('en'),\r\n      debugShowCheckedModeBanner: false,\r\n      home: StringLocale(),\r\n    );\r\n  }\r\n}\r\nclass StringLocale extends StatefulWidget {\r\n  @override\r\n  State<StatefulWidget> createState() => StringLocaleState();\r\n}\r\nclass StringLocaleState extends State<StringLocale> {\r\n  @override\r\n  void initState() {\r\n    super.initState();\r\n  }\r\n\r\n  late String _locale;\r\n  @override\r\n  void didChangeDependencies() {\r\n    _locale = Localizations.localeOf(context).toString();\r\n    super.didChangeDependencies();\r\n  }\r\n\r\n  @override\r\n  Widget build(BuildContext context) {\r\n    String data = DateFormat('hh a', _locale)\r\n        .format(DateTime.now())\r\n        .toString();\r\n    print(data);\r\n\r\n    String data1 = DateFormat('a hh', _locale)\r\n        .format(DateTime.now())\r\n        .toString();\r\n    print(data1);\r\n\r\n    if(data == data1){\r\n      print('Same');\r\n    }\r\n\r\n    return Scaffold(\r\n      body:\r\n      Directionality(textDirection: TextDirection.rtl,\r\n          child: SafeArea(child: Column(\r\n        children: <Widget>[\r\n          Expanded(\r\n            child: Container(\r\n          alignment: Alignment.center,\r\n              height: double.infinity,\r\n              width: double.infinity,\r\n              child: Text(data),\r\n      )\r\n            ),Expanded(\r\n              child: Container(\r\n                alignment: Alignment.center,\r\n                height: double.infinity,\r\n                width: double.infinity,\r\n                child: Text(data1),\r\n              )\r\n          )\r\n      ]\r\n          ),\r\n      ),\r\n    ));\r\n  }\r\n}\r\n\r\n```\r\n</details>\r\n\r\n**Expected results:** \r\n\r\n- Text will rendered correctly based on direction\r\n\r\n**Actual results:** \r\n\r\n- Text will not rendered correctly based on direction\r\n\r\n**Issue Replication Images:**\r\n\r\n**In en locale on RTL direction:**\r\n\r\n![Screen Shot 2021-03-23 at 6 06 30 PM](https://user-images.githubusercontent.com/44917578/112148447-e9c93400-8c03-11eb-9e2b-596d693e1195.png)\r\n\r\n**In he locale on LTR direction:**\r\n\r\n![Screen Shot 2021-03-23 at 6 06 07 PM](https://user-images.githubusercontent.com/44917578/112148530-01082180-8c04-11eb-9b5c-63a1302c2197.png)\r\n\r\n<details>\r\n  <summary>Flutter doctor</summary>\r\n\r\n```\r\n[\u2713] Flutter (Channel beta, 2.0.1, on Mac OS X 10.15.3 19D76 darwin-x64, locale en-US)\r\n[!]Android toolchain - develop for Android devices (Android SDK version 29.0.3)\r\n    \u2717 Android license status unknown.\r\n      Run `flutter doctor --android-licenses` to accept the SDK licenses.\r\n      See https://flutter.dev/docs/get-started/install/macos#android-setup for more details.\r\n[!] Xcode - develop for iOS and macOS\r\n    ! Xcode 11.3.1 out of date (12.0.1 is recommended).\r\n      Download the latest version or update via the Mac App Store.\r\n    \u2717 Xcode requires additional components to be installed in order to run.\r\n      Launch Xcode and install additional required components when prompted or run:\r\n        sudo xcodebuild -runFirstLaunch\r\n    ! CocoaPods 1.9.3 out of date (1.10.0 is recommended).\r\n        CocoaPods is used to retrieve the iOS and macOS platform side's plugin code that responds to your plugin usage on the Dart side.\r\n        Without CocoaPods, plugins will not work on iOS or macOS.\r\n        For more info, see https://flutter.dev/platform-plugins\r\n      To upgrade see https://guides.cocoapods.org/using/getting-started.html#installation for instructions.\r\n[\u2713] Chrome - develop for the web\r\n[\u2713] Android Studio (version 3.6)\r\n[\u2713] VS Code (version 1.52.0)\r\n[\u2713] Connected device (2 available)\r\n```\r\n\r\n<details>",
+    "reactions": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "comment_summary": "Comments are limited to a compile error in the original sample and a single confirmation screenshot; no root cause, fix, or additional platform data added beyond what is in the body.",
+    "category": "Internationalization, BiDi, and text layout",
+    "comments_raw": []
+  },
+  {
+    "number": 84317,
+    "title": "Share code between RenderParagraph and RenderEditable",
+    "url": "https://github.com/flutter/flutter/issues/84317",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "framework",
+      "a: typography",
+      "P2",
+      "c: tech-debt",
+      "team-framework",
+      "triaged-framework"
+    ],
+    "assignees": [],
+    "ownership": "team-framework",
+    "created_at": "2021-06-10T03:37:23Z",
+    "updated_at": "2023-07-08T01:50:26Z",
+    "body": "In https://github.com/flutter/flutter/pull/83537, we realized that a lot of code is shared between RenderParagraph and RenderEditable, especially for WidgetSpan support.\r\n\r\nAs we consider adding WidgetSpan support for SelectableText as well (https://github.com/flutter/flutter/issues/38474), this leads us to prefer code reuse rather than three extremely similar codebases to maintain.\r\n\r\nWe may be able to restructure it to inherit, or potentially a mixin, though I am still unclear how sharable the code actually is.",
+    "reactions": {
+      "total": 1,
+      "by_type": {
+        "THUMBS_UP": 1
+      }
+    },
+    "comment_summary": null,
+    "category": "Internationalization, BiDi, and text layout",
+    "comments_raw": []
+  }
+]

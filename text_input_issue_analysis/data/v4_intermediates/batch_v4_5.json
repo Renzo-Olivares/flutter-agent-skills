@@ -1,0 +1,111 @@
+[
+  {
+    "number": 167466,
+    "title": "Ellipsis not working properly when a text overflows via constrained height instead of max lines",
+    "url": "https://github.com/flutter/flutter/issues/167466",
+    "state": "open",
+    "labels": [
+      "framework",
+      "a: typography",
+      "c: rendering",
+      "has reproducible steps",
+      "P2",
+      "team-text-input",
+      "triaged-text-input",
+      "found in release: 3.29",
+      "found in release: 3.32"
+    ],
+    "assignees": [],
+    "ownership": "team-text-input",
+    "created_at": "2025-04-21T07:28:45Z",
+    "updated_at": "2025-12-21T23:02:43Z",
+    "body": "### Steps to reproduce\n\n1. Create a new Flutter project\n2. Paste the code sample into `main.dart`\n3. Run on any platform\n\n### Expected results\n\nEllipsis should show up at the end of the text if the text is cut off by its parent's constrained height, even if `maxLines` is null or a large value.\n\n### Actual results\n\nEllipsis shows up when `maxLines` is null, but then it trims the text into one line. Ellipsis does not show at all if `maxLines` is greater than what could normally fit in the constrained size.\n\n### Code sample\n\n<details open><summary>Code sample</summary>\n\n```dart\nimport 'package:flutter/material.dart';\n\nvoid main() => runApp(const App());\n\nclass App extends StatelessWidget {\n  const App({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return MaterialApp(\n      home: ExamplePage(),\n    );\n  }\n}\n\nclass ExamplePage extends StatelessWidget {\n  const ExamplePage({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    final text =\n        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';\n\n    return Scaffold(\n      appBar: AppBar(title: Text('Example')),\n      body: Center(\n        child: Column(\n          spacing: 16,\n          mainAxisAlignment: MainAxisAlignment.center,\n          children: [\n            Text('Max lines: null'),\n            Container(\n              width: 200,\n              height: 200,\n              color: Colors.blue,\n              child: Text(\n                text,\n                overflow: TextOverflow.ellipsis,\n                maxLines: null,\n              ),\n            ),\n            Text('Max lines: 100'),\n            Container(\n              width: 200,\n              height: 200,\n              color: Colors.blue,\n              child: Text(\n                text,\n                overflow: TextOverflow.ellipsis,\n                maxLines: 100,\n              ),\n            ),\n          ],\n        ),\n      ),\n    );\n  }\n}\n```\n\n</details>\n\n\n### Screenshots or Video\n\n<details open>\n<summary>Screenshots / Video demonstration</summary>\n\n![Image](https://github.com/user-attachments/assets/11ee3f6d-7e54-49de-a894-5b6d18cc797a)\n\n</details>\n\n\n### Logs\n\n<details open><summary>Logs</summary>\n\n```console\n[Paste your logs here]\n```\n\n</details>\n\n\n### Flutter Doctor output\n\n<details open><summary>Doctor output</summary>\n\n```console\n[\u2713] Flutter (Channel stable, 3.29.3, on macOS 15.4 24E248 darwin-arm64, locale en-TR) [1,225ms]\n    \u2022 Flutter version 3.29.3 on channel stable at /Users/rasitayaz/Library/flutter\n    \u2022 Upstream repository https://github.com/flutter/flutter.git\n    \u2022 Framework revision ea121f8859 (10 days ago), 2025-04-11 19:10:07 +0000\n    \u2022 Engine revision cf56914b32\n    \u2022 Dart version 3.7.2\n    \u2022 DevTools version 2.42.3\n\n[\u2713] Android toolchain - develop for Android devices (Android SDK version 34.0.0) [2.9s]\n    \u2022 Android SDK at /Users/rasitayaz/Library/Android/sdk\n    \u2022 Platform android-35, build-tools 34.0.0\n    \u2022 Java binary at: /Applications/Android Studio.app/Contents/jbr/Contents/Home/bin/java\n      This is the JDK bundled with the latest Android Studio installation on this machine.\n      To manually set the JDK path, use: `flutter config --jdk-dir=\"path/to/jdk\"`.\n    \u2022 Java version OpenJDK Runtime Environment (build 21.0.5+-13047016-b750.29)\n    \u2022 All Android licenses accepted.\n\n[\u2713] Xcode - develop for iOS and macOS (Xcode 16.3) [1,023ms]\n    \u2022 Xcode at /Applications/Xcode.app/Contents/Developer\n    \u2022 Build 16E140\n    \u2022 CocoaPods version 1.16.2\n\n[\u2713] Chrome - develop for the web [11ms]\n    \u2022 Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome\n\n[\u2713] Android Studio (version 2024.3) [11ms]\n    \u2022 Android Studio at /Applications/Android Studio.app/Contents\n    \u2022 Flutter plugin can be installed from:\n      \ud83d\udd28 https://plugins.jetbrains.com/plugin/9212-flutter\n    \u2022 Dart plugin can be installed from:\n      \ud83d\udd28 https://plugins.jetbrains.com/plugin/6351-dart\n    \u2022 Java version OpenJDK Runtime Environment (build 21.0.5+-13047016-b750.29)\n\n[\u2713] VS Code (version 1.99.2) [9ms]\n    \u2022 VS Code at /Applications/Visual Studio Code.app/Contents\n    \u2022 Flutter extension version 3.108.0\n\n[\u2713] Connected device (4 available) [6.1s]\n    \u2022 iPhone 16 Pro (mobile)          \u2022 43146F92-4E65-4649-AE11-FE784D7ADBF8 \u2022 ios            \u2022 com.apple.CoreSimulator.SimRuntime.iOS-18-4\n      (simulator)\n    \u2022 macOS (desktop)                 \u2022 macos                                \u2022 darwin-arm64   \u2022 macOS 15.4 24E248 darwin-arm64\n    \u2022 Mac Designed for iPad (desktop) \u2022 mac-designed-for-ipad                \u2022 darwin         \u2022 macOS 15.4 24E248 darwin-arm64\n    \u2022 Chrome (web)                    \u2022 chrome                               \u2022 web-javascript \u2022 Google Chrome 134.0.6998.167\n\n[\u2713] Network resources [975ms]\n    \u2022 All expected network resources are available.\n\n\u2022 No issues found!\n```\n\n</details>\n",
+    "reactions": {
+      "total": 0,
+      "by_type": {}
+    },
+    "comment_summary": "Comments confirm the bug is reproducible on stable 3.29 and master 3.32 on all platforms \u2014 ellipsis is not shown when text is clipped by a constrained parent height rather than by `maxLines`. One commenter noted it may be working as intended but acknowledged it is hard to work around. A workaround using `LayoutBuilder` and `TextPainter` to compute the number of visible lines dynamically was provided; no framework fix or PR is linked.",
+    "category": "Internationalization, BiDi, and text layout",
+    "comments_raw": []
+  },
+  {
+    "number": 177408,
+    "title": "The framework should provide a mechanism to change the paragraph spacing of text",
+    "url": "https://github.com/flutter/flutter/issues/177408",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "c: new feature",
+      "a: accessibility",
+      "P3",
+      "team-text-input",
+      "triaged-text-input"
+    ],
+    "assignees": [],
+    "ownership": "team-text-input",
+    "created_at": "2025-10-22T19:51:51Z",
+    "updated_at": "2026-01-06T20:39:06Z",
+    "body": "## Issue\nThere is no mechanism to change the paragraph spacing of text in the framework.\n\n## Proposal\n`TextStyle` should add a `paragraphSpacing` member, similar to `letterSpacing` and `wordSpacing`, that allows for changing the additional space between paragraphs.\n\nIn the code below:\n```dart\nText('Hello world\\nGoodbye world', style: TextStyle(paragraphSpacing: 2.0))\n```\n\n`TextStyle(paragraphSpacing: 2.0)` , would add 2 pixels of space between the paragraphs separated by the line terminator `\\n`.\n\n## Use case\nAccessibility would benefit greatly from this feature, as certain specifications such as [WCAG](https://www.w3.org/TR/WCAG21/#visual-presentation) on the web have certain requirements regarding the paragraph spacing of text.",
+    "reactions": {
+      "total": 0,
+      "by_type": {}
+    },
+    "comment_summary": null,
+    "category": "Internationalization, BiDi, and text layout",
+    "comments_raw": []
+  },
+  {
+    "number": 177953,
+    "title": "The framework should apply `paragraphSpacingOverride` to its text",
+    "url": "https://github.com/flutter/flutter/issues/177953",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "c: new feature",
+      "a: accessibility",
+      "platform-web",
+      "P3",
+      "team-text-input",
+      "triaged-text-input"
+    ],
+    "assignees": [],
+    "ownership": "team-text-input",
+    "created_at": "2025-11-03T23:16:36Z",
+    "updated_at": "2026-01-02T18:18:13Z",
+    "body": "## Issue\nAs of https://github.com/flutter/flutter/pull/172915, `paragraphSpacingOverride` has been made available through `MediaQuery.maybeOfParagraphSpacingOverride`, and `MediaQueryData.paragraphSpacingOverride`. This is an API added to support accessibility use-cases related to text spacing, such as matching WCAG specifications on the web. The framework at this time does not utilize this value, but makes it accessible to developers to use in their own applications.\n\n## Proposal\nThe framework should apply the `paragraphSpacingOverride` to its own text and components, so the framework can be compliant with specifications like WCAG out of the box. When applying `paragraphSpacingOverride` to our framework components we should consider scenarios where we should not apply it, for example in buttons, headers, navigations destinations, and likely other UI components.",
+    "reactions": {
+      "total": 0,
+      "by_type": {}
+    },
+    "comment_summary": null,
+    "category": "Internationalization, BiDi, and text layout",
+    "comments_raw": []
+  },
+  {
+    "number": 183571,
+    "title": "iOS: NSJSONSerialization crash when deleting SMP characters",
+    "url": "https://github.com/flutter/flutter/issues/183571",
+    "state": "open",
+    "labels": [
+      "a: text input",
+      "platform-ios",
+      "P1",
+      "team-text-input",
+      "triaged-text-input"
+    ],
+    "assignees": [
+      "LongCatIsLooong"
+    ],
+    "ownership": "team-text-input",
+    "created_at": "2026-03-12T06:23:21Z",
+    "updated_at": "2026-03-19T22:11:45Z",
+    "body": "**Describe the bug**\nWhen deleting Supplementary Multilingual Plane (SMP) characters on iOS, the text input system leaves orphaned UTF-16 surrogates in the NSString. This causes NSJSONSerialization to fail with \"failed to convert to UTF8\" error and crash the app.\n\n**Steps to reproduce**\n1. Create a Flutter app with a TextField or text input widget\n2. On an iOS device, paste this string: **\u1d3f\u1b44\ud835\udc79ahul Rajput**\n3. Delete it character by character until only 1-2 characters remain\n4. App crashes with: \"Invalid JSON message, encoding failed: (null)\"\n\n**Expected behavior**\nText input should handle surrogate pairs correctly without crashing\n\n**Actual behavior**\nNSJSONSerialization rejects the string because it contains lone (unpaired) surrogates from incomplete SMP character encoding\n\n**Proposed Solution**\nBefore JSON serialization, validate and sanitize UTF-16 surrogates:\n- Drop lone/orphaned surrogates\n- Keep valid surrogate pairs\n- Preserve all BMP characters\n- Remap text-editing cursor indices\n\n**Code Fix**\nThe fix has been implemented in the Engine layer (FlutterCodecs.mm):\n- Added `sanitizeJSONObject()` function to recursively clean JSON object trees\n- Added helper functions for surrogate detection and index remapping\n- Special handling for text-editing state dicts\n\nCommit: `5ffdf6f689e18fe0f6b3045f0b07453d4a0c3266`\nBranch: `fix/ios-surrogate-utf16-crash`\n\n**Platform**\n- iOS 12.0+\n\n**Related Issues**\nGitHub Issue #142327",
+    "reactions": {
+      "total": 0,
+      "by_type": {}
+    },
+    "comment_summary": "Reproduced on both latest stable and master on iOS. A contributor implemented a fix in the engine (`FlutterCodecs.mm`) on a fork and submitted to Gerrit mirrors; a team member redirected them to submit a PR against the monorepo at `engine/src/flutter/shell/platform/darwin/common/framework/Source/FlutterCodecs.mm`. A pre-triage note suggests it may be a bug in `UITextInput.deleteBackward` rather than a duplicate of #179727. Status: P1, has a proposed fix pending a properly submitted PR.",
+    "category": "Internationalization, BiDi, and text layout",
+    "comments_raw": []
+  }
+]
