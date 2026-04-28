@@ -105,7 +105,7 @@ level regression test. Output per category is a single markdown file in
 - `regression_tests/<category_slug>/issue_<number>_<slug>_test.dart` —
   framework-level regression tests authored during cleanup.
 
-### Status as of 2026-04-26
+### Status as of 2026-04-27
 
 | # | Category | Issues | Tests | Skip-engine % | Notes |
 |---|---|---|---|---|---|
@@ -113,10 +113,11 @@ level regression test. Output per category is a single markdown file in
 | ✅ | Hardware keyboard, key events, and shortcuts | 99 | 2 | 70% | 3 clusters (PKC-1, NKI-1, WKR-1) |
 | ✅ | Text selection behavior and gestures | 28 | 0 | 71% | Hypothesis miss — see report's retrospective section |
 | ✅ | Scrolling containers and ensureVisible with text fields | 24 | 2 | 71% | Best write-test rate so far (8.3%) |
-| ⏳ | (27 remaining categories) | 839 | — | — | See `category_profiles.md` |
+| ✅ | Internationalization, BiDi, and text layout | 44 | 1 | 36% | 8 clusters; 48% proposal-heavy (highest yet); 6 closure candidates (3 dup + 3 stale) |
+| ⏳ | (26 remaining categories) | 795 | — | — | See `category_profiles.md` |
 
-**Totals so far:** 4 / 31 categories complete, 255 / 1,122 issues processed
-(23%), 7 regression tests authored (5 fail-as-expected confirming real
+**Totals so far:** 5 / 31 categories complete, 299 / 1,122 issues processed
+(27%), 8 regression tests authored (6 fail-as-expected confirming real
 bugs, 1 pass-green-exercises-bug-path likely-stale, 1 test-error harness
 gap).
 
@@ -132,7 +133,8 @@ gap).
    test → append entry → update running summary counters.
 
 ### Pending decision (paused on)
-Which category next. Recommendations from the last session, ordered by
+Which category next. Recommendations carried forward from the last
+session (i18n/bidi just completed). Same shortlist applies; ordered by
 predicted framework-testability after recalibrating on Scrolling
 containers' 8.3% rate:
 
@@ -149,23 +151,36 @@ visibility 91 issues / 579 reactions; highest reaction concentration =
 Input types 10.6 avg; etc.).
 
 ### Cross-category process learnings
-- **Skip-engine rate is consistently ~70-73%** across the four categories
-  audited so far. The text-input domain is dominated by embedder/engine
-  bugs; framework-only fixes are the minority.
+- **Skip-engine rate is mostly ~70-73%** across the first four categories
+  (IME/CJK, Hardware keyboard, Selection gestures, Scrolling containers),
+  but **i18n/bidi broke the pattern at 36%** — its bugs swing toward
+  proposal-shaped (48%) rather than engine-bug-shaped. The text-input
+  domain is dominated by embedder/engine bugs *for the layers that
+  bridge OS input to text content*; the *typography/layout* layer
+  generates more "framework should expose X" feature requests than
+  concrete engine bugs.
 - **Write-test rate varies sharply** (0% – 8.3%) depending on whether the
   category's bugs surface through observable framework state (good:
-  `ScrollController.offset`, `controller.selection`, `FocusNode.hasFocus`)
+  `ScrollController.offset`, `controller.selection`, `FocusNode.hasFocus`,
+  `EditableTextState.pasteText` round-trip)
   vs. require simulating triggers `testWidgets` doesn't have primitives
   for (bad: selection-handle drag, embedder-side key-event synthesis,
-  IME composition state).
+  IME composition state, paragraph rendering glyph positions).
 - **Cluster patterns can span categories.** First example: #98720
   (IME/CJK) ↔ #184744 (Hardware keyboard) — same `KeyEmbedderResponder.java`
-  fix target. Per-category dedup misses these; recorded under "Cross-
+  fix target. Second example: #78660 + #144759 (i18n/bidi VOR-1)
+  ↔ Hardware keyboard's shortcut/intent layer — visual-order RTL
+  navigation requires both binding work and caret-semantics work.
+  Per-category dedup misses these; recorded under "Cross-
   category sibling/split-issue links" in each report.
 - **Per-batch velocity is the right shape.** Batches of 10, processed
   in one conversation turn each, with cluster bookkeeping between
   batches. Smaller batches risk losing context; bigger batches
   saturate the conversation context window.
+- **Proposal-heavy categories yield more "single-PR-closes-N-issues"
+  cluster opportunities.** i18n/bidi has PSP-1 (3 issues, one
+  paragraph-spacing PR), LM-1 (3 issues, one dart:ui LineMetrics
+  expansion). Worth flagging in any strategy roll-up.
 
 ### Test-harness primitive gaps that block more write-tests
 Captured here for a possible future investment in `flutter_test`:
@@ -214,6 +229,25 @@ Tentative clusters that may grow as remaining categories are audited:
 - **DKD-1** Desktop dead-key composition (IME/CJK, 2 members)
 - **WKR-1** Windows synthesized key-event ordering (Hardware keyboard,
   2 members; sub-cluster of PKC-1)
+- **TWS-1** Trailing whitespace + alignment / wrap / selection rect
+  (i18n/bidi, 5 members; SkParagraph "ghost run" mechanism documented
+  in #92507; Skia bug 11933 filed)
+- **PSP-1** Paragraph spacing API gap (i18n/bidi, 3 members; PR #172915
+  added MediaQuery side, framework consumer wiring + TextStyle field
+  remain)
+- **SLR-1** Selection layout rects in complex / RTL scripts (i18n/bidi,
+  2 members; `getRectsForRange`, Skia bug 14035)
+- **LBW-1** Line-break wrap on long unbreakable runs (i18n/bidi,
+  2 members; SkParagraph break-policy hook needed)
+- **LM-1** Line metrics API gap (i18n/bidi, 3 members; dart:ui
+  LineMetrics expansion blocks framework consumers #75572 / #133930)
+- **VOR-1** Visual-order RTL navigation (i18n/bidi, 2 members; cross-
+  cuts Hardware keyboard intent/binding layer; team-classified as
+  planned-but-unimplemented)
+- **CRLF-1** CRLF / desktop line-ending handling (i18n/bidi, 2 members;
+  framework normalization in `EditableText.pasteText` would close both)
+- **SUR-1** Surrogate-pair embedder JSON crashes (i18n/bidi, 2 members;
+  iOS fix prototyped on contributor fork pending PR submission)
 
 ---
 
@@ -271,6 +305,29 @@ return on their own schedule without losing context.
 workstream section) and `CLEANUP_REPORT_FORMAT.md`. No memory or chat-
 history is required — every decision and accumulated learning is on
 disk.
+
+### 2026-04-27 — i18n/bidi/text-layout category completed
+
+Fifth category finished: **Internationalization, BiDi, and text layout**
+(44 issues; 1 write-test fail-as-expected; 36% skip-engine; 48%
+skip-proposal — the highest proposal share to date). Eight clusters
+identified (TWS-1, PSP-1, SLR-1, LBW-1, LM-1, VOR-1, CRLF-1, SUR-1),
+six closure candidates (3 likely-duplicates + 3 likely-stale).
+
+**Why:** This category broke the prior 70-73% skip-engine pattern. The
+typography/layout layer of text input generates more "framework should
+expose X" feature requests than concrete engine bugs. Recorded in
+"Cross-category process learnings" so the pattern is visible to
+future audits — categories with heavy `c: proposal` / `c: new feature`
+loads will skew toward proposal classifications.
+
+**How to apply:** When previewing a category's likely shape before
+auditing it, eyeball the `c: proposal` / `c: new feature` label
+density — high density predicts low engine-share and low write-test
+rate. The "TextInputFormatter and input masks" candidate (4 issues,
+tiny) and the "TextSpan, WidgetSpan" candidate (12 issues) are the
+ones most likely to yield high write-test rates among the remaining
+queue.
 
 ### 2026-04-22 — Reactions captured per issue
 
